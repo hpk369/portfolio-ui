@@ -1,0 +1,79 @@
+/* Site layout. Phase 0: a static shell so tokens and fonts can be checked;
+   phase 2 replaces the intro rules with the full frame F build. */
+
+.intro {
+  position: relative;
+  min-height: 100svh;
+  padding: var(--sp-7) var(--gutter) var(--sp-6);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.intro__tagline {
+  max-width: 32ch;
+  font-size: var(--fs-ui);
+  line-height: 1.45;
+  color: var(--ink-2);
+}
+
+.intro__tagline em {
+  font-size: 1.15em;
+  color: var(--ink);
+}
+
+.intro__name {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0 var(--sp-4);
+  font-size: var(--fs-name);
+  font-weight: 500;
+  line-height: 0.9;
+}
+
+.intro__first {
+  letter-spacing: var(--tracking-name-sans);
+}
+
+.intro__last {
+  margin-left: auto;
+  color: var(--ink-cool);
+  letter-spacing: var(--tracking-name-serif);
+}
+
+.intro__bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--sp-3) var(--sp-5);
+  margin-top: var(--sp-5);
+  padding-top: var(--sp-3);
+  border-top: 1px solid color-mix(in srgb, var(--ink) 33%, transparent);
+  color: var(--muted);
+}
+
+.intro__links {
+  display: inline-flex;
+  gap: var(--sp-3);
+}
+
+.intro__bar a {
+  text-decoration: none;
+}
+
+.intro__bar a:hover {
+  color: var(--ink);
+}
+
+.intro__demos {
+  color: var(--ember);
+}
+
+.placeholder {
+  padding: var(--sp-10) var(--gutter);
+  font-size: var(--fs-h2);
+  font-weight: 500;
+  color: var(--dim);
+}
