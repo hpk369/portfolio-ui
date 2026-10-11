@@ -35,14 +35,23 @@ Known gaps on the current site, to fix before launch:
 
 - `CLAUDE.md` (portfolio rules, the replay JSON format, the project page template) and "Portfolio Project Plan — Customer Engineer" (pitches, word for word). Neither was in `hpk-website`. Until Harsh adds them, the replay format is a provisional one (documented in phase 1), and no pitch is invented: cards use the existing hpk-website descriptions only where Harsh approves.
 
-## Replays
+## Content and replays (Oct 11, after CLAUDE.md arrived)
 
-- `CLAUDE.md` isn't available yet, so the replay JSON uses a provisional format, `replay/v0`, documented in `kit/js/replay-player.js`. Swap it for the CLAUDE.md format when that arrives.
-- The phase 1 fixture `etl-schema-drift.json` is **synthetic**: hand-written, not a recording. A replay's `source` is either `recorded` or `synthetic`. Recorded replays show `Recorded run · <date> · <model>`. Synthetic ones show `Sample replay · synthetic data · not a real run`, so nothing poses as a recording. Replace it with a real scrubbed recording of the AI QA agent when one exists.
+- `CLAUDE.md` is now in the repo root and is the source of truth for rules, pitches, tiers and the replay format.
+- **All ten projects are listed, with visible placeholders** (Harsh: "put placeholders for any missing project"). This knowingly overrides CLAUDE.md's "a project that fails the 60-second test is not listed" until launch. Before launch, set `"ready": false` on anything that still fails the test and re-run `scripts/build_project_pages.py`.
+- In `projects.json`, a `null` field renders as a placeholder (`[One-sentence pitch to come]`, `[To come]`, `· to come`). `"placeholder": true` marks projects still waiting on Harsh's details.
+- Pitches are copied word for word from CLAUDE.md. CineMatch, Supply Chain Audit Log, PyRedis and E-commerce Front End have no pitch there yet, so they show a placeholder. "Proves" is filled only where a source gives it: ETL Triage Agent (spec) and Bank Policy Assistant (frame I).
+- Tier order follows CLAUDE.md's repo table: featured (ETL, Banking, Diagnostics, Bank Policy), supporting (MCP, Usage Monitor, CineMatch), more (Supply Chain, PyRedis, E-commerce).
+- Replays use CLAUDE.md's JSON shape. The three ETL replays (clean run, schema drift, Kafka lag) are **synthetic** (`"source": "synthetic"`) and labelled "Sample replay · synthetic data · not a real run". Harsh: skip recording a real run of the AI QA agent for now.
+- Demo modes in use: `replay` (ETL), `embed` (CineMatch, its existing static demo in an iframe), and `placeholder` (everything else; links to an existing demo where one exists). `embed` and `placeholder` are additions to the spec's enum.
+- The banking demo link is kept as "See the current demo" even though CLAUDE.md notes it may show "Connecting…"; verify before launch.
 
 ## Build decisions
 
 - **Local serving from the repo root.** The site references the kit as `../kit/...`, so serve the whole repo, not just `site/`: `python3 -m http.server 8000`, then open `http://localhost:8000/site/`. (The spec's example, `--directory site`, would hide `/kit`.)
+- **Deep links:** each `site/projects/<slug>/index.html` is a complete static page. With JS it forwards to `../../?project=<slug>`, and the home page opens the panel and restores the `/projects/<slug>/` address. JS builds absolute project URLs from `site/js/env.js`, so links keep working after `pushState`.
+- **Spiral:** the page scroll is the only state. The section pins for 80vh per card; drag, arrow keys and snap all move the scroll. Cards wrap around the ring and fade at the seam, so the helix reads on both sides of the active card.
+- **Not built yet:** `LiveReplaySwitch` (no project has a live backend yet), the kit version tag `kit-v1.0.0` (tagging is a push; ask first), the light-mode polish pass, and a Lighthouse budget run.
 - **Relative URLs everywhere.** On `hpk369.github.io` this repo is served under `/portfolio-ui/`, so root-absolute paths like `/projects/<slug>/` would break. All links are relative. How Pages publishes `site/` + `kit/` is decided at launch; Pages is not enabled.
 - **Vendored versions:** GSAP 3.15.0 (`gsap.min.js`, `ScrollTrigger.min.js`) under GreenSock's standard no-charge licence (re-confirm on gsap.com before launch); Lenis 1.3.26 (`lenis.min.js`, MIT). About 52 KB gzipped together, leaving about 68 KB of the 120 KB budget for site code.
 - **Fonts** come from the `@fontsource` npm packages (v5.3.0), which repackage the Google Fonts files with their OFL licence. Latin subset only: Instrument Sans 400/500/600, Instrument Serif Italic 400, JetBrains Mono 400/500. Fallbacks are metric-matched with `size-adjust` and ascent/descent overrides measured from the woff2 files.

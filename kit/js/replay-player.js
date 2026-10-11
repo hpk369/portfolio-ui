@@ -1,16 +1,16 @@
 // ReplayPlayer (spec §8): plays a replay JSON as a timed list of steps.
 //
-// Replay format "replay/v0" (provisional until CLAUDE.md defines the real one):
-//   {
-//     "format": "replay/v0", "id": "etl-schema-drift", "title": "Schema drift",
-//     "source": "recorded" | "synthetic", "recordedAt": "YYYY-MM-DD" | null, "model": "<model>" | null,
-//     "durationMs": 13000,
-//     "steps": [{ "t": 0, "kind": "tool", "label": "check_schema(x)", "detail": "..." }, ...]
-//   }
-// `t` is milliseconds from the start at 1× speed. Text wrapped in `backticks` renders as code.
+// Format (CLAUDE.md, "Replay recording format"):
+//   { "id", "title", "source": "recorded" | "synthetic", "recorded_at": "YYYY-MM-DD" | null,
+//     "model": "<model>" | null,
+//     "steps": [{ "t_ms": 0, "type": "event", "label": "...", "payload": { "text": "..." } }, ...],
+//     "outcome": { "summary": "...", "severity": "P1" } }
+// Step types: event, tool_call, tool_result, message, metric, log, alert.
+// `payload.text` shows under the label; other payload keys show as "key: value".
+// Text wrapped in `backticks` renders as code. Optional "duration_ms" sets the total length.
 //
 // Usage:
-//   const player = new ReplayPlayer(container, { autoplay: false });
+//   const player = new ReplayPlayer(container, { autoplay: false, heading: 'etl-triage · schema drift' });
 //   await player.load('data/replays/etl-schema-drift.json');
 //   player.addEventListener('step', (e) => console.log(e.detail.index, e.detail.step));
 //
@@ -50,10 +50,20 @@ function richText(text) {
 
 const pad = (n) => String(n).padStart(2, '0');
 
+function payloadText(payload) {
+  if (!payload) return '';
+  if (payload.text) return payload.text;
+  return Object.entries(payload)
+    .filter(([, value]) => value !== null && typeof value !== 'object')
+    .map(([key, value]) => `${key}: ${value}`)
+    .join(' · ');
+}
+
 export class ReplayPlayer extends EventTarget {
-  constructor(container, { autoplay = false, speed = 1 } = {}) {
+  constructor(container, { autoplay = false, speed = 1, heading = null } = {}) {
     super();
     this.container = container;
+    this.heading = heading;
     this.autoplay = autoplay;
     this.speed = SPEEDS.includes(speed) ? speed : 1;
     this.reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -76,7 +86,7 @@ export class ReplayPlayer extends EventTarget {
 
     this.pause();
     this.replay = replay;
-    this.duration = replay.durationMs ?? replay.steps.at(-1).t + 1500;
+    this.duration = replay.duration_ms ?? replay.steps.at(-1).t_ms + 1500;
     this._render();
 
     if (this.reducedMotion) {
@@ -117,7 +127,7 @@ export class ReplayPlayer extends EventTarget {
     const last = this.replay.steps.length - 1;
     const index = Math.max(-1, Math.min(last, i));
     this.pause();
-    this._seek(index < 0 ? 0 : this.replay.steps[index].t, index);
+    this._seek(index < 0 ? 0 : this.replay.steps[index].t_ms, index);
     this._announce();
   }
 
@@ -158,7 +168,7 @@ export class ReplayPlayer extends EventTarget {
     let index = forceIndex;
     if (index === undefined) {
       index = -1;
-      while (index + 1 < steps.length && steps[index + 1].t <= this.elapsed) index++;
+      while (index + 1 < steps.length && steps[index + 1].t_ms <= this.elapsed) index++;
     }
     const changed = index !== this.index;
     this.index = index;
@@ -220,21 +230,24 @@ export class ReplayPlayer extends EventTarget {
     const dots = el('span', 'replay__dots', { 'aria-hidden': 'true' });
     dots.append(el('span'), el('span'), el('span'));
     const title = el('p', 'replay__title mono-meta');
-    title.textContent = replay.title;
+    title.textContent = this.heading ?? replay.title;
     head.append(dots, title, createRecordedLabel(replay));
 
     const list = el('ol', 'replay__steps');
     this.items = replay.steps.map((step) => {
       const item = el('li', 'replay__step');
-      item.dataset.kind = step.kind;
-      const kind = el('span', 'replay__kind mono-meta');
-      kind.textContent = step.kind;
+      item.dataset.type = step.type;
+      const time = el('span', 'replay__time');
+      time.textContent = `${(step.t_ms / 1000).toFixed(1)}s`;
+      const type = el('span', 'replay__type');
+      type.textContent = step.type;
       const label = el('span', 'replay__label');
       label.append(richText(step.label));
-      item.append(kind, label);
-      if (step.detail) {
+      item.append(time, type, label);
+      const detailText = payloadText(step.payload);
+      if (detailText) {
         const detail = el('span', 'replay__detail');
-        detail.append(richText(step.detail));
+        detail.append(richText(detailText));
         item.append(detail);
       }
       list.append(item);

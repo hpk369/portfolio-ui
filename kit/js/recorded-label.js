@@ -6,10 +6,10 @@ const DATE_FORMAT = new Intl.DateTimeFormat('en-CA', { year: 'numeric', month: '
 
 export function recordedLabelText(replay) {
   if (replay.source === 'recorded') {
-    if (!replay.recordedAt || !replay.model) {
-      throw new Error(`Replay "${replay.id}" is recorded but has no recordedAt or model.`);
+    if (!replay.recorded_at || !replay.model) {
+      throw new Error(`Replay "${replay.id}" is recorded but has no recorded_at or model.`);
     }
-    const date = DATE_FORMAT.format(new Date(`${replay.recordedAt}T00:00:00Z`));
+    const date = DATE_FORMAT.format(new Date(`${replay.recorded_at}T00:00:00Z`));
     return `Recorded run · ${date} · ${replay.model}`;
   }
   if (replay.source === 'synthetic') {

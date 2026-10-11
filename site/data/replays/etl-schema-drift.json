@@ -1,21 +1,65 @@
 {
-  "format": "replay/v0",
-  "id": "etl-schema-drift",
-  "project": "etl-triage-agent",
-  "title": "Schema drift",
+  "id": "schema-drift",
+  "title": "Schema drift in the orders pipeline",
   "source": "synthetic",
-  "recordedAt": null,
+  "recorded_at": null,
   "model": null,
-  "note": "Hand-written sample for building the player. Mock pipeline, synthetic data. Replace with a scrubbed recording of a real run.",
+  "note": "Synthetic sample written by hand for the portfolio. Mock pipeline, made-up data. Not a recording of a real run.",
   "steps": [
-    { "t": 0,     "kind": "trigger", "label": "Run finished: orders_daily (mock pipeline)", "detail": "Post-run check starts automatically." },
-    { "t": 1400,  "kind": "tool",    "label": "check_schema(orders_daily)", "detail": "Column `amount` is missing. New column `order_total` appeared." },
-    { "t": 3000,  "kind": "tool",    "label": "sample_rows(orders_daily, 50)", "detail": "`order_total` is filled on every sampled row; nothing reads it downstream." },
-    { "t": 4800,  "kind": "reason",  "label": "Upstream renamed `amount` to `order_total`", "detail": "The revenue job still reads `amount`, so tonight's report would be empty." },
-    { "t": 6600,  "kind": "verdict", "label": "Verdict: FAIL · schema drift", "detail": "Routing to the pytest regression suite instead of the end-to-end tests." },
-    { "t": 8200,  "kind": "tool",    "label": "run_pytest(suite=\"regression\")", "detail": "test_revenue_columns failed: KeyError: 'amount'." },
-    { "t": 9900,  "kind": "alert",   "label": "P1 · page on-call (data platform)", "detail": "Revenue reporting is affected; the owner of orders_daily is paged." },
-    { "t": 11400, "kind": "fix",     "label": "Suggested fix", "detail": "Map `order_total` back to `amount` in the ingest step, then re-run the revenue job." }
+    {
+      "t_ms": 0,
+      "type": "event",
+      "label": "Pipeline event received",
+      "payload": {
+        "pipeline": "orders_daily",
+        "status": "finished"
+      }
+    },
+    {
+      "t_ms": 900,
+      "type": "tool_call",
+      "label": "schema_comparator",
+      "payload": {
+        "table": "orders",
+        "compare_to": "yesterday"
+      }
+    },
+    {
+      "t_ms": 1700,
+      "type": "tool_result",
+      "label": "schema_comparator",
+      "payload": {
+        "text": "2 columns changed: amount renamed to order_total, created_at changed from timestamp to string."
+      }
+    },
+    {
+      "t_ms": 3200,
+      "type": "message",
+      "label": "Explaining what broke",
+      "payload": {
+        "text": "The upstream team changed the orders table. The revenue job still reads `amount`, so tonight's revenue report would be empty."
+      }
+    },
+    {
+      "t_ms": 4800,
+      "type": "alert",
+      "label": "P1 incident opened",
+      "payload": {
+        "text": "Severity P1: revenue reporting is affected. Paging the data-platform on-call engineer.",
+        "severity": "P1"
+      }
+    },
+    {
+      "t_ms": 6200,
+      "type": "message",
+      "label": "Suggested fix",
+      "payload": {
+        "text": "Map `order_total` back to `amount` in the ingest step, cast `created_at` to a timestamp, then re-run the revenue job."
+      }
+    }
   ],
-  "durationMs": 13000
+  "outcome": {
+    "summary": "P1 incident opened",
+    "severity": "P1"
+  }
 }
