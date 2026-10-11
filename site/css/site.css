@@ -153,18 +153,18 @@ html.has-dialog {
   gap: 0 var(--sp-4);
   margin-bottom: var(--sp-8);
   font-size: var(--fs-name);
-  font-weight: 500;
+  font-weight: 400;
   line-height: 0.9;
 }
 
-.intro__first {
-  letter-spacing: var(--tracking-name-sans);
+.intro__first,
+.intro__last {
+  color: var(--ink-cool);
+  letter-spacing: var(--tracking-name-serif);
 }
 
 .intro__last {
   margin-left: auto;
-  color: var(--ink-cool);
-  letter-spacing: var(--tracking-name-serif);
 }
 
 .intro__first,
