@@ -24,11 +24,21 @@ A running log of choices made while building the Ember portfolio. Newest at the 
 
 Not on the current site, so `ready: false` for now: LLM API Diagnostics Toolkit, Bank Policy Assistant, MCP Ticketing Server, LLM Usage and Cost Monitor.
 
-**Open:** confirm that the AI QA Agent really is the ETL Triage Agent, or name the card it should be.
+**Content source (Harsh, Oct 11):** use the projects on https://hpk369.github.io/hpk-website/ for now; Harsh will add the new projects as they're finished. Titles, descriptions, tech and links come from that page, not invented.
+
+Known gaps on the current site, to fix before launch:
+- PyRedis "View Demo" points at `video_demos/supply_chain_blk_demo.mov` (the supply chain video, and the file isn't in the repo).
+- Amazon Clone "View Demo" is `#`.
+- Until those exist, both cards use their existing GIF as a `static` demo.
 
 ## Inputs the spec references but this repo doesn't have yet
 
 - `CLAUDE.md` (portfolio rules, the replay JSON format, the project page template) and "Portfolio Project Plan — Customer Engineer" (pitches, word for word). Neither was in `hpk-website`. Until Harsh adds them, the replay format is a provisional one (documented in phase 1), and no pitch is invented: cards use the existing hpk-website descriptions only where Harsh approves.
+
+## Replays
+
+- `CLAUDE.md` isn't available yet, so the replay JSON uses a provisional format, `replay/v0`, documented in `kit/js/replay-player.js`. Swap it for the CLAUDE.md format when that arrives.
+- The phase 1 fixture `etl-schema-drift.json` is **synthetic**: hand-written, not a recording. A replay's `source` is either `recorded` or `synthetic`. Recorded replays show `Recorded run · <date> · <model>`. Synthetic ones show `Sample replay · synthetic data · not a real run`, so nothing poses as a recording. Replace it with a real scrubbed recording of the AI QA agent when one exists.
 
 ## Build decisions
 
@@ -38,6 +48,10 @@ Not on the current site, so `ready: false` for now: LLM API Diagnostics Toolkit,
 - **Fonts** come from the `@fontsource` npm packages (v5.3.0), which repackage the Google Fonts files with their OFL licence. Latin subset only: Instrument Sans 400/500/600, Instrument Serif Italic 400, JetBrains Mono 400/500. Fallbacks are metric-matched with `size-adjust` and ascent/descent overrides measured from the woff2 files.
 - **`--fs-name` below 360px is `20vw`** (64px at 320) instead of the spec's 72px minimum. At 72px, "Keshruwala." is about 307px wide and causes horizontal scroll at 320px, which §9 forbids. Wider screens use the spec value unchanged.
 - **Résumé link** points at the PDF already hosted on hpk-website until the résumé moves into this repo.
+
+## Contrast (checked Oct 11)
+
+Dark mode passes everywhere it's used: `--muted` on `--surface` 6.8:1, `--ink-2` on `--surface` 11.3:1, `--ember` on `--surface` 7.3:1, `--on-ember` on `--ember` 7.3:1, `--dim` on `--bg` 3.5:1 (large list titles only). **Light mode:** the spec's `--ember #B4501F` on `--bg #F4EFEA` is 4.47:1, just under 4.5:1 for body text. Fine for large text; revisit in the light-mode pass.
 
 ## Out of scope for v1 (don't build)
 
