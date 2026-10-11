@@ -58,6 +58,10 @@ Known gaps on the current site, to fix before launch:
 - **`--fs-name` below 360px is `20vw`** (64px at 320) instead of the spec's 72px minimum. At 72px, "Keshruwala." is about 307px wide and causes horizontal scroll at 320px, which §9 forbids. Wider screens use the spec value unchanged.
 - **Résumé link** points at the PDF already hosted on hpk-website until the résumé moves into this repo.
 
+## Design changes from Harsh
+
+- **Oct 11: whole name in Instrument Serif Italic.** Harsh asked for the first name to use the surname's font, so "Harsh Keshruwala." is set entirely in the serif italic (`--ink-cool`, `-0.02em` tracking). This replaces the spec's sans/serif split (§2, §5 F).
+
 ## Contrast (checked Oct 11)
 
 Dark mode passes everywhere it's used: `--muted` on `--surface` 6.8:1, `--ink-2` on `--surface` 11.3:1, `--ember` on `--surface` 7.3:1, `--on-ember` on `--ember` 7.3:1, `--dim` on `--bg` 3.5:1 (large list titles only). **Light mode:** the spec's `--ember #B4501F` on `--bg #F4EFEA` is 4.47:1, just under 4.5:1 for body text. Fine for large text; revisit in the light-mode pass.
