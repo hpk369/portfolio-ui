@@ -1,0 +1,453 @@
+/* Shared components (spec §8). Load after tokens.css and base.css. */
+
+/* ---------- Buttons and pills: 44px minimum targets ---------- */
+
+.btn,
+.pill,
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  min-height: var(--target-min);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: var(--fs-ui);
+  font-weight: 500;
+  line-height: 1;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
+}
+
+.btn {
+  padding: 0 var(--sp-5);
+}
+
+.pill {
+  min-width: var(--target-min);
+  padding: 0 var(--sp-4);
+}
+
+.btn:hover,
+.pill:hover,
+.icon-btn:hover {
+  border-color: var(--ink-2);
+}
+
+.pill[aria-pressed="true"] {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--bg);
+}
+
+.btn--ember,
+.pill--ember {
+  background: var(--ember);
+  border-color: var(--ember);
+  color: var(--on-ember);
+}
+
+.btn--ember:hover,
+.pill--ember:hover {
+  background: color-mix(in srgb, var(--ember) 88%, var(--ink));
+  border-color: transparent;
+}
+
+/* Visually small, but the hit area stays 44px tall via min-height. */
+.pill--small {
+  padding: 0 var(--sp-3);
+  font-family: var(--font-mono);
+  font-size: var(--fs-meta);
+  letter-spacing: var(--tracking-meta);
+}
+
+.icon-btn {
+  width: var(--target-min);
+  height: var(--target-min);
+  padding: 0;
+  flex: none;
+}
+
+.icon-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+.icon-btn--light {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--bg);
+}
+
+/* ---------- RecordedLabel ---------- */
+
+.recorded-label {
+  color: var(--muted);
+}
+
+.recorded-label::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-right: var(--sp-2);
+  border-radius: 50%;
+  background: var(--muted);
+  vertical-align: 1px;
+}
+
+/* ---------- ReplayPlayer ---------- */
+
+.replay {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  height: 100%;
+  border: 1px solid var(--line);
+  border-radius: var(--r-window-panel);
+  background: var(--surface);
+  color: var(--ink-2);
+  overflow: hidden;
+  container: replay / inline-size;
+}
+
+.replay:focus-visible {
+  outline-offset: 2px;
+}
+
+.replay__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2) var(--sp-4);
+  padding: var(--sp-3) var(--sp-4);
+  border-bottom: 1px solid var(--line);
+}
+
+.replay__dots {
+  display: inline-flex;
+  gap: 6px;
+}
+
+.replay__dots span {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--line-strong);
+}
+
+.replay__title {
+  color: var(--ink);
+}
+
+.replay__head .recorded-label {
+  margin-left: auto;
+}
+
+.replay__steps {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--sp-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.5;
+  scroll-behavior: smooth;
+}
+
+.replay__step {
+  display: grid;
+  grid-template-columns: 4.5ch 11ch minmax(0, 1fr);
+  column-gap: var(--sp-3);
+  padding: 6px 0 6px var(--sp-3);
+  border-left: 2px solid var(--line);
+  animation: replay-step-in var(--dur-med) var(--ease-out) both;
+}
+
+.replay__step[hidden] {
+  display: none;
+}
+
+.replay__time,
+.replay__type {
+  color: var(--muted);
+}
+
+.replay__time {
+  font-variant-numeric: tabular-nums;
+}
+
+.replay__label {
+  color: var(--ink);
+}
+
+.replay__detail {
+  grid-column: 3;
+  color: var(--ink-2);
+}
+
+.replay__step code {
+  font-family: inherit;
+  color: var(--ink);
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 0 4px;
+}
+
+.replay__step.is-active {
+  border-left-color: var(--ember);
+}
+
+.replay__step.is-active .replay__type {
+  color: var(--ember);
+}
+
+.replay__step[data-type="alert"] .replay__label {
+  color: var(--ember);
+}
+
+/* Narrow windows: the type sits above the label. */
+@container replay (max-width: 520px) {
+  .replay__step {
+    grid-template-columns: 4.5ch minmax(0, 1fr);
+  }
+  .replay__type,
+  .replay__label,
+  .replay__detail {
+    grid-column: 2;
+  }
+  .replay__time {
+    grid-row: span 2;
+  }
+}
+
+@keyframes replay-step-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+.replay__controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+  border-top: 1px solid var(--line);
+}
+
+.replay__play {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--bg);
+}
+
+.replay__play:hover {
+  background: var(--ink-2);
+}
+
+.replay__progress {
+  flex: 1 1 120px;
+  height: 2px;
+  background: var(--line);
+  overflow: hidden;
+}
+
+.replay__bar {
+  display: block;
+  height: 100%;
+  background: var(--ember);
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+.replay__count {
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.replay__speed {
+  display: inline-flex;
+  gap: var(--sp-1);
+}
+
+/* ---------- ProjectCard previews (spec §6) ---------- */
+/* --card-bg and --card-label come from projects.json; tints derive from them. */
+
+.pcard {
+  --card-tint: color-mix(in srgb, var(--card-label) 30%, var(--card-bg));
+  --card-soft: color-mix(in srgb, var(--card-label) 65%, var(--card-bg));
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  width: 300px;
+  height: 196px;
+  padding: var(--sp-4);
+  border: 1px solid color-mix(in srgb, var(--card-label) 18%, transparent);
+  border-radius: var(--r-card);
+  background: var(--card-bg);
+  color: var(--card-label);
+  overflow: hidden;
+}
+
+.pcard__name {
+  font-family: var(--font-mono);
+  font-size: var(--fs-meta);
+  letter-spacing: var(--tracking-meta);
+  color: var(--card-label);
+}
+
+.pcard__body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.pcard__mono {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.pcard__mono--ink { color: var(--ink); }
+.pcard__mono--tint { color: var(--card-soft); }
+.pcard__mono--ember { color: var(--ember); }
+.pcard__end { align-self: flex-end; }
+
+.pcard__chip {
+  align-self: flex-start;
+  margin-top: auto;
+  padding: 4px 9px;
+  border: 1px solid var(--card-tint);
+  border-radius: var(--r-pill);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--card-label);
+}
+
+.pcard__chip--ember {
+  border: 0;
+  border-radius: 6px;
+  padding: 6px 10px;
+  background: var(--ember);
+  color: var(--on-ember);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.pcard__cart { align-self: flex-end; }
+
+.pcard__bars {
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+.pcard__bars span {
+  flex: 1;
+  background: var(--card-tint);
+}
+
+.pcard__bars .is-flagged { background: var(--ember); }
+
+.pcard__big {
+  margin-top: auto;
+  font-size: 76px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: var(--ember);
+}
+
+.pcard__small {
+  font-size: 12px;
+  color: var(--card-soft);
+}
+
+.pcard__bubble {
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--card-tint);
+  font-size: 13px;
+  color: var(--ink);
+}
+
+.pcard__spark {
+  margin-top: auto;
+  width: 100%;
+  height: 60px;
+  overflow: visible;
+}
+
+.pcard__spark path {
+  fill: none;
+  stroke: var(--ember);
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+}
+
+.pcard__posters,
+.pcard__store {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.pcard__store { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+.pcard__posters span,
+.pcard__store span {
+  border-radius: 4px;
+  background: var(--card-tint);
+}
+
+.pcard__posters span:nth-child(2) { background: color-mix(in srgb, var(--card-tint) 70%, #6A4A8A); }
+.pcard__posters span:nth-child(3) { background: color-mix(in srgb, var(--card-tint) 70%, #8A5A44); }
+.pcard__posters span:nth-child(4) { background: color-mix(in srgb, var(--card-tint) 70%, #3F6A60); }
+
+.pcard__chain {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+}
+
+.pcard__block {
+  flex: none;
+  padding: 10px 8px;
+  border: 1px solid var(--card-soft);
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+.pcard__block.is-broken {
+  border-color: var(--ember);
+  color: var(--ember);
+}
+
+.pcard__link {
+  flex: 1;
+  height: 2px;
+  background: var(--card-soft);
+}
+
+.pcard__link.is-broken {
+  background: repeating-linear-gradient(90deg, var(--ember) 0 4px, transparent 4px 8px);
+}

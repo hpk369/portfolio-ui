@@ -1,0 +1,65 @@
+{
+  "id": "schema-drift",
+  "title": "Schema drift in the orders pipeline",
+  "source": "synthetic",
+  "recorded_at": null,
+  "model": null,
+  "note": "Synthetic sample written by hand for the portfolio. Mock pipeline, made-up data. Not a recording of a real run.",
+  "steps": [
+    {
+      "t_ms": 0,
+      "type": "event",
+      "label": "Pipeline event received",
+      "payload": {
+        "pipeline": "orders_daily",
+        "status": "finished"
+      }
+    },
+    {
+      "t_ms": 900,
+      "type": "tool_call",
+      "label": "schema_comparator",
+      "payload": {
+        "table": "orders",
+        "compare_to": "yesterday"
+      }
+    },
+    {
+      "t_ms": 1700,
+      "type": "tool_result",
+      "label": "schema_comparator",
+      "payload": {
+        "text": "2 columns changed: amount renamed to order_total, created_at changed from timestamp to string."
+      }
+    },
+    {
+      "t_ms": 3200,
+      "type": "message",
+      "label": "Explaining what broke",
+      "payload": {
+        "text": "The upstream team changed the orders table. The revenue job still reads `amount`, so tonight's revenue report would be empty."
+      }
+    },
+    {
+      "t_ms": 4800,
+      "type": "alert",
+      "label": "P1 incident opened",
+      "payload": {
+        "text": "Severity P1: revenue reporting is affected. Paging the data-platform on-call engineer.",
+        "severity": "P1"
+      }
+    },
+    {
+      "t_ms": 6200,
+      "type": "message",
+      "label": "Suggested fix",
+      "payload": {
+        "text": "Map `order_total` back to `amount` in the ingest step, cast `created_at` to a timestamp, then re-run the revenue job."
+      }
+    }
+  ],
+  "outcome": {
+    "summary": "P1 incident opened",
+    "severity": "P1"
+  }
+}

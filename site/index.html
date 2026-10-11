@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Harsh Keshruwala · Customer Engineer</title>
+  <meta name="description" content="Customer engineer, fixing what breaks, for teams running AI and data platforms. Working demos you can try in under a minute.">
+  <meta name="color-scheme" content="dark light">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Harsh Keshruwala · Customer Engineer">
+  <meta property="og:description" content="Customer engineer, fixing what breaks, for teams running AI and data platforms.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230B0A09'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-style='italic' font-size='17' text-anchor='middle' fill='%23FF7A45'%3Ehk.%3C/text%3E%3C/svg%3E">
+
+  <script>
+    // Before first paint: play the intro sequence once per session, never under reduced motion.
+    (function () {
+      var root = document.documentElement;
+      root.classList.add('js');
+      if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      try {
+        if (sessionStorage.getItem('hk-intro-seen')) return;
+        sessionStorage.setItem('hk-intro-seen', '1');
+      } catch (e) { /* storage blocked: still play it */ }
+      root.classList.add('intro-anim');
+    })();
+  </script>
+
+  <link rel="preload" href="../kit/fonts/instrument-sans-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="../kit/fonts/instrument-serif-latin-400-italic.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="../kit/css/tokens.css">
+  <link rel="stylesheet" href="../kit/css/base.css">
+  <link rel="stylesheet" href="../kit/css/components.css">
+  <link rel="stylesheet" href="css/site.css">
+
+  <script src="../kit/vendor/gsap/gsap.min.js" defer></script>
+  <script src="../kit/vendor/gsap/ScrollTrigger.min.js" defer></script>
+  <script src="../kit/vendor/lenis/lenis.min.js" defer></script>
+  <script type="module" src="js/main.js"></script>
+</head>
+<body>
+  <a class="skip-link pill" href="#demos">Skip to demos</a>
+
+  <nav class="rail" aria-label="Sections">
+    <a href="#intro" aria-current="true">Intro</a>
+    <a href="#demos">Demos</a>
+    <a href="#notes">Notes</a>
+    <a href="#contact">Contact</a>
+  </nav>
+  <span class="scroll-count mono-meta" aria-hidden="true">(00)</span>
+
+  <main>
+    <!-- F · Intro, G · Reveal -->
+    <section id="intro" class="intro" aria-label="Intro">
+      <div class="glow" aria-hidden="true">
+        <span class="glow__blob glow__blob--a"></span>
+        <span class="glow__blob glow__blob--b"></span>
+        <span class="glow__blob glow__blob--c"></span>
+      </div>
+
+      <div class="intro__screen">
+        <p class="intro__tagline">Customer engineer, <em class="serif-italic">fixing what breaks</em>,<br>for teams running AI and data platforms.</p>
+        <h1 class="intro__name">
+          <span class="sr-only">Harsh Keshruwala</span>
+          <span class="intro__first" aria-hidden="true">Harsh</span>
+          <span class="intro__last serif-italic" aria-hidden="true">Keshruwala.</span>
+        </h1>
+        <nav class="intro__bar mono-meta" aria-label="Quick links">
+          <span class="intro__status">→ Open to customer engineer roles · Canada</span>
+          <span class="intro__links">
+            <a href="https://github.com/hpk369">GitHub</a><span aria-hidden="true">/</span>
+            <a href="https://www.linkedin.com/in/hpk369">LinkedIn</a><span aria-hidden="true">/</span>
+            <a href="https://hpk369.github.io/hpk-website/docs/resume.pdf">Résumé</a>
+          </span>
+          <span class="intro__links">
+            <a class="intro__demos" href="#demos">Demos ↓</a>
+            <a href="#notes">Notes</a>
+            <a href="#contact">Contact</a>
+          </span>
+        </nav>
+      </div>
+
+      <div class="reveal">
+        <figure class="reveal__window" aria-label="Try it: ETL Triage Agent, schema drift">
+          <div class="reveal__player" id="reveal-player">
+            <a class="reveal__fallback" href="projects/etl-triage-agent/">Open the ETL Triage Agent demo →</a>
+          </div>
+        </figure>
+        <p class="reveal__line serif-italic">Basically, I keep AI working.</p>
+      </div>
+    </section>
+
+    <!-- H · Spiral, I · List -->
+    <section id="demos" class="projects" aria-labelledby="demos-title" data-view="list">
+      <header class="projects__header">
+        <a class="projects__mono serif-italic" href="#intro" aria-label="Back to top">hk.</a>
+        <div class="view-toggle" role="group" aria-label="Projects view">
+          <button type="button" data-view="spiral" aria-pressed="false">spiral</button>
+          <span class="view-toggle__dot" aria-hidden="true"></span>
+          <button type="button" data-view="list" aria-pressed="true">list</button>
+        </div>
+        <button type="button" class="pill pill--light" id="menu-open" aria-haspopup="dialog">menu</button>
+      </header>
+      <h2 id="demos-title" class="sr-only">Demos</h2>
+
+      <div class="projects__list-view">
+        <ol class="plist">
+<!-- projects:list:start (generated by scripts/build_project_pages.py) -->
+          <li class="plist__item"><a class="plist__link" href="projects/etl-triage-agent/" data-slug="etl-triage-agent"><span class="plist__title">ETL Triage Agent</span><sup class="plist__proves mono-meta">Debugging and escalation</sup></a></li>
+          <li class="plist__item"><a class="plist__link" href="projects/banking-transaction-platform/" data-slug="banking-transaction-platform"><span class="plist__title">Banking Transaction Platform</span></a></li>
+          <li class="plist__item"><a class="plist__link" href="projects/llm-api-diagnostics/" data-slug="llm-api-diagnostics"><span class="plist__title">LLM API Diagnostics Toolkit</span></a></li>
+          <li class="plist__item"><a class="plist__link" href="projects/bank-policy-assistant/" data-slug="bank-policy-assistant"><span class="plist__title">Bank Policy Assistant</span><sup class="plist__proves mono-meta">Proof of concept</sup></a></li>
+          <li class="plist__item"><a class="plist__link" href="projects/mcp-ticketing-server/" data-slug="mcp-ticketing-server"><span class="plist__title">MCP Ticketing Server</span></a></li>
+          <li class="plist__item"><a class="plist__link" href="projects/llm-usage-cost-monitor/" data-slug="llm-usage-cost-monitor"><span class="plist__title">LLM Usage and Cost Monitor</span></a></li>
+          <li class="plist__item"><a class="plist__link" href="projects/cinematch/" data-slug="cinematch"><span class="plist__title">CineMatch</span></a></li>
+          <li class="plist__item"><a class="plist__link" href="projects/supply-chain-audit-log/" data-slug="supply-chain-audit-log"><span class="plist__title">Supply Chain Audit Log</span></a></li>
+          <li class="plist__item"><a class="plist__link" href="projects/pyredis/" data-slug="pyredis"><span class="plist__title">PyRedis</span></a></li>
+          <li class="plist__item"><a class="plist__link" href="projects/ecommerce-front-end/" data-slug="ecommerce-front-end"><span class="plist__title">E-commerce Front End</span></a></li>
+<!-- projects:list:end -->
+        </ol>
+        <p class="projects__hint mono-meta">Featured first · Hover to preview · Enter to open</p>
+        <div class="list-preview" aria-hidden="true"></div>
+      </div>
+
+      <div class="projects__spiral-view" hidden>
+        <div class="spiral" tabindex="0" aria-roledescription="carousel" aria-label="Projects spiral. Arrow keys step through projects.">
+          <div class="spiral__stage" aria-hidden="true"></div>
+        </div>
+        <a class="spiral-pill" href="projects/etl-triage-agent/">
+          <span class="spiral-pill__index mono-meta" aria-hidden="true">01</span>
+          <span class="spiral-pill__title">ETL Triage Agent</span>
+          <span class="spiral-pill__cta">Try it</span>
+        </a>
+        <p class="spiral__hint mono-meta"><span class="spiral__total">10</span> projects · Scroll or drag to spin</p>
+        <p class="spiral__count mono-meta" aria-hidden="true">01 / 10</p>
+        <p class="sr-only" aria-live="polite" id="spiral-status"></p>
+      </div>
+    </section>
+
+    <section id="notes" class="notes" aria-labelledby="notes-title">
+      <h2 id="notes-title" class="section-title">Field <em class="serif-italic">notes</em></h2>
+      <ol class="notes__list">
+        <li class="note">
+          <span class="mono-meta note__index">Note 01</span>
+          <h3 class="note__title">Rate limits in production LLM apps</h3>
+          <p class="note__status mono-meta">Coming soon</p>
+        </li>
+        <li class="note">
+          <span class="mono-meta note__index">Note 02</span>
+          <h3 class="note__title">What a good escalation looks like</h3>
+          <p class="note__status mono-meta">Coming soon</p>
+        </li>
+        <li class="note">
+          <span class="mono-meta note__index">Note 03</span>
+          <h3 class="note__title">Shipping a RAG proof of concept a customer can trust</h3>
+          <p class="note__status mono-meta">Coming soon</p>
+        </li>
+      </ol>
+    </section>
+
+    <section id="contact" class="contact" aria-labelledby="contact-title">
+      <h2 id="contact-title" class="section-title">Get in <em class="serif-italic">touch</em></h2>
+      <p class="contact__lead">Open to customer engineer roles in Canada.</p>
+      <a class="contact__email" href="mailto:keshruwalaharsh@gmail.com">keshruwalaharsh@gmail.com</a>
+      <ul class="contact__links">
+        <li><a class="pill" href="https://github.com/hpk369">GitHub</a></li>
+        <li><a class="pill" href="https://www.linkedin.com/in/hpk369">LinkedIn</a></li>
+        <li><a class="pill" href="https://hpk369.github.io/hpk-website/docs/resume.pdf">Résumé</a></li>
+      </ul>
+      <p class="contact__foot mono-meta">© 2026 Harsh Keshruwala</p>
+    </section>
+  </main>
+
+  <dialog class="panel" id="panel" aria-labelledby="panel-title"></dialog>
+
+  <dialog class="menu" id="menu" aria-label="Menu">
+    <button type="button" class="icon-btn icon-btn--light menu__close" aria-label="Close menu">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+    </button>
+    <nav aria-label="Menu">
+      <ul class="menu__list">
+        <li><a href="#intro">Intro</a></li>
+        <li><a href="#demos">Demos</a></li>
+        <li><a href="#notes">Notes</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+      <ul class="menu__ext mono-meta">
+        <li><a href="https://github.com/hpk369">GitHub</a></li>
+        <li><a href="https://www.linkedin.com/in/hpk369">LinkedIn</a></li>
+        <li><a href="https://hpk369.github.io/hpk-website/docs/resume.pdf">Résumé</a></li>
+      </ul>
+    </nav>
+  </dialog>
+</body>
+</html>

@@ -1,0 +1,119 @@
+/* Ember design tokens (spec §2). Components use these, never raw hex values. */
+
+:root {
+  color-scheme: dark;
+
+  /* Colour (dark-first) */
+  --bg: #0B0A09;
+  --bg-deep: #050404;
+  --surface: #14110F;
+  --surface-2: #16120F;
+  --line: #2E2621;
+  --line-strong: #3A2E27;
+  --ink: #EDE8E3;
+  --ink-cool: #E6EEEA;
+  --ink-2: #CFC7C0;
+  --muted: #A39A92;
+  --dim: #6E655E;          /* only on the 46px list titles */
+  --ember: #FF7A45;
+  --on-ember: #1A0F08;
+  --glow-1: #FF6A2B;
+  --glow-2: #D8321A;
+  --glow-3: #5A120C;
+  --glow-opacity: 1;
+  --grid-line: #FFFFFF08;
+
+  /* Type families (metric-matched fallbacks are declared in base.css) */
+  --font-sans: "Instrument Sans", "Instrument Sans Fallback", system-ui, sans-serif;
+  --font-serif: "Instrument Serif", "Instrument Serif Fallback", Georgia, serif;
+  --font-mono: "JetBrains Mono", "JetBrains Mono Fallback", ui-monospace, monospace;
+
+  /* Type scale */
+  --fs-name: clamp(72px, 13vw, 176px);
+  --fs-reveal: clamp(28px, 3.4vw, 44px);
+  --fs-list: clamp(30px, 3.6vw, 46px);
+  --fs-h2: clamp(36px, 4vw, 52px);
+  --fs-body: 17px;
+  --fs-ui: 14px;
+  --fs-meta: 11px;
+  --tracking-meta: 0.04em;
+  --tracking-name-sans: -0.045em;
+  --tracking-name-serif: -0.02em;
+  --tracking-list: -0.025em;
+
+  /* Space */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 24px;
+  --sp-6: 28px;
+  --sp-7: 40px;
+  --sp-8: 48px;
+  --sp-9: 64px;
+  --sp-10: 96px;
+  --gutter: 40px;
+
+  /* Radius */
+  --r-pill: 999px;
+  --r-card: 12px;
+  --r-card-active: 14px;
+  --r-panel: 22px;
+  --r-window-reveal: 6px;
+  --r-window-panel: 14px;
+
+  /* Layers */
+  --z-glow: 0;
+  --z-content: 10;
+  --z-rail: 20;
+  --z-header: 30;
+  --z-panel: 100;
+  --z-panel-close: 110;
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-inout: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-fast: 180ms;
+  --dur-med: 420ms;
+  --dur-slow: 700ms;
+
+  /* Targets */
+  --target-min: 44px;
+}
+
+@media (max-width: 767px) {
+  :root {
+    --fs-body: 16px;
+    --gutter: 16px;
+  }
+}
+
+/* Below 360px the spec's 72px minimum overflows ("Keshruwala." is ~4.26em wide).
+   20vw keeps the surname inside a 320px screen. See docs/decisions.md. */
+@media (max-width: 359px) {
+  :root {
+    --fs-name: 20vw;
+  }
+}
+
+/* Light mode: honoured but unpolished until Harsh asks for a pass (spec §2). */
+@media (prefers-color-scheme: light) {
+  :root {
+    color-scheme: light;
+    --bg: #F4EFEA;
+    --bg-deep: #E6DED6;
+    --surface: #FBF8F5;
+    --surface-2: #FFFFFF;
+    --line: #DDD2C8;
+    --line-strong: #C9BBAE;
+    --ink: #1B1411;
+    --ink-cool: #1A1716;
+    --ink-2: #3A2F29;
+    --muted: #6B5E55;
+    --dim: #8A7C72;
+    --ember: #B4501F;
+    --on-ember: #FFF6F0;
+    --glow-opacity: 0.35;
+    --grid-line: #00000008;
+  }
+}

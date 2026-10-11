@@ -1,0 +1,286 @@
+[
+  {
+    "slug": "etl-triage-agent",
+    "title": "ETL Triage Agent",
+    "titleItalicWord": "Agent",
+    "tier": "featured",
+    "ready": true,
+    "placeholder": false,
+    "pitch": "When a data pipeline breaks, this agent works out what broke and how serious it is, then alerts the right person with a suggested fix.",
+    "proves": "Debugging and escalation",
+    "demoMode": "replay",
+    "demoLabel": "Sample replay · synthetic data",
+    "scenarios": [
+      {
+        "id": "clean-run",
+        "label": "Clean run",
+        "replay": "replays/etl-clean-run.json"
+      },
+      {
+        "id": "schema-drift",
+        "label": "Schema drift",
+        "replay": "replays/etl-schema-drift.json",
+        "default": true
+      },
+      {
+        "id": "kafka-lag",
+        "label": "Kafka lag",
+        "replay": "replays/etl-kafka-lag.json"
+      }
+    ],
+    "whatHappened": {
+      "clean-run": [
+        "The pipeline finished and the agent checked it.",
+        "The table looked the same as yesterday and the row count was normal.",
+        "Nothing was wrong, so no one was paged."
+      ],
+      "schema-drift": [
+        "An upstream table changed shape.",
+        "The agent compared it with yesterday's and saw two columns had changed.",
+        "It opened a P1 for the on-call engineer with a suggested fix."
+      ],
+      "kafka-lag": [
+        "Part of the orders stream started falling behind.",
+        "The agent traced it to one consumer that kept restarting.",
+        "Data was late but not lost, so it opened a P2 ticket instead of paging anyone."
+      ]
+    },
+    "links": {
+      "source": "https://github.com/hpk369/ai-qa-agent",
+      "video": null,
+      "howItWorks": "https://github.com/hpk369/ai-qa-agent#readme",
+      "existingDemo": "https://hpk369.github.io/ai-qa-agent/"
+    },
+    "card": {
+      "bg": "#16120F",
+      "label": "#FF7A45",
+      "preview": "steps"
+    }
+  },
+  {
+    "slug": "banking-transaction-platform",
+    "title": "Banking Transaction Platform",
+    "titleItalicWord": "Platform",
+    "tier": "featured",
+    "ready": true,
+    "placeholder": true,
+    "pitch": "A bank's payment system that flags suspicious transactions as they happen, and keeps running when something breaks.",
+    "proves": null,
+    "demoMode": "placeholder",
+    "demoLabel": null,
+    "scenarios": [],
+    "whatHappened": {},
+    "links": {
+      "source": "https://github.com/hpk369/bank-platform",
+      "video": null,
+      "howItWorks": null,
+      "existingDemo": "https://hpk369.github.io/bank-platform/"
+    },
+    "card": {
+      "bg": "#13202B",
+      "label": "#9FC6E0",
+      "preview": "bars"
+    }
+  },
+  {
+    "slug": "llm-api-diagnostics",
+    "title": "LLM API Diagnostics Toolkit",
+    "titleItalicWord": "Toolkit",
+    "tier": "featured",
+    "ready": true,
+    "placeholder": true,
+    "pitch": "When a company's AI feature stops working, this tool explains why in plain English and how to fix it.",
+    "proves": null,
+    "demoMode": "placeholder",
+    "demoLabel": null,
+    "scenarios": [],
+    "whatHappened": {},
+    "links": {
+      "source": null,
+      "video": null,
+      "howItWorks": null,
+      "existingDemo": null
+    },
+    "card": {
+      "bg": "#2A1712",
+      "label": "#F2B79C",
+      "preview": "code"
+    }
+  },
+  {
+    "slug": "bank-policy-assistant",
+    "title": "Bank Policy Assistant",
+    "titleItalicWord": "Assistant",
+    "tier": "featured",
+    "ready": true,
+    "placeholder": true,
+    "pitch": "An AI assistant that answers staff questions about a bank's policies, shows which document each answer came from, and says \"I don't know\" instead of guessing.",
+    "proves": "Proof of concept",
+    "demoMode": "placeholder",
+    "demoLabel": null,
+    "scenarios": [],
+    "whatHappened": {},
+    "links": {
+      "source": null,
+      "video": null,
+      "howItWorks": null,
+      "existingDemo": null
+    },
+    "card": {
+      "bg": "#10241D",
+      "label": "#9FE0C4",
+      "preview": "chat"
+    }
+  },
+  {
+    "slug": "mcp-ticketing-server",
+    "title": "MCP Ticketing Server",
+    "titleItalicWord": "Server",
+    "tier": "supporting",
+    "ready": true,
+    "placeholder": true,
+    "pitch": "Lets an AI assistant safely look up and update support tickets in plain English.",
+    "proves": null,
+    "demoMode": "placeholder",
+    "demoLabel": null,
+    "scenarios": [],
+    "whatHappened": {},
+    "links": {
+      "source": null,
+      "video": null,
+      "howItWorks": null,
+      "existingDemo": null
+    },
+    "card": {
+      "bg": "#1E1A2C",
+      "label": "#B9AEE0",
+      "preview": "tools"
+    }
+  },
+  {
+    "slug": "llm-usage-cost-monitor",
+    "title": "LLM Usage and Cost Monitor",
+    "titleItalicWord": "Monitor",
+    "tier": "supporting",
+    "ready": true,
+    "placeholder": true,
+    "pitch": "Shows a company where its AI spending is going and warns about a surprise bill before the invoice arrives.",
+    "proves": null,
+    "demoMode": "placeholder",
+    "demoLabel": null,
+    "scenarios": [],
+    "whatHappened": {},
+    "links": {
+      "source": null,
+      "video": null,
+      "howItWorks": null,
+      "existingDemo": null
+    },
+    "card": {
+      "bg": "#221C10",
+      "label": "#E8D29A",
+      "preview": "line"
+    }
+  },
+  {
+    "slug": "cinematch",
+    "title": "CineMatch",
+    "titleItalicWord": null,
+    "tier": "supporting",
+    "ready": true,
+    "placeholder": true,
+    "pitch": null,
+    "proves": null,
+    "demoMode": "embed",
+    "demoLabel": "Live demo (static site, no backend)",
+    "embed": "https://hpk369.github.io/CineMatch/",
+    "scenarios": [],
+    "whatHappened": {},
+    "links": {
+      "source": "https://github.com/hpk369/CineMatch",
+      "video": null,
+      "howItWorks": null,
+      "existingDemo": "https://hpk369.github.io/CineMatch/"
+    },
+    "card": {
+      "bg": "#1B2230",
+      "label": "#9FB3D9",
+      "preview": "posters"
+    }
+  },
+  {
+    "slug": "supply-chain-audit-log",
+    "title": "Supply Chain Audit Log",
+    "titleItalicWord": "Log",
+    "tier": "more",
+    "ready": true,
+    "placeholder": true,
+    "pitch": null,
+    "proves": null,
+    "demoMode": "placeholder",
+    "demoLabel": null,
+    "scenarios": [],
+    "whatHappened": {},
+    "links": {
+      "source": "https://github.com/hpk369/supply_chain_blockchain",
+      "video": "https://youtu.be/tbFtQCLHiVI",
+      "howItWorks": null,
+      "existingDemo": null
+    },
+    "card": {
+      "bg": "#1F1622",
+      "label": "#D7B9E0",
+      "preview": "chain"
+    }
+  },
+  {
+    "slug": "pyredis",
+    "title": "PyRedis",
+    "titleItalicWord": null,
+    "tier": "more",
+    "ready": true,
+    "placeholder": true,
+    "pitch": null,
+    "proves": null,
+    "demoMode": "placeholder",
+    "demoLabel": null,
+    "scenarios": [],
+    "whatHappened": {},
+    "links": {
+      "source": "https://github.com/hpk369/pyredis",
+      "video": null,
+      "howItWorks": null,
+      "existingDemo": null
+    },
+    "card": {
+      "bg": "#1A1A1A",
+      "label": "#BDBDBD",
+      "preview": "terminal"
+    }
+  },
+  {
+    "slug": "ecommerce-front-end",
+    "title": "E-commerce Front End",
+    "titleItalicWord": "End",
+    "tier": "more",
+    "ready": true,
+    "placeholder": true,
+    "pitch": null,
+    "proves": null,
+    "demoMode": "placeholder",
+    "demoLabel": null,
+    "scenarios": [],
+    "whatHappened": {},
+    "links": {
+      "source": "https://github.com/hpk369/javascript-amazon-project",
+      "video": null,
+      "howItWorks": null,
+      "existingDemo": null
+    },
+    "card": {
+      "bg": "#1A1712",
+      "label": "#E0CFA9",
+      "preview": "store"
+    }
+  }
+]

@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ReplayPlayer · kit example</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230B0A09'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-style='italic' font-size='17' text-anchor='middle' fill='%23FF7A45'%3Ehk.%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    body { padding: var(--sp-7) var(--gutter); }
+    main { max-width: 760px; margin: 0 auto; display: grid; gap: var(--sp-5); }
+    h1 { font-size: var(--fs-h2); font-weight: 500; letter-spacing: -0.02em; }
+    .window { height: 470px; }
+    .log { color: var(--muted); }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Replay<span class="serif-italic">Player</span></h1>
+    <p>Standalone check for the kit player. Pass <code>?src=</code> to load another replay.</p>
+    <div class="window" id="player"></div>
+    <p class="log mono-meta" id="log" aria-hidden="true">waiting for first step</p>
+  </main>
+  <script type="module">
+    import { ReplayPlayer } from '../js/replay-player.js';
+    const src = new URLSearchParams(location.search).get('src') ?? '../../site/data/replays/etl-schema-drift.json';
+    const player = new ReplayPlayer(document.getElementById('player'), { autoplay: true });
+    player.addEventListener('step', (e) => {
+      document.getElementById('log').textContent = `step event · ${e.detail.index + 1} · ${e.detail.step.kind}`;
+    });
+    player.load(src).catch((err) => {
+      document.getElementById('player').textContent = `Could not load the replay: ${err.message}`;
+    });
+    window.player = player;
+  </script>
+</body>
+</html>
