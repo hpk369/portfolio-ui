@@ -22,6 +22,7 @@ Two readers, in this order:
 - **Label demos honestly.** Recorded runs are labelled "Recorded run · <date> · <model>". Simulations say they are simulations. Never present a replay as live.
 - **No impersonation of real brands.** Fictional company and bank names only, and check that they don't match a real institution. The e-commerce project must not use a real retailer's name or logo.
 - **Don't push, deploy, publish, or change repo settings without Harsh confirming.** Commits on a feature branch are fine. Ask before `git push`, enabling GitHub Pages, creating Hugging Face Spaces, or anything that costs money.
+  - **Exception, `hpk369/portfolio-ui` only (Harsh, Oct 12, 2026):** once a change is committed and checked, push it to the feature branch and to `main` without asking, as long as `main` fast-forwards (no force-push, no history rewrite). This does not cover other repos, enabling GitHub Pages, deploys, or repo settings; still ask for those.
 - **Back every performance claim.** Any number on the site (throughput, latency, accuracy) needs a reproducible benchmark or eval in the repo. If it can't be reproduced, soften the wording and tell Harsh.
 
 ## Repos
