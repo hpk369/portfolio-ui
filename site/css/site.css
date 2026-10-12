@@ -828,7 +828,7 @@ html.js[data-motion="full"] [data-reveal].is-in {
   top: 0;
   height: 100svh;
   place-items: center;
-  perspective: 1000px;
+  perspective: 1400px;
   overflow: hidden;
 }
 
@@ -870,7 +870,7 @@ html.js[data-motion="full"] [data-reveal].is-in {
   position: absolute;
   left: 50%;
   top: 50%;
-  --card-w: clamp(190px, 20vw, 320px);
+  --card-w: clamp(150px, 13vw, 230px);
   width: var(--card-w);
   margin: calc(var(--card-w) * -0.375) 0 0 calc(var(--card-w) * -0.5);
   will-change: transform, opacity;

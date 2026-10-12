@@ -1,18 +1,16 @@
-// Gallery. Wide screens with motion: the section pins and the project images fly
-// toward the viewer in 3D while the line in the middle reveals word by word.
-// Phones, reduced motion and no-JS get a plain grid; every image keeps its demo link.
+// Gallery. Wide screens with motion: the section pins and the project images ride
+// a vertical spiral around the line in the middle. Scrolling turns the spiral and
+// lifts it from the bottom of the screen to the top, while the line reveals word by
+// word. Phones, reduced motion and no-JS get a plain grid; every image keeps its
+// demo link.
 
 import { reducedMotion } from './env.js';
 import { absolutizeMedia, upgradeTiles, wirePanelLinks } from './showcase.js';
 
-// Where each card sits, as a fraction of the viewport from its centre.
-const SLOTS = [
-  [-0.3, -0.28], [0.32, -0.3], [-0.38, 0.2], [0.36, 0.14], [-0.04, -0.36],
-  [0.1, 0.36], [-0.36, -0.06], [0.4, -0.04], [0.2, -0.36], [-0.22, 0.38],
-];
-const START_Z = -2600; // the first card starts this deep
-const GAP_Z = 380;     // each later card starts this much deeper
-const END_Z = 900;     // cards fade out before they reach the camera
+const MIN_CARDS = 20;      // the 10 projects repeat so the spiral looks full
+const STEP_DEG = 52;       // angle between neighbouring cards
+const TURNS = 1.25;        // extra turns over the whole scroll
+const PITCH = 0.085;       // vertical gap between cards, as a share of the viewport
 
 function splitWords(line) {
   const words = [];
@@ -47,11 +45,30 @@ export function initGallery({ projects, openPanel }) {
   upgradeTiles(section, projects);
 
   const line = section.querySelector('.gallery__line');
-  const cards = [...section.querySelectorAll('.gallery__card')];
+  const list = section.querySelector('.gallery__cards');
+  const originals = [...list.querySelectorAll('.gallery__card')];
   const words = splitWords(line);
   const query = window.matchMedia('(min-width: 900px)');
-  const n = cards.length;
-  const travel = -START_Z + (n - 1) * GAP_Z + END_Z;
+  let cards = originals;
+  let clones = [];
+
+  // Repeats are decoration: hidden from assistive tech and not focusable.
+  function addClones() {
+    for (let i = 0; clones.length + originals.length < MIN_CARDS; i++) {
+      const copy = originals[i % originals.length].cloneNode(true);
+      copy.setAttribute('aria-hidden', 'true');
+      copy.inert = true;
+      clones.push(copy);
+    }
+    list.append(...clones);
+    cards = [...originals, ...clones];
+  }
+
+  function removeClones() {
+    clones.forEach((c) => c.remove());
+    clones = [];
+    cards = originals;
+  }
 
   function update() {
     if (!section.classList.contains('is-flying')) return;
@@ -60,27 +77,42 @@ export function initGallery({ projects, openPanel }) {
     const p = span > 0 ? Math.min(1, Math.max(0, -r.top / span)) : 0;
     const vw = window.innerWidth;
     const vh = window.innerHeight;
+    const radius = Math.min(vw * 0.34, 520);
+    const pitch = vh * PITCH;
+    const n = cards.length;
+    const margin = vh * 0.4;
+    const travel = (n - 1) * pitch + 2 * margin;
+
     cards.forEach((card, i) => {
-      const z = START_Z - i * GAP_Z + p * travel;
-      const [sx, sy] = SLOTS[i % SLOTS.length];
-      const fadeIn = Math.min(1, Math.max(0, (z + 3400) / 1400));
-      const fadeOut = Math.min(1, Math.max(0, (END_Z - z) / 500));
-      const opacity = fadeIn * fadeOut;
-      card.style.transform = `translate3d(${(sx * vw).toFixed(1)}px, ${(sy * vh).toFixed(1)}px, ${z.toFixed(1)}px)`;
+      const deg = i * STEP_DEG + p * 360 * TURNS;
+      const rad = (deg * Math.PI) / 180;
+      const x = radius * Math.sin(rad);
+      const z = radius * Math.cos(rad);
+      const y = margin + i * pitch - p * travel;
+      // Face the viewer on both halves of the ring, edge-on at the sides.
+      const face = Math.cos(rad) < 0 ? deg + 180 : deg;
+      const depth = (z + radius) / (2 * radius);           // 0 at the back, 1 in front
+      const edge = Math.min(1, Math.max(0, (vh * 0.62 - Math.abs(y)) / (vh * 0.18)));
+      const opacity = (0.3 + 0.7 * depth) * edge;
+      card.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, ${z.toFixed(1)}px) rotateY(${face.toFixed(1)}deg)`;
       card.style.opacity = opacity.toFixed(3);
+      card.style.zIndex = String(Math.round(depth * 100));
       card.style.visibility = opacity < 0.03 ? 'hidden' : 'visible';
-      card.classList.toggle('is-near', opacity > 0.4);
+      card.classList.toggle('is-near', depth > 0.6 && edge > 0.8);
     });
-    const shown = Math.round(Math.min(1, Math.max(0, (p - 0.12) / 0.45)) * words.length);
+
+    const shown = Math.round(Math.min(1, Math.max(0, (p - 0.1) / 0.45)) * words.length);
     words.forEach((w, i) => w.classList.toggle('is-on', i < shown));
   }
 
   function setFlying(on) {
     section.classList.toggle('is-flying', on);
     if (on) {
+      addClones();
       update();
     } else {
-      cards.forEach((c) => { c.style.transform = ''; c.style.opacity = ''; c.style.visibility = ''; });
+      removeClones();
+      cards.forEach((c) => { c.style.cssText = ''; c.classList.remove('is-near'); });
       words.forEach((w) => w.classList.add('is-on'));
     }
   }
