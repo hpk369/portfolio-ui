@@ -7,8 +7,8 @@ Reads site/data/projects.json (and the replay JSON it points to) and writes:
     With JavaScript, it forwards to the home page, which opens the project as a panel.
   - the project showcase and gallery items in site/index.html, between the
     "projects:list:*" and "projects:gallery:*" markers, so both work without JS.
-  - site/work/index.html, the Work page: one slide per project (kind, status,
-    pitch, stack, demo link). Readable as a stacked list without JavaScript.
+  - site/work/index.html, the Work page: one slide per project (pitch, stack
+    placeholder, demo link). Readable as a stacked list without JavaScript.
 
 Run from the repo root:  python3 scripts/build_project_pages.py
 Standard library only. Safe to re-run; it rewrites only the files above.
@@ -283,31 +283,18 @@ def gallery_html(projects: list[dict]) -> str:
     return "\n".join(items)
 
 
-STATUS_LABEL = {"featured": "Featured project", "supporting": "Supporting project", "more": "More projects"}
-
-
 def work_slides_html(projects: list[dict]) -> str:
-    total = len(projects)
     slides = []
-    for i, p in enumerate(projects, start=1):
+    for p in projects:
         slug = escape(p["slug"])
-        stack = p.get("stack")
-        if stack:
-            tags = "".join(f'<li class="work-tag">{escape(t)}</li>' for t in stack)
-            stack_html = f'<ul class="work-slide__tags" aria-label="Stack">{tags}</ul>'
-        else:
-            stack_html = '<p class="work-slide__tags meta-label is-placeholder">Stack · to come</p>'
-        kind = escape(p.get("kind") or "Project")
-        slides.append(f"""        <article class="work-slide" id="{slug}" aria-labelledby="work-{slug}" data-index="{i - 1}">
+        slides.append(f"""        <article class="work-slide" id="{slug}" aria-labelledby="work-{slug}">
           <div class="work-slide__media">
             {media_html(p, "work-slide__img", base="../")}
             <h2 class="work-slide__title" id="work-{slug}">{escape(p["title"])}</h2>
           </div>
           <div class="work-slide__info">
-            <p class="work-slide__kind meta-label">{kind}</p>
-            <p class="work-slide__status meta-label">{i:02d} / {total:02d} · {STATUS_LABEL.get(p["tier"], "")}</p>
             <p class="work-slide__pitch">{text_or_placeholder(p.get("pitch"), "pitch")}</p>
-            {stack_html}
+            <p class="work-slide__tags meta-label is-placeholder">Stack · to come</p>
             <p class="work-slide__links">
               {demo_anchor(p, "work-slide__demo", base="../")}
               <a class="work-slide__more" href="../projects/{slug}/">Project page<span class="sr-only">: {escape(p["title"])}</span></a>

@@ -111,14 +111,15 @@ Harsh asked for an About section after the intro, and for the Projects and Galle
 Harsh asked for a Work section after the reference's Work page (screen recording plus a measured `DESIGN_Work.md`). Only the interaction pattern and measured tokens were taken: no code, images or copy.
 
 - **A separate page, `site/work/`**, as in the recording: "Work" in the intro bar and the menu fades the home page to black, then the Work page opens with its title first and the window after. "Back" fades out and returns home, which fades in. Reduced motion skips both fades.
-- **The drum.** One rounded window (radius up to 140px) holds a four-sided drum; each project is a face, image on the left and a text panel on the right. One wheel gesture, arrow key, Page Down or the chevron turns it a quarter turn: the current project tips away at the top while the next rolls up from below. Scroll snapping keeps it on one project; a wheel handler stops a trackpad's inertia from skipping several. Tabbing into another slide turns the drum to it, and `work/#<slug>` opens on that project. Built with CSS 3D transforms; the reference uses WebGL, which stays out of scope.
+- **The drum.** One rounded window (radius up to 140px) holds a four-sided drum; each project is a face, image on the left and a text panel on the right. One wheel gesture, arrow key, Page Down or the chevron turns it a quarter turn: the current project tips away at the top while the next rolls up from below. Scroll snapping keeps it on one project; a wheel handler stops a trackpad's inertia from skipping several. Tabbing into another slide turns the drum to it, and `work/#<slug>` opens on that project.
+- **WebGL (Oct 12, Harsh: "go ahead and use the WebGL").** `site/js/work-gl.js` draws the drum in raw WebGL (no library): each face is a subdivided mesh with a slight barrel lens, the image or its looping clip on the left and the text panel, painted with the 2D canvas API from the HTML slide, on the right. The real HTML links sit over the painted panel (shifted by the same lens) and hide while the drum turns; the rest of the HTML stays in the page, invisible, for screen readers and keyboard use. Projects without an image show a plain "Preview to come" tile in WebGL. Without WebGL, or if the GPU context is lost, the CSS 3D drum takes over. This replaces the "WebGL / Three.js spiral" exclusion below for the Work page only.
 - **Phones, reduced motion and no-JS** get a stacked list of the same slides.
-- **Measured tokens used:** 12% white hairlines, tag pills with a 50px radius and 3.36 / 6.72px padding, the signature curve at 0.6s and `ease` at 0.3s. Tag text uses 50% white, not the measured 25–35%, for contrast on small text.
-- **New data fields, need Harsh's check:** `kind` (the small label, e.g. "AI agent", "RAG proof of concept") and `stack` (the tags) in `projects.json`. Stacks are filled only where CLAUDE.md names them (Banking: Kafka, Spark; Bank Policy Assistant: Python, pgvector, Claude API, FastAPI; MCP: MCP SDK, PostgreSQL; Usage Monitor: Python, DuckDB, JavaScript; PyRedis: Python, Pyodide; E-commerce: HTML, CSS, JavaScript). The rest show "Stack · to come". The reference's year is replaced with "01 / 10 · Featured project", since no dates were given.
+- **Measured tokens used:** 12% white hairlines, 50px pill radius, the signature curve at 0.6s and `ease` at 0.3s.
+- **Slide content (Harsh, Oct 12):** no category label and no year line. Stack shows "Stack · to come" on every project for now; the `kind` and `stack` fields were removed from `projects.json`.
 
 ## Out of scope for v1 (don't build)
 
-- WebGL / Three.js spiral
+- WebGL / Three.js spiral (the Work page drum is the one WebGL exception, at Harsh's request)
 - Sound
 - Cursor effects
 - The reticle motion cues from canvas row 6

@@ -4,15 +4,18 @@
 // one rounded window: each scroll step turns the drum a quarter turn, so the
 // current project tips away at the top while the next one rolls up from below.
 // Scroll snapping gives one project per wheel flick, arrow key or Page Down.
+// The drum is drawn with WebGL (work-gl.js); without WebGL, CSS 3D draws it.
 
 import { loadProjects, reducedMotion } from './env.js';
 import { playClip, upgradeTiles } from './showcase.js';
 import { initPageTransitions } from './page-transition.js';
+import { createDrumGL } from './work-gl.js';
 
 const root = document.documentElement;
 const slides = [...document.querySelectorAll('.work-slide')];
 const count = document.querySelector('.work__current');
 const nextBtn = document.querySelector('.work__next');
+const windowEl = document.querySelector('.work__window');
 const last = slides.length - 1;
 const wide = window.matchMedia('(min-width: 769px)');
 const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
@@ -22,6 +25,7 @@ let pos = 0;      // drawn position, in slides
 let target = 0;   // position the scroll asks for
 let raf = 0;
 let active = -1;
+let gl = null;    // the WebGL drum, when it is running
 
 function setActive(i) {
   if (i === active) return;
@@ -38,6 +42,13 @@ function setActive(i) {
 // Each slide is a face of a four-sided drum whose radius is half the window
 // height, so the face in front exactly fills the window.
 function render() {
+  setActive(Math.round(pos));
+  if (gl) {
+    // The links only show while the drum is at rest.
+    windowEl.classList.toggle('is-turning', Math.abs(target - pos) > 0.01 || Math.abs(pos - Math.round(pos)) > 0.01);
+    gl.draw(pos);
+    return;
+  }
   const radius = slides[0].offsetHeight / 2;
   slides.forEach((slide, i) => {
     const d = i - pos;
@@ -48,7 +59,29 @@ function render() {
     slide.style.opacity = near ? String(1 - Math.abs(d) * 0.55) : '0';
     slide.style.pointerEvents = Math.abs(d) < 0.5 ? '' : 'none';
   });
-  setActive(Math.round(pos));
+}
+
+function clearCssDrum() {
+  slides.forEach((slide) => {
+    slide.style.transform = slide.style.opacity = slide.style.pointerEvents = '';
+  });
+}
+
+function startGL() {
+  gl = createDrumGL({
+    windowEl,
+    slides,
+    // Context lost (GPU reset, too many tabs): carry on with the CSS drum.
+    onLost: () => {
+      gl = null;
+      root.classList.remove('work-gl');
+      render();
+    },
+  });
+  if (gl) {
+    root.classList.add('work-gl');
+    clearCssDrum();
+  }
 }
 
 // Ease the drum toward the scroll position so wheel steps feel continuous.
@@ -81,6 +114,7 @@ function enable() {
   document.body.append(steps);
   fromHash();
   pos = target = clamp(window.scrollY / window.innerHeight, 0, last);
+  startGL();
   render();
 }
 
@@ -90,9 +124,10 @@ function disable() {
   steps = null;
   cancelAnimationFrame(raf);
   raf = 0;
-  slides.forEach((slide) => {
-    slide.style.transform = slide.style.opacity = slide.style.pointerEvents = '';
-  });
+  gl?.destroy();
+  gl = null;
+  root.classList.remove('work-gl');
+  clearCssDrum();
 }
 
 function setMode() {

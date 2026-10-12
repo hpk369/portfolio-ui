@@ -1,6 +1,6 @@
 /* Work page (site/work/). Measured from the Work reference (docs/decisions.md):
-   white text at 50 / 35 / 25%, 12% hairlines, 50px tag pills with 3.36 / 6.72px
-   padding, the signature curve at 0.6s and plain ease at 0.3s.
+   white text at 50 / 35 / 25%, 12% hairlines, 50px pills, the signature curve at
+   0.6s and plain ease at 0.3s.
    Default layout is a stacked list (phones, reduced motion, no JS); html.work-drum
    turns it into the drum inside one rounded window. */
 
@@ -131,38 +131,16 @@
   background: linear-gradient(160deg, var(--surface-2), color-mix(in srgb, var(--glow-3) 55%, var(--surface)));
 }
 
-.work-slide__kind {
-  color: var(--muted);
-}
-
-.work-slide__status {
-  color: var(--ember);
-}
-
 .work-slide__pitch {
   max-width: 34ch;
-  margin-top: var(--sp-2);
   color: var(--muted);
   font-size: 15px;
   line-height: 1.6;
 }
 
 .work-slide__tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6.72px;
   margin-top: var(--sp-2);
-}
-
-.work-tag {
-  padding: 3.36px 6.72px;
-  border: 1px solid var(--work-line);
-  border-radius: 50px;
   color: var(--muted);
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: var(--tracking-meta);
-  text-transform: uppercase;
 }
 
 .work-slide__links {
@@ -329,6 +307,54 @@ html.work-drum {
 .work__next:hover,
 .work__next:focus-visible {
   color: var(--ink);
+}
+
+/* ---------- WebGL drum (js/work-gl.js) ----------
+   The canvas paints every face. The HTML slides stay on top for screen readers
+   and keyboard users, invisible except for the front project's links, which
+   sit where the painted panel leaves room and hide while the drum turns. */
+
+.work__gl {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.work-gl .work-slide {
+  background: none;
+  pointer-events: none;
+}
+
+.work-gl .work-slide__media,
+.work-gl .work-slide__pitch,
+.work-gl .work-slide__tags {
+  opacity: 0;
+}
+
+.work-gl .work-slide__info {
+  background: none;
+}
+
+.work-gl .work-slide__links {
+  position: absolute;
+  margin: 0;
+  opacity: 0;
+  transition: opacity var(--dur-fast) var(--ease-hover);
+}
+
+.work-gl .work-slide.is-active .work-slide__links,
+.work-gl .work-slide__links:focus-within {
+  opacity: 1;
+}
+
+.work-gl .work__window.is-turning .work-slide__links {
+  opacity: 0;
+}
+
+.work-gl .work-slide.is-active .work-slide__links a {
+  pointer-events: auto;
 }
 
 /* ---------- Entrance: the title, then the window ---------- */
