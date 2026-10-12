@@ -4,6 +4,8 @@
     "title": "ETL Triage Agent",
     "titleItalicWord": "Agent",
     "tier": "featured",
+    "kind": "AI agent",
+    "stack": null,
     "ready": true,
     "placeholder": false,
     "pitch": "When a data pipeline breaks, this agent works out what broke and how serious it is, then alerts the right person with a suggested fix.",
@@ -67,6 +69,11 @@
     "title": "Banking Transaction Platform",
     "titleItalicWord": "Platform",
     "tier": "featured",
+    "kind": "Streaming platform",
+    "stack": [
+      "Kafka",
+      "Spark"
+    ],
     "ready": true,
     "placeholder": true,
     "pitch": "A bank's payment system that flags suspicious transactions as they happen, and keeps running when something breaks.",
@@ -97,6 +104,8 @@
     "title": "LLM API Diagnostics Toolkit",
     "titleItalicWord": "Toolkit",
     "tier": "featured",
+    "kind": "CLI and web tool",
+    "stack": null,
     "ready": true,
     "placeholder": true,
     "pitch": "When a company's AI feature stops working, this tool explains why in plain English and how to fix it.",
@@ -123,6 +132,13 @@
     "title": "Bank Policy Assistant",
     "titleItalicWord": "Assistant",
     "tier": "featured",
+    "kind": "RAG proof of concept",
+    "stack": [
+      "Python",
+      "pgvector",
+      "Claude API",
+      "FastAPI"
+    ],
     "ready": true,
     "placeholder": true,
     "pitch": "An AI assistant that answers staff questions about a bank's policies, shows which document each answer came from, and says \"I don't know\" instead of guessing.",
@@ -149,6 +165,11 @@
     "title": "MCP Ticketing Server",
     "titleItalicWord": "Server",
     "tier": "supporting",
+    "kind": "MCP server",
+    "stack": [
+      "MCP SDK",
+      "PostgreSQL"
+    ],
     "ready": true,
     "placeholder": true,
     "pitch": "Lets an AI assistant safely look up and update support tickets in plain English.",
@@ -175,6 +196,12 @@
     "title": "LLM Usage and Cost Monitor",
     "titleItalicWord": "Monitor",
     "tier": "supporting",
+    "kind": "Dashboard",
+    "stack": [
+      "Python",
+      "DuckDB",
+      "JavaScript"
+    ],
     "ready": true,
     "placeholder": true,
     "pitch": "Shows a company where its AI spending is going and warns about a surprise bill before the invoice arrives.",
@@ -201,6 +228,8 @@
     "title": "CineMatch",
     "titleItalicWord": null,
     "tier": "supporting",
+    "kind": "Recommender",
+    "stack": null,
     "ready": true,
     "placeholder": true,
     "pitch": null,
@@ -232,6 +261,8 @@
     "title": "Supply Chain Audit Log",
     "titleItalicWord": "Log",
     "tier": "more",
+    "kind": "Audit log",
+    "stack": null,
     "ready": true,
     "placeholder": true,
     "pitch": null,
@@ -262,6 +293,11 @@
     "title": "PyRedis",
     "titleItalicWord": null,
     "tier": "more",
+    "kind": "Key-value store",
+    "stack": [
+      "Python",
+      "Pyodide"
+    ],
     "ready": true,
     "placeholder": true,
     "pitch": null,
@@ -288,6 +324,12 @@
     "title": "E-commerce Front End",
     "titleItalicWord": "End",
     "tier": "more",
+    "kind": "Front end",
+    "stack": [
+      "HTML",
+      "CSS",
+      "JavaScript"
+    ],
     "ready": true,
     "placeholder": true,
     "pitch": null,

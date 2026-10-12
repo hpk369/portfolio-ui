@@ -7,6 +7,8 @@ Reads site/data/projects.json (and the replay JSON it points to) and writes:
     With JavaScript, it forwards to the home page, which opens the project as a panel.
   - the project showcase and gallery items in site/index.html, between the
     "projects:list:*" and "projects:gallery:*" markers, so both work without JS.
+  - site/work/index.html, the Work page: one slide per project (kind, status,
+    pitch, stack, demo link). Readable as a stacked list without JavaScript.
 
 Run from the repo root:  python3 scripts/build_project_pages.py
 Standard library only. Safe to re-run; it rewrites only the files above.
@@ -214,7 +216,7 @@ TIER_LABEL = {"featured": "Featured", "supporting": "Supporting", "more": "More"
 LIVE_MODES = {"replay", "embed", "live", "simulation", "static"}
 
 
-def demo_link(project: dict) -> tuple[str, str, bool]:
+def demo_link(project: dict, base: str = "") -> tuple[str, str, bool]:
     """(href, label, external) for the demo link that sits on every project image.
 
     A demo that runs in the panel opens the panel; otherwise the existing demo
@@ -222,18 +224,18 @@ def demo_link(project: dict) -> tuple[str, str, bool]:
     """
     slug = escape(project["slug"])
     if project["demoMode"] in LIVE_MODES:
-        return f"projects/{slug}/", "Try the demo", False
+        return f"{base}projects/{slug}/", "Try the demo", False
     existing = project["links"].get("existingDemo")
     if existing:
         return escape(existing), "Open the demo ↗", True
-    return f"projects/{slug}/", "Demo · coming soon", False
+    return f"{base}projects/{slug}/", "Demo · coming soon", False
 
 
 SHORT_LABEL = {"Try the demo": "Try demo", "Open the demo ↗": "Demo ↗", "Demo · coming soon": "Demo soon"}
 
 
-def demo_anchor(project: dict, cls: str, short: bool = False) -> str:
-    href, label, external = demo_link(project)
+def demo_anchor(project: dict, cls: str, short: bool = False, base: str = "") -> str:
+    href, label, external = demo_link(project, base)
     soon = " is-soon" if label.startswith("Demo ·") else ""
     if short:
         label = SHORT_LABEL[label]
@@ -241,13 +243,13 @@ def demo_anchor(project: dict, cls: str, short: bool = False) -> str:
     return f'<a class="{cls}{soon}" href="{href}"{attrs}>{label}<span class="sr-only">: {escape(project["title"])}</span></a>'
 
 
-def media_html(project: dict, cls: str, decorative: bool = False) -> str:
+def media_html(project: dict, cls: str, decorative: bool = False, base: str = "") -> str:
     media = project.get("media")
     if media:
         alt = "" if decorative else escape(media["alt"])
         return (
-            f'<img class="{cls}" src="{escape(media["poster"])}" alt="{alt}" '
-            f'loading="lazy" decoding="async" data-video="{escape(media["video"])}">'
+            f'<img class="{cls}" src="{base}{escape(media["poster"])}" alt="{alt}" '
+            f'loading="lazy" decoding="async" data-video="{base}{escape(media["video"])}">'
         )
     # No image yet: a typographic tile. With JS it becomes the HTML preview card.
     return f'<span class="{cls} media-tile" data-card="{escape(project["slug"])}" aria-hidden="true"><span>{escape(project["title"])}</span></span>'
@@ -281,6 +283,94 @@ def gallery_html(projects: list[dict]) -> str:
     return "\n".join(items)
 
 
+STATUS_LABEL = {"featured": "Featured project", "supporting": "Supporting project", "more": "More projects"}
+
+
+def work_slides_html(projects: list[dict]) -> str:
+    total = len(projects)
+    slides = []
+    for i, p in enumerate(projects, start=1):
+        slug = escape(p["slug"])
+        stack = p.get("stack")
+        if stack:
+            tags = "".join(f'<li class="work-tag">{escape(t)}</li>' for t in stack)
+            stack_html = f'<ul class="work-slide__tags" aria-label="Stack">{tags}</ul>'
+        else:
+            stack_html = '<p class="work-slide__tags meta-label is-placeholder">Stack · to come</p>'
+        kind = escape(p.get("kind") or "Project")
+        slides.append(f"""        <article class="work-slide" id="{slug}" aria-labelledby="work-{slug}" data-index="{i - 1}">
+          <div class="work-slide__media">
+            {media_html(p, "work-slide__img", base="../")}
+            <h2 class="work-slide__title" id="work-{slug}">{escape(p["title"])}</h2>
+          </div>
+          <div class="work-slide__info">
+            <p class="work-slide__kind meta-label">{kind}</p>
+            <p class="work-slide__status meta-label">{i:02d} / {total:02d} · {STATUS_LABEL.get(p["tier"], "")}</p>
+            <p class="work-slide__pitch">{text_or_placeholder(p.get("pitch"), "pitch")}</p>
+            {stack_html}
+            <p class="work-slide__links">
+              {demo_anchor(p, "work-slide__demo", base="../")}
+              <a class="work-slide__more" href="../projects/{slug}/">Project page<span class="sr-only">: {escape(p["title"])}</span></a>
+            </p>
+          </div>
+        </article>""")
+    return "\n".join(slides)
+
+
+def work_page_html(projects: list[dict]) -> str:
+    return f"""<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Work · Harsh Keshruwala</title>
+  <meta name="description" content="Every project by Harsh Keshruwala: what it does, what it is built with, and a demo link.">
+  <meta name="color-scheme" content="dark light">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Work · Harsh Keshruwala">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230A0A0A'/%3E%3Ctext x='5' y='22' font-family='Arial,sans-serif' font-weight='700' font-size='17' letter-spacing='-1' fill='%23F0F0F0'%3Ehk%3Ctspan fill='%23FF1E00'%3E.%3C/tspan%3E%3C/text%3E%3C/svg%3E">
+  <script>
+    // Before first paint: the drum and the entrance only run with full motion.
+    (function () {{
+      var root = document.documentElement;
+      root.classList.add('js');
+      try {{ sessionStorage.removeItem('hk-page-in'); }} catch (e) {{ /* storage blocked */ }}
+      if (!matchMedia('(prefers-reduced-motion: reduce)').matches) root.classList.add('work-enter');
+    }})();
+  </script>
+  <link rel="preload" href="../../kit/fonts/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="../../kit/css/tokens.css">
+  <link rel="stylesheet" href="../../kit/css/base.css">
+  <link rel="stylesheet" href="../../kit/css/components.css">
+  <link rel="stylesheet" href="../css/site.css">
+  <link rel="stylesheet" href="../css/work.css">
+  <script type="module" src="../js/work.js"></script>
+</head>
+<body class="work-page">
+  <header class="work-head">
+    <h1 class="work-head__title">Work</h1>
+    <a class="work-head__back meta-label" href="../" data-transition>Back<span class="sr-only"> to the home page</span></a>
+  </header>
+  <main class="work" aria-labelledby="work-hint">
+    <p class="sr-only" id="work-hint">All {len(projects)} projects, featured first.</p>
+    <div class="work__stage">
+      <div class="work__window">
+        <div class="work__drum">
+<!-- generated by scripts/build_project_pages.py -->
+{work_slides_html(projects)}
+        </div>
+      </div>
+      <p class="work__count meta-label" aria-hidden="true"><span class="work__current">01</span> / {len(projects):02d}</p>
+      <button type="button" class="work__next" aria-label="Next project">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+      </button>
+    </div>
+  </main>
+</body>
+</html>
+"""
+
+
 def replace_block(html: str, name: str, body: str) -> str:
     pattern = re.compile(rf"(<!-- projects:{name}:start[^>]*-->\n).*?(<!-- projects:{name}:end -->)", re.S)
     if not pattern.search(html):
@@ -307,7 +397,11 @@ def main() -> None:
     index = replace_block(index, "gallery", gallery_html(projects))
     index_path.write_text(index, encoding="utf-8")
 
-    print(f"Wrote {len(projects)} project pages and the home page projects and gallery.")
+    work_path = SITE / "work" / "index.html"
+    work_path.parent.mkdir(exist_ok=True)
+    work_path.write_text(work_page_html(projects), encoding="utf-8")
+
+    print(f"Wrote {len(projects)} project pages, the home page projects and gallery, and the Work page.")
 
 
 if __name__ == "__main__":

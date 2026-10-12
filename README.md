@@ -27,7 +27,7 @@ Project content lives in `site/data/projects.json` (pitch, tier, demo, links, ca
 python3 scripts/build_project_pages.py
 ```
 
-This rewrites `site/projects/*/index.html` and the Projects and Gallery items inside `site/index.html`. It uses only the Python standard library and touches nothing else. Commit the output.
+This rewrites `site/projects/*/index.html`, the Work page (`site/work/index.html`), and the Projects and Gallery items inside `site/index.html`. It uses only the Python standard library and touches nothing else. Commit the output.
 
 A field set to `null` shows as a placeholder on the site. Set `"ready": false` to hide a project everywhere.
 
@@ -41,7 +41,7 @@ kit/
   fonts/   self-hosted woff2 + OFL licences
   vendor/  gsap 3.15.0, lenis 1.3.26 (+ licences)
 site/
-  index.html, css/, js/, data/ (projects.json, replays/), media/ (project posters + clips), projects/ (generated)
+  index.html, css/, js/, data/ (projects.json, replays/), media/ (project posters + clips), projects/ and work/ (generated)
 scripts/   build_project_pages.py
 docs/      ui-spec.md, decisions.md
 ```

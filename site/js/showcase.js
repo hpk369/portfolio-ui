@@ -41,7 +41,7 @@ export function upgradeTiles(root, projects) {
 }
 
 // Swap a poster for its looping clip the first time the preview is shown.
-function playClip(figure) {
+export function playClip(figure) {
   if (reducedMotion) return;
   const img = figure.querySelector('img[data-video]');
   if (img) {
