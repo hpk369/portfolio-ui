@@ -203,8 +203,25 @@
 /* Wider than a phone: image left, text right, even when stacked. */
 @media (min-width: 769px) {
   .work-slide {
-    grid-template-columns: 1.6fr 1fr;
+    grid-template-columns: 2fr 1fr;
     border-radius: var(--work-radius);
+  }
+
+  /* Every other project puts its text on the left, as in the reference. */
+  .work-slide:nth-child(even) {
+    grid-template-columns: 1fr 2fr;
+  }
+
+  .work-slide:nth-child(even) .work-slide__media {
+    order: 2;
+  }
+
+  .work-slide:nth-child(even) .work-slide__title {
+    text-align: left;
+  }
+
+  .work-slide:nth-child(even) .work-slide__info {
+    padding: var(--sp-8) var(--sp-7) var(--sp-8) calc(var(--work-radius) * 0.45 + var(--sp-5));
   }
 
   .work-slide__media {
@@ -322,6 +339,14 @@ html.work-drum {
   height: 100%;
 }
 
+/* The canvas draws the window's shape; the window box only places the links. */
+.work-gl .work__window {
+  overflow: visible;
+  border-radius: 0;
+  background: none;
+  perspective: none;
+}
+
 .work-gl .work-slide {
   background: none;
   pointer-events: none;
@@ -349,8 +374,10 @@ html.work-drum {
   opacity: 1;
 }
 
+/* Hide at once when a turn starts; fade back in once the drum stops. */
 .work-gl .work__window.is-turning .work-slide__links {
   opacity: 0;
+  transition-duration: 0s;
 }
 
 .work-gl .work-slide.is-active .work-slide__links a {
@@ -377,6 +404,7 @@ html.work-drum {
   animation: work-rise var(--dur-med) var(--ease-inout) 700ms both;
 }
 
-.work-enter .work__window {
+.work-enter .work__window,
+.work-enter .work__gl {
   animation: work-open 900ms var(--ease-inout) 350ms both;
 }

@@ -16,6 +16,7 @@ const slides = [...document.querySelectorAll('.work-slide')];
 const count = document.querySelector('.work__current');
 const nextBtn = document.querySelector('.work__next');
 const windowEl = document.querySelector('.work__window');
+const stageEl = document.querySelector('.work__stage');
 const last = slides.length - 1;
 const wide = window.matchMedia('(min-width: 769px)');
 const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
@@ -69,6 +70,7 @@ function clearCssDrum() {
 
 function startGL() {
   gl = createDrumGL({
+    stageEl,
     windowEl,
     slides,
     // Context lost (GPU reset, too many tabs): carry on with the CSS drum.
