@@ -94,23 +94,32 @@
       </div>
 
       <div class="reveal">
-        <figure class="reveal__window" aria-label="Try it: ETL Triage Agent, schema drift">
-          <div class="reveal__player" id="reveal-player">
-            <a class="reveal__fallback" href="projects/etl-triage-agent/">Open the ETL Triage Agent demo →</a>
-          </div>
+        <figure class="reveal__window">
+          <video class="reveal__video" muted loop playsinline preload="none" poster="media/intro-reel.webp" aria-hidden="true">
+            <source src="media/intro-reel.mp4" type="video/mp4">
+          </video>
+          <span class="reveal__corners" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+          <figcaption class="reveal__caption meta-label">Rendered loop · not a project demo</figcaption>
+          <span class="reveal__shade" aria-hidden="true"></span>
         </figure>
         <p class="reveal__line">Basically, I keep <span class="accent-dot">AI</span> working.</p>
+        <a class="reveal__try demo-link" href="projects/etl-triage-agent/" data-slug="etl-triage-agent">Try the ETL Triage Agent demo →</a>
       </div>
     </section>
 
     <!-- About (text from hpk-website, reused as-is at Harsh's request, Oct 12) -->
     <section id="about" class="about" aria-labelledby="about-title">
+      <!-- Photo placeholder. To add the photo, replace the inner span with
+           <img src="media/about.webp" alt="" loading="lazy" decoding="async"> -->
+      <figure class="about__photo" aria-hidden="true">
+        <span class="about__photo-ph"><span class="meta-label">Photo · to come</span></span>
+      </figure>
       <header class="about__head">
         <span class="meta-label section-index" aria-hidden="true">(01)</span>
         <h2 id="about-title" class="section-title">About <em class="em-muted">me</em></h2>
       </header>
       <div class="about__body">
-        <p class="about__lead" data-reveal>Hello! I'm a passionate application support professional focused on incident resolution, system monitoring, and keeping critical systems reliable.</p>
+        <p class="about__lead">Hello! I'm a passionate application support professional focused on incident resolution, system monitoring, and keeping critical systems reliable.</p>
         <div class="about__cols">
           <p data-reveal>I specialize in application support and incident management, handling everything from individual user issues to company-wide system outages using tools like DataDog, Salesforce, SQL, and Python.</p>
           <p data-reveal>My approach combines proactive monitoring with rapid troubleshooting to ensure critical business applications stay reliable and performant when organizations need them most.</p>

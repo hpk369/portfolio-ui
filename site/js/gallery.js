@@ -6,6 +6,7 @@
 
 import { reducedMotion } from './env.js';
 import { absolutizeMedia, upgradeTiles, wirePanelLinks } from './showcase.js';
+import { splitWords } from './words.js';
 
 const MIN_CARDS = 20;      // the 10 projects repeat so the spiral looks full
 const STEP_DEG = 52;       // angle between neighbouring cards
@@ -14,31 +15,6 @@ const REVEAL_FROM = 0.06;  // share of the gallery scroll where the line starts 
 const REVEAL_TO = 0.82;    // ...and where the last word is fully lit
 const WORD_OVERLAP = 2;    // how many words are mid-fade at once
 const PITCH = 0.085;       // vertical gap between cards, as a share of the viewport
-
-function splitWords(line) {
-  const words = [];
-  const walk = (node) => {
-    [...node.childNodes].forEach((child) => {
-      if (child.nodeType === Node.TEXT_NODE) {
-        const frag = document.createDocumentFragment();
-        child.textContent.split(/(\s+)/).forEach((part) => {
-          if (!part) return;
-          if (/^\s+$/.test(part)) { frag.append(part); return; }
-          const span = document.createElement('span');
-          span.className = 'word';
-          span.textContent = part;
-          words.push(span);
-          frag.append(span);
-        });
-        child.replaceWith(frag);
-      } else {
-        walk(child);
-      }
-    });
-  };
-  walk(line);
-  return words;
-}
 
 export function initGallery({ projects, openPanel }) {
   const section = document.getElementById('gallery');

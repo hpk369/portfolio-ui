@@ -6,9 +6,10 @@ import { loadProjects, reducedMotion, scroller } from './env.js';
 import { initGlow } from './glow.js';
 import { initIntro } from './intro.js';
 import { initReveal } from './reveal.js';
+import { initAbout } from './about.js';
 import { initRail } from './rail.js';
 import { initScrollReveal } from './scroll-reveal.js';
-import { initShowcase } from './showcase.js';
+import { initShowcase, wirePanelLinks } from './showcase.js';
 import { initGallery } from './gallery.js';
 import { initPanel } from './panel.js';
 import { initPageTransitions } from './page-transition.js';
@@ -58,9 +59,10 @@ function initAnchors(menu) {
 
 async function start() {
   initSmoothScroll();
-  initGlow();
+  const glow = initGlow();
   initIntro();
-  initReveal({ hasGsap });
+  initReveal({ hasGsap, glow });
+  initAbout();
   initRail();
   initScrollReveal();
   const menu = initMenu();
@@ -76,6 +78,7 @@ async function start() {
     return;
   }
   const panel = initPanel({ projects });
+  wirePanelLinks(document.querySelector('.reveal'), panel.open);
   initShowcase({ projects, openPanel: panel.open });
   initGallery({ projects, openPanel: panel.open });
   panel.openFromUrl();
