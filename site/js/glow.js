@@ -9,7 +9,8 @@
 import { reducedMotion } from './env.js';
 
 const RENDER_SCALE = 0.5;   // share of CSS pixels actually rendered
-const FOLLOW = 0.045;       // cursor easing per frame (lower = lazier)
+const FOLLOW = 0.018;       // cursor easing per 60 Hz frame (lower = lazier)
+const PUSH_EASE = 0.03;     // how slowly the swirl builds and settles
 
 const VERT = 'attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}';
 
@@ -50,8 +51,8 @@ void main(){
 
   // The cursor swirls and pushes the field around it.
   vec2 d = p - m;
-  float fall = exp(-dot(d, d) * 2.6);
-  float ang = fall * (.9 + 1.4 * uPush);
+  float fall = exp(-dot(d, d) * 1.8);
+  float ang = fall * (.55 + .5 * uPush);
   float c = cos(ang), s = sin(ang);
   p = m + mat2(c, -s, s, c) * d * (1. - .18 * fall);
 
@@ -69,7 +70,7 @@ void main(){
   // Even coverage, a little heavier up top, plus a soft pool of light at the cursor.
   float v = smoothstep(.2, .68, h);
   v *= .6 + .55 * uv.y;
-  v = v * (.55 + .6 * diff) + .22 * fall + .12 * spec;
+  v = v * (.55 + .6 * diff) + .16 * fall + .12 * spec;
   v = clamp(v * uStrength, 0., 1.);
 
   vec3 col = mix(uBg, uC3, smoothstep(0., .3, v));
@@ -165,6 +166,7 @@ export function initGlow() {
   }, { passive: true });
 
   const start = performance.now();
+  let last = start;
   function draw(now) {
     const t = (now - start) / 1000;
     // With no recent pointer (touch, keyboard, idle), the light wanders on its own.
@@ -172,11 +174,15 @@ export function initGlow() {
       target.x = 0.55 + 0.3 * Math.sin(t * 0.13);
       target.y = 0.62 + 0.22 * Math.cos(t * 0.17);
     }
+    // Easing scaled by frame time, so 120 Hz screens don't react twice as fast.
+    const frames = Math.min(4, (now - last) / (1000 / 60));
+    last = now;
+    const follow = 1 - (1 - FOLLOW) ** frames;
     const dx = target.x - eased.x;
     const dy = target.y - eased.y;
-    eased.x += dx * FOLLOW;
-    eased.y += dy * FOLLOW;
-    push += (Math.min(1, Math.hypot(dx, dy) * 6) - push) * 0.08;
+    eased.x += dx * follow;
+    eased.y += dy * follow;
+    push += (Math.min(1, Math.hypot(dx, dy) * 3) - push) * (1 - (1 - PUSH_EASE) ** frames);
     gl.uniform1f(U.time, t);
     gl.uniform2f(U.mouse, eased.x, eased.y);
     gl.uniform1f(U.push, push);
