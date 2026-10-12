@@ -509,23 +509,90 @@ html.has-dialog {
   overflow: clip;
 }
 
-/* A soft red shape behind the About text, in the spirit of the reference's
-   blurred portrait. It rises and brightens as the section scrolls in. */
-.about__glow {
+/* Desktop reveal: About rides up over the last stretch of the pinned intro while
+   the reel darkens, instead of starting after a blank screen. Its top is see-through
+   so the fading reel shows behind the heading. */
+.reveal-on .about {
+  margin-top: -55svh;
+  padding-top: var(--sp-10);
+  background: linear-gradient(to bottom, transparent, var(--bg) 35svh);
+}
+
+/* Portrait panel on the right, behind the text, as in the reference: blurred and
+   tinted red so the text over it stays readable. It holds a placeholder until
+   the photo exists; js/about.js lifts it in as the section scrolls up. */
+.about__photo {
   position: absolute;
-  right: -6vw;
-  top: 12%;
-  width: min(56vw, 760px);
-  height: 82%;
-  background: radial-gradient(ellipse at 45% 45%, var(--glow-1) 0%, var(--glow-2) 40%, var(--glow-3) 68%, transparent 80%);
-  filter: blur(60px);
-  opacity: calc(var(--glow-opacity) * 0.9);
+  right: 0;
+  top: var(--sp-9);
+  height: min(82svh, calc(100% - 2 * var(--sp-9)));
+  width: min(48vw, 760px);
+  margin: 0;
+  overflow: hidden;
+  border-radius: 28px 0 0 28px;
+  background: var(--glow-3);
+  opacity: var(--in, 1);
   pointer-events: none;
   z-index: -1;
 }
 
-.about > :not(.about__glow) {
+.about__photo img,
+.about__photo-ph {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.about__photo img {
+  object-fit: cover;
+  filter: blur(14px) grayscale(1) contrast(1.1);
+  transform: scale(1.08); /* hides the blurred edge */
+}
+
+/* Red tint over the photo (or the placeholder). */
+.about__photo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--glow-1);
+  mix-blend-mode: multiply;
+  opacity: 0.85;
+}
+
+.about__photo-ph {
+  display: grid;
+  place-items: end center;
+  padding-bottom: var(--sp-6);
+  background:
+    radial-gradient(ellipse 30% 22% at 55% 36%, rgba(0, 0, 0, 0.55), transparent 70%),
+    radial-gradient(ellipse 52% 34% at 55% 92%, rgba(0, 0, 0, 0.6), transparent 70%),
+    linear-gradient(160deg, #8a8a8a, #3a3a3a);
+  filter: blur(6px);
+}
+
+.about__photo-ph .meta-label {
   position: relative;
+  z-index: 1;
+  filter: blur(0);
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.about > :not(.about__photo) {
+  position: relative;
+}
+
+@media (prefers-color-scheme: light) {
+  .about__photo {
+    opacity: calc(var(--in, 1) * 0.4);
+  }
+}
+
+@media (max-width: 899px) {
+  .about__photo {
+    width: 78vw;
+    opacity: calc(var(--in, 1) * 0.6);
+  }
 }
 
 .about__head {

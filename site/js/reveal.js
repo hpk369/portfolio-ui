@@ -98,8 +98,8 @@ export function initReveal({ hasGsap, glow }) {
     .to(clip, { t: 0, r: 0, b: 0, l: 0, duration: 0.3, ease: 'power2.inOut', onUpdate: applyClip }, 0.2)
     .fromTo('.reveal__line', { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.08 }, 0.46)
     .fromTo('.reveal__try', { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.06 }, 0.5)
-    .to('.reveal__line', { opacity: 0, y: -24, duration: 0.1 }, 0.76)
-    .to('.reveal__try', { autoAlpha: 0, duration: 0.06 }, 0.76)
-    .fromTo('.reveal__shade', { yPercent: 100 }, { yPercent: -50, duration: 0.22 }, 0.7)
-    .to({}, { duration: 0.02 }, 0.92);
+    .to('.reveal__line', { opacity: 0, y: -24, duration: 0.1 }, 0.6)
+    .to('.reveal__try', { autoAlpha: 0, duration: 0.06 }, 0.6)
+    .fromTo('.reveal__shade', { yPercent: 100 }, { yPercent: -50, duration: 0.24 }, 0.58)
+    .to({}, { duration: 0.06 }, 0.82);
 }
