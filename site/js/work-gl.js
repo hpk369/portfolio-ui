@@ -17,6 +17,8 @@
 // to the CSS 3D drum.
 
 const SPLIT = 2 / 3;        // image share of the slide width, as in the CSS grid
+const STACK_SPLIT = 0.5;    // narrow windows (phones): image share of the slide height
+const STACK_RATIO = 0.85;   // windows narrower than this (width / height) stack
 const RADIUS = 0.87;        // cylinder radius / window height
 const DISTANCE = 2.09;      // camera distance / window height
 const INSET = 0.11;         // how far the sides curve in at the top and bottom / width
@@ -40,20 +42,19 @@ precision mediump float;
 #endif
 uniform vec2 uCenter;
 uniform float uHalfH, uW, uArcH, uPitch, uScroll, uR, uD, uInset, uGauge, uTick;
-uniform vec2 uIdx, uSide;
-uniform vec4 uFit0, uFit1;
+uniform vec2 uIdx;
+uniform vec4 uArea0, uArea1, uFit0, uFit1;
 uniform sampler2D uMedia0, uOverlay0, uMedia1, uOverlay1;
 uniform vec3 uBg, uBase, uInk;
 varying vec2 vPx;
 
-const float SPLIT = ${SPLIT.toFixed(6)};
-
-vec3 face(sampler2D media, sampler2D overlay, vec4 fit, float side, vec2 c) {
+// area: the image area of the slide (x, y, w, h in slide UV, v up).
+vec3 face(sampler2D media, sampler2D overlay, vec4 area, vec4 fit, vec2 c) {
   vec2 uv = vec2(c.x / uW + 0.5, 0.5 - c.y / uArcH);
   vec4 o = texture2D(overlay, uv);
-  float mu = (uv.x - (side < 0.5 ? 0.0 : 1.0 - SPLIT)) / SPLIT;
-  if (mu < 0.0 || mu > 1.0) return o.rgb;
-  vec2 m = (vec2(mu, uv.y) - fit.xy) / fit.zw;
+  vec2 mu = (uv - area.xy) / area.zw;
+  if (mu.x < 0.0 || mu.x > 1.0 || mu.y < 0.0 || mu.y > 1.0) return o.rgb;
+  vec2 m = (mu - fit.xy) / fit.zw;
   vec3 base = uBase;
   if (m.x >= 0.0 && m.x <= 1.0 && m.y >= 0.0 && m.y <= 1.0) {
     vec4 t = texture2D(media, m);
@@ -87,8 +88,8 @@ void main() {
     if (inside > 0.0) {
       vec3 f = col;
       bool hit = true;
-      if (abs(k - uIdx.x) < 0.5) f = face(uMedia0, uOverlay0, uFit0, uSide.x, vec2(xc, ly));
-      else if (abs(k - uIdx.y) < 0.5) f = face(uMedia1, uOverlay1, uFit1, uSide.y, vec2(xc, ly));
+      if (abs(k - uIdx.x) < 0.5) f = face(uMedia0, uOverlay0, uArea0, uFit0, vec2(xc, ly));
+      else if (abs(k - uIdx.y) < 0.5) f = face(uMedia1, uOverlay1, uArea1, uFit1, vec2(xc, ly));
       else hit = false;
       if (hit) {
         float light = mix(0.2, 1.0, smoothstep(0.2, 0.8, cos(phi)));
@@ -187,31 +188,49 @@ function geometry(W, Hw) {
     return (lo + hi) / 2;
   };
   const arcH = 2 * toArc(Hw / 2);
-  return { W, Hw, R, D, arcH, pitch: arcH + GAP, inset: INSET * W, toScreen, toArc };
+  const stacked = W / Hw < STACK_RATIO;
+  return { W, Hw, R, D, arcH, pitch: arcH + GAP, inset: INSET * W, stacked, toScreen, toArc };
 }
 
 // Text layer geometry for one slide, in slide px from its top-left corner.
 // Even slides have the panel on the right, odd ones on the left, as in the reference.
+// Narrow windows (phones) stack every slide: image on top, panel below.
 function layout(ctx, slide, index, g) {
   const { W, arcH } = g;
-  const panelRight = index % 2 === 0;
-  const mw = W * SPLIT;
-  const panelX = panelRight ? mw : 0;
-  const panelW = W - mw;
-  const padSeam = Math.min(44, W * 0.04);
-  const padOuter = g.inset * 0.35 + Math.min(40, W * 0.035);
   const fs = Math.min(21, Math.max(15, W * 0.018));
-  const lh = Math.round(fs * 1.8);
+  const lh = Math.round(fs * (g.stacked ? 1.6 : 1.8));
+  let media;
+  let panel;
+  let x;
+  let maxW;
+  let title;
+  if (g.stacked) {
+    const mh = Math.round(arcH * STACK_SPLIT);
+    const pad = g.inset * 0.3 + Math.min(28, W * 0.06);
+    media = { x: 0, y: 0, w: W, h: mh };
+    panel = { x: 0, y: mh, w: W, h: arcH - mh };
+    x = pad;
+    maxW = W - 2 * pad;
+    title = { align: 'left', x: g.inset + 12, w: W - 2 * (g.inset + 12) };
+  } else {
+    const panelRight = index % 2 === 0;
+    const mw = W * SPLIT;
+    const padSeam = Math.min(44, W * 0.04);
+    const padOuter = g.inset * 0.35 + Math.min(40, W * 0.035);
+    media = { x: panelRight ? 0 : W - mw, y: 0, w: mw, h: arcH };
+    panel = { x: panelRight ? mw : 0, y: 0, w: W - mw, h: arcH };
+    x = panelRight ? panel.x + padSeam : panel.x + padOuter;
+    maxW = Math.min(panel.w - padSeam - padOuter, fs * 15);
+    title = panelRight ? { align: 'right', x: mw - 32, w: mw - 64 } : { align: 'left', x: W - mw + 32, w: mw - 64 };
+  }
   ctx.font = `400 ${fs}px ${FONT}`;
-  const maxW = Math.min(panelW - padSeam - padOuter, fs * 15);
-  const x = panelRight ? panelX + padSeam : panelX + padOuter;
   const pitch = wrap(ctx, slide.querySelector('.work-slide__pitch').textContent, maxW);
   const tagH = 24;
   const linksH = 44;
   const total = pitch.length * lh + 20 + tagH + 28 + linksH;
-  const y0 = Math.max(24, (arcH - total) / 2);
+  const y0 = panel.y + Math.max(24, (panel.h - total) / 2);
   return {
-    panelRight, mw, panelX, panelW, x, fs, lh, pitch,
+    media, panel, title, x, fs, lh, pitch,
     pitchY: y0, tagY: y0 + pitch.length * lh + 20, linksY: y0 + pitch.length * lh + 20 + tagH + 28,
   };
 }
@@ -226,34 +245,33 @@ function drawOverlay(slide, index, g, dpr, colours) {
   const L = layout(ctx, slide, index, g);
 
   // Title at the top of the image, on the panel side, with a soft scrim behind it.
+  const { media: M, panel: P } = L;
   const size = Math.min(38, Math.max(24, W * 0.034));
   const titleY = arcH / 2 + g.toArc(-Hw / 2 + Hw * 0.075);
-  const mediaX = L.panelRight ? 0 : W - L.mw;
   const scrim = ctx.createLinearGradient(0, titleY - 40, 0, titleY + size * 3);
   scrim.addColorStop(0, 'rgba(0,0,0,0.45)');
   scrim.addColorStop(1, 'rgba(0,0,0,0)');
   ctx.fillStyle = scrim;
-  ctx.fillRect(mediaX, 0, L.mw, titleY + size * 3);
+  ctx.fillRect(M.x, 0, M.w, titleY + size * 3);
   ctx.font = `400 ${size}px ${FONT}`;
   ctx.fillStyle = '#F0F0F0';
   ctx.textBaseline = 'top';
-  ctx.textAlign = L.panelRight ? 'right' : 'left';
-  const titleX = L.panelRight ? L.mw - 32 : W - L.mw + 32;
-  wrap(ctx, slide.querySelector('.work-slide__title').textContent, L.mw - 64)
-    .forEach((line, i) => ctx.fillText(line, titleX, titleY + i * size * 1.1));
+  ctx.textAlign = L.title.align;
+  wrap(ctx, slide.querySelector('.work-slide__title').textContent, L.title.w)
+    .forEach((line, i) => ctx.fillText(line, L.title.x, titleY + i * size * 1.1));
 
   // Panel: dark gradient with a red glow at the top, as in the reference.
-  const panel = ctx.createLinearGradient(L.panelX, 0, L.panelX + L.panelW, arcH);
+  const panel = ctx.createLinearGradient(P.x, P.y, P.x + P.w, P.y + P.h);
   panel.addColorStop(0, colours.panelFrom);
   panel.addColorStop(1, colours.panelTo);
   ctx.fillStyle = panel;
-  ctx.fillRect(L.panelX, 0, L.panelW, arcH);
-  const glow = ctx.createRadialGradient(L.panelX + L.panelW / 2, 0, 0, L.panelX + L.panelW / 2, 0, arcH * 0.6);
+  ctx.fillRect(P.x, P.y, P.w, P.h);
+  const glow = ctx.createRadialGradient(P.x + P.w / 2, P.y, 0, P.x + P.w / 2, P.y, P.h * 0.6);
   glow.addColorStop(0, colours.glow);
   glow.addColorStop(1, 'transparent');
   ctx.globalAlpha = 0.28;
   ctx.fillStyle = glow;
-  ctx.fillRect(L.panelX, 0, L.panelW, arcH);
+  ctx.fillRect(P.x, P.y, P.w, P.h);
   ctx.globalAlpha = 1;
 
   ctx.textAlign = 'left';
@@ -318,7 +336,7 @@ export function createDrumGL({ stageEl, windowEl, slides, onLost }) {
   gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
   const u = {};
   ['uCanvas', 'uCenter', 'uHalfH', 'uW', 'uArcH', 'uPitch', 'uScroll', 'uR', 'uD', 'uInset', 'uGauge', 'uTick',
-    'uIdx', 'uSide', 'uFit0', 'uFit1', 'uMedia0', 'uOverlay0', 'uMedia1', 'uOverlay1', 'uBg', 'uBase', 'uInk']
+    'uIdx', 'uArea0', 'uArea1', 'uFit0', 'uFit1', 'uMedia0', 'uOverlay0', 'uMedia1', 'uOverlay1', 'uBg', 'uBase', 'uInk']
     .forEach((name) => { u[name] = gl.getUniformLocation(program, name); });
   gl.uniform1i(u.uMedia0, 0);
   gl.uniform1i(u.uOverlay0, 1);
@@ -403,7 +421,8 @@ export function createDrumGL({ stageEl, windowEl, slides, onLost }) {
     } else if (img?.complete && img.naturalWidth) source = img;
     else if (!img) {
       tile = true;
-      source = m.source || drawTile(colours, g.W * SPLIT, g.arcH);
+      const { media: area } = layout(measure, slides[i], i, g);
+      source = m.source || drawTile(colours, area.w, area.h);
     }
     if (source && (source !== m.source || source === video)) {
       upload(m.tex, source);
@@ -416,22 +435,25 @@ export function createDrumGL({ stageEl, windowEl, slides, onLost }) {
   }
 
   // Fit the image inside the image area with room round it (media-area UV, v up).
-  function fitFor(m) {
+  // Stacked slides keep the image clear of the title at the top.
+  function fitFor(m, area) {
     if (!m.source || m.tile) return [0, 0, 1, 1];
-    const areaW = g.W * SPLIT;
-    const scale = Math.min((areaW * 0.84) / m.w, (g.arcH * 0.66) / m.h);
-    const fw = (m.w * scale) / areaW;
-    const fh = (m.h * scale) / g.arcH;
-    return [(1 - fw) / 2, (1 - fh) / 2, fw, fh];
+    const scale = Math.min((area.w * 0.84) / m.w, (area.h * (g.stacked ? 0.6 : 0.66)) / m.h);
+    const fw = (m.w * scale) / area.w;
+    const fh = (m.h * scale) / area.h;
+    return [(1 - fw) / 2, g.stacked ? 0.12 : (1 - fh) / 2, fw, fh];
   }
 
   function bindSlot(slot, i) {
     const m = mediaFor(i);
+    const { media: area } = layout(measure, slides[i], i, g);
     gl.activeTexture(gl.TEXTURE0 + slot * 2);
     gl.bindTexture(gl.TEXTURE_2D, m.tex);
     gl.activeTexture(gl.TEXTURE1 + slot * 2);
     gl.bindTexture(gl.TEXTURE_2D, overlay(i));
-    gl.uniform4f(slot ? u.uFit1 : u.uFit0, ...fitFor(m));
+    gl.uniform4f(slot ? u.uArea1 : u.uArea0,
+      area.x / g.W, 1 - (area.y + area.h) / g.arcH, area.w / g.W, area.h / g.arcH);
+    gl.uniform4f(slot ? u.uFit1 : u.uFit0, ...fitFor(m, area));
   }
 
   // pos is unbounded; position k on the cylinder shows project k mod N.
@@ -447,7 +469,6 @@ export function createDrumGL({ stageEl, windowEl, slides, onLost }) {
     bindSlot(0, a);
     bindSlot(1, b);
     gl.uniform2f(u.uIdx, first, first + 1);
-    gl.uniform2f(u.uSide, a % 2, b % 2);
     gl.uniform1f(u.uScroll, pos * g.pitch);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
     watchClip(wrapIndex(Math.round(pos)));

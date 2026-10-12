@@ -1,8 +1,7 @@
-// Gallery. Wide screens with motion: the section pins and the project images ride
+// Gallery. With motion, on every screen size: the section pins and the project images ride
 // a vertical spiral around the line in the middle. Scrolling turns the spiral and
 // lifts it from the bottom of the screen to the top, while the line reveals word by
-// word. Phones, reduced motion and no-JS get a plain grid; every image keeps its
-// demo link.
+// word. Reduced motion and no-JS get a plain grid; every image keeps its demo link.
 
 import { reducedMotion } from './env.js';
 import { absolutizeMedia, upgradeTiles, wirePanelLinks } from './showcase.js';
@@ -27,7 +26,6 @@ export function initGallery({ projects, openPanel }) {
   const list = section.querySelector('.gallery__cards');
   const originals = [...list.querySelectorAll('.gallery__card')];
   const words = splitWords(line);
-  const query = window.matchMedia('(min-width: 900px)');
   let cards = originals;
   let clones = [];
 
@@ -56,8 +54,11 @@ export function initGallery({ projects, openPanel }) {
     const p = span > 0 ? Math.min(1, Math.max(0, -r.top / span)) : 0;
     const vw = window.innerWidth;
     const vh = window.innerHeight;
-    const radius = Math.min(vw * 0.34, 520);
-    const pitch = vh * PITCH;
+    // Phones: a tighter ring and more room between cards, so the tall screen
+    // does not pack them on top of the line.
+    const phone = vw < 600;
+    const radius = phone ? vw * 0.3 : Math.min(vw * 0.34, 520);
+    const pitch = vh * (phone ? PITCH * 1.4 : PITCH);
     const n = cards.length;
     const margin = vh * 0.4;
     const travel = (n - 1) * pitch + 2 * margin;
@@ -110,7 +111,5 @@ export function initGallery({ projects, openPanel }) {
   }, { passive: true });
   window.addEventListener('resize', update);
 
-  const allowed = () => query.matches && !reducedMotion;
-  query.addEventListener('change', () => setFlying(allowed()));
-  setFlying(allowed());
+  setFlying(!reducedMotion);
 }

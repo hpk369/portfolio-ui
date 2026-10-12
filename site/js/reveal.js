@@ -2,7 +2,9 @@
 // name to the middle, opens the reel as a thumbnail between the two halves, pushes
 // the halves off-screen as the reel grows to fill the screen, shows the line over
 // it, then darkens the reel from the bottom up so it hands over to About.
-// Phones and reduced motion: no pinning; the reel sits under the name and plays
+// Phones get the same timeline; on a narrow screen the name wraps onto two lines,
+// so the thumbnail opens in the middle, behind it.
+// Reduced motion (or no GSAP): no pinning; the reel sits under the name and plays
 // while it is on screen (reduced motion shows the poster only).
 
 import { reducedMotion } from './env.js';
@@ -20,8 +22,7 @@ export function initReveal({ hasGsap, glow }) {
     else video.pause();
   };
 
-  const wide = window.matchMedia('(min-width: 768px)').matches;
-  if (!(hasGsap && wide && !reducedMotion)) {
+  if (!hasGsap || reducedMotion) {
     new IntersectionObserver(([entry]) => setPlaying(entry.intersectionRatio >= 0.3), { threshold: [0, 0.3] })
       .observe(windowEl);
     return;
@@ -29,6 +30,8 @@ export function initReveal({ hasGsap, glow }) {
 
   document.documentElement.classList.add('reveal-on');
   const { gsap } = window;
+  // Phones: the address bar showing and hiding must not re-measure the pin mid-scroll.
+  window.ScrollTrigger.config({ ignoreMobileResize: true });
   const intro = document.getElementById('intro');
   const name = intro.querySelector('.intro__name');
   const first = intro.querySelector('.intro__first');
@@ -46,7 +49,7 @@ export function initReveal({ hasGsap, glow }) {
     // One line: the thumbnail fits the gap between the halves. Wrapped onto two
     // lines: it sits in the middle of the screen, behind the name.
     const wrapped = last.offsetTop > first.offsetTop + first.offsetHeight / 2;
-    const tw = wrapped ? vw * 0.22 : Math.max(vw * 0.12, Math.min(vw * 0.2, lLeft - fRight - 32));
+    const tw = wrapped ? vw * (vw < 768 ? 0.56 : 0.22) : Math.max(vw * 0.12, Math.min(vw * 0.2, lLeft - fRight - 32));
     const th = Math.min(name.offsetHeight * 0.8, tw * 0.62);
     const cx = wrapped ? vw / 2 : (fRight + lLeft) / 2;
     return { vw, vh, lift, tw, th, cx, fRight, lLeft };

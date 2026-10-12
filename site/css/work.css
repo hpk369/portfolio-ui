@@ -1,8 +1,8 @@
 /* Work page (site/work/). Measured from the Work reference (docs/decisions.md):
    white text at 50 / 35 / 25%, 12% hairlines, 50px pills, the signature curve at
    0.6s and plain ease at 0.3s.
-   Default layout is a stacked list (phones, reduced motion, no JS); html.work-drum
-   turns it into the drum inside one rounded window. */
+   Default layout is a stacked list (reduced motion, no JS); html.work-drum turns
+   it into the drum inside one rounded window, on every screen size. */
 
 .work-page {
   --work-line: rgba(255, 255, 255, 0.12);
@@ -233,7 +233,7 @@
   }
 }
 
-/* ---------- Drum (wide screens, full motion, JS) ---------- */
+/* ---------- Drum (full motion, JS) ---------- */
 
 /* The drum turns in place; the page itself does not scroll. */
 html.work-drum,
@@ -261,6 +261,13 @@ html.work-drum body {
   border-radius: var(--work-radius);
   background: var(--bg-deep);
   perspective: 1800px;
+}
+
+/* Phones: a narrower margin, just wide enough for the gauge. */
+@media (max-width: 768px) {
+  .work-drum .work__window {
+    inset: calc(var(--work-head) + 2vh) calc(var(--gutter) + 4vw) calc(var(--sp-9) + 3vh);
+  }
 }
 
 .work-drum .work__drum {

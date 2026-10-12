@@ -995,7 +995,7 @@ html.js[data-motion="full"] [data-reveal].is-in {
   font-size: 15px;
 }
 
-/* Wide screens with motion: pinned, cards fly in 3D, the line reveals word by word. */
+/* With motion (any width): pinned, cards fly in 3D, the line reveals word by word. */
 .gallery.is-flying {
   height: 420svh;
   padding: 0;
@@ -1050,6 +1050,16 @@ html.js[data-motion="full"] [data-reveal].is-in {
   width: var(--card-w);
   margin: calc(var(--card-w) * -0.375) 0 0 calc(var(--card-w) * -0.5);
   will-change: transform, opacity;
+}
+
+@media (max-width: 599px) {
+  .gallery.is-flying .gallery__card {
+    --card-w: 34vw;
+  }
+
+  .gallery.is-flying .gallery__line {
+    padding: 0 var(--sp-2);
+  }
 }
 
 .gallery.is-flying .gallery__card:not(.is-near) .demo-link {

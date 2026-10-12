@@ -1,7 +1,7 @@
 // Work page (site/work/). The slides are static HTML written by
 // scripts/build_project_pages.py and read as a stacked list without JavaScript.
 //
-// On wide screens with full motion the projects sit round one big cylinder.
+// With full motion, on every screen size, the projects sit round one big cylinder.
 // The wheel, a touch drag or the keys turn it directly; when the input stops it
 // settles on the nearest project in the direction it was turning, on a heavy,
 // critically damped spring, so it feels like a weighted drum rather than a page
@@ -20,7 +20,6 @@ const nextBtn = document.querySelector('.work__next');
 const windowEl = document.querySelector('.work__window');
 const stageEl = document.querySelector('.work__stage');
 const N = slides.length;
-const wide = window.matchMedia('(min-width: 769px)');
 const wrap = (k) => ((k % N) + N) % N;
 
 const STIFFNESS = 6.5;    // spring frequency (rad/s): lower is heavier
@@ -215,11 +214,6 @@ function disable() {
   clearCssDrum();
 }
 
-function setMode() {
-  if (wide.matches) enable();
-  else disable();
-}
-
 function init() {
   initPageTransitions();
   loadProjects()
@@ -229,7 +223,7 @@ function init() {
   // Reduced motion: the stacked list with posters only, no drum and no clips.
   if (reducedMotion) return;
 
-  // Stacked list (phones): play the clip of the slide that is on screen.
+  // Stacked list (drum off): play the clip of the slide that is on screen.
   const seen = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       if (!drum && entry.isIntersecting) setActive(slides.indexOf(entry.target));
@@ -252,8 +246,7 @@ function init() {
   }));
   nextBtn?.addEventListener('click', () => step(1));
 
-  wide.addEventListener('change', setMode);
-  setMode();
+  enable();
 }
 
 init();
