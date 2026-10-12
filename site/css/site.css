@@ -995,7 +995,7 @@ html.js[data-motion="full"] [data-reveal].is-in {
   font-size: 15px;
 }
 
-/* With motion (any width): pinned, cards fly in 3D, the line reveals word by word. */
+/* Wider than a phone, with motion: pinned, cards fly in 3D, the line reveals word by word. */
 .gallery.is-flying {
   height: 420svh;
   padding: 0;
@@ -1052,13 +1052,11 @@ html.js[data-motion="full"] [data-reveal].is-in {
   will-change: transform, opacity;
 }
 
-@media (max-width: 599px) {
-  .gallery.is-flying .gallery__card {
-    --card-w: 34vw;
-  }
-
-  .gallery.is-flying .gallery__line {
-    padding: 0 var(--sp-2);
+/* Phones: no gallery; the Projects list above already shows every project. */
+@media (max-width: 767px) {
+  .gallery,
+  .menu__list li:has(> a[href="#gallery"]) {
+    display: none;
   }
 }
 
