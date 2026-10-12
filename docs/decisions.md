@@ -129,6 +129,12 @@ Harsh asked for the intro to follow a second screen recording of the reference s
 
 To re-render the reel: `cd scripts/intro-reel && npm i playwright-core@1.56.0 && node render.mjs "$PWD/reel.html" frames 240`, then `ffmpeg -framerate 30 -i frames/f%04d.png -c:v libx264 -preset slow -crf 27 -pix_fmt yuv420p -movflags +faststart -an ../../site/media/intro-reel.mp4`.
 
+### Follow-up: About layout and hand-overs between every section (Oct 12, 2026)
+
+- **About text trimmed** (Harsh: "reduce the text"). The lead and one short line remain, both cut down from the hpk-website text with no new claims: "Hello! I'm an application support professional focused on incident resolution, system monitoring, and keeping critical systems reliable." and "I handle everything from single-user issues to company-wide outages, using DataDog, Salesforce, SQL, and Python." It still needs the Customer Engineer rewrite before launch.
+- **No text over the photo.** About is two columns: text on the left, the photo placeholder in its own column on the right (4:5, up to 78% of the screen height). On phones the photo stacks under the text.
+- **Every section hands over like intro → About** (`site/js/transitions.js`, replacing `about.js`): the outgoing section darkens from the bottom up into the page colour as the next one arrives (a shade over its last screen, fully dark once its bottom is 45% up the screen); every section title, and any `[data-words]` text, sharpens word by word from faint and blurred to crisp; `[data-rise]` media lifts and fades in. The hairline borders between sections are gone so the hand-overs are seamless. All scroll-driven; reduced motion and no-JS see the sections unchanged. The Gallery line keeps its own word reveal. The separate Work page is not part of this.
+
 ## Out of scope for v1 (don't build)
 
 - WebGL / Three.js spiral (exceptions at Harsh's request: the Work page drum, and the intro background since Oct 12; the spiral stays CSS 3D)

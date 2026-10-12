@@ -502,8 +502,9 @@ html.has-dialog {
   position: relative;
   z-index: var(--z-content);
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
-  gap: var(--sp-6) var(--sp-9);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: var(--sp-8) var(--sp-9);
   padding: var(--sp-section) var(--gutter);
   background: var(--bg);
   overflow: clip;
@@ -518,22 +519,42 @@ html.has-dialog {
   background: linear-gradient(to bottom, transparent, var(--bg) 35svh);
 }
 
-/* Portrait panel on the right, behind the text, as in the reference: blurred and
-   tinted red so the text over it stays readable. It holds a placeholder until
-   the photo exists; js/about.js lifts it in as the section scrolls up. */
+.about__text {
+  display: grid;
+  gap: var(--sp-6);
+  max-width: 34em;
+}
+
+.about__head {
+  display: grid;
+  gap: var(--sp-3);
+}
+
+.about__lead {
+  font-size: var(--fs-reveal);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: var(--tracking-head);
+  color: var(--ink);
+}
+
+.about__more {
+  max-width: 36ch;
+  color: var(--ink-2);
+}
+
+/* Portrait panel in its own column, as in the reference: blurred and tinted red.
+   It holds a placeholder until the photo exists. */
 .about__photo {
-  position: absolute;
-  right: 0;
-  top: var(--sp-9);
-  height: min(82svh, calc(100% - 2 * var(--sp-9)));
-  width: min(48vw, 760px);
+  position: relative;
   margin: 0;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  max-height: 78svh;
+  justify-self: end;
   overflow: hidden;
-  border-radius: 28px 0 0 28px;
+  border-radius: 28px;
   background: var(--glow-3);
-  opacity: var(--in, 1);
-  pointer-events: none;
-  z-index: -1;
 }
 
 .about__photo img,
@@ -568,74 +589,65 @@ html.has-dialog {
     radial-gradient(ellipse 30% 22% at 55% 36%, rgba(0, 0, 0, 0.55), transparent 70%),
     radial-gradient(ellipse 52% 34% at 55% 92%, rgba(0, 0, 0, 0.6), transparent 70%),
     linear-gradient(160deg, #8a8a8a, #3a3a3a);
-  filter: blur(6px);
 }
 
 .about__photo-ph .meta-label {
   position: relative;
   z-index: 1;
-  filter: blur(0);
-  color: rgba(255, 255, 255, 0.8);
-}
-
-.about > :not(.about__photo) {
-  position: relative;
-}
-
-@media (prefers-color-scheme: light) {
-  .about__photo {
-    opacity: calc(var(--in, 1) * 0.4);
-  }
-}
-
-@media (max-width: 899px) {
-  .about__photo {
-    width: 78vw;
-    opacity: calc(var(--in, 1) * 0.6);
-  }
-}
-
-.about__head {
-  display: grid;
-  align-content: start;
-  gap: var(--sp-3);
-}
-
-.about__index {
-  color: var(--ember);
-}
-
-.about__body {
-  display: grid;
-  gap: var(--sp-8);
-}
-
-.about__lead {
-  font-size: var(--fs-reveal);
-  font-weight: 600;
-  line-height: 1.15;
-  letter-spacing: var(--tracking-head);
-  color: var(--ink);
-}
-
-.about__cols {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: var(--sp-6);
-  color: var(--ink-2);
+  color: rgba(255, 255, 255, 0.85);
 }
 
 @media (max-width: 899px) {
   .about {
     grid-template-columns: minmax(0, 1fr);
   }
+
+  .about__photo {
+    justify-self: stretch;
+    max-height: 70svh;
+  }
 }
 
-/* Word reveal on the lead (js/about.js sets --on from 0 to 1 per word). */
-.about__lead.is-split .word {
+/* ---------- Section hand-overs (js/transitions.js) ---------- */
+
+/* Covers the section's last screen; its gradient slides up as --shade goes 0 → 1,
+   darkening the section from the bottom into the page colour. */
+.has-shade {
+  position: relative;
+}
+
+.section-shade {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: min(100svh, 100%);
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 50;
+}
+
+.section-shade::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 200%;
+  background: linear-gradient(to bottom, transparent 0%, var(--bg) 50%, var(--bg) 100%);
+  transform: translateY(calc(100% - var(--shade, 0) * 150%));
+}
+
+/* Titles and [data-words] text: each word goes from faint and blurred to crisp. */
+.is-split .word {
   opacity: calc(0.12 + 0.88 * var(--on, 0));
   filter: blur(calc((1 - var(--on, 0)) * 10px));
-  transition: none;
+}
+
+/* [data-rise] media lifts and fades in. */
+html.js[data-motion="full"] [data-rise] {
+  opacity: var(--in, 1);
+  translate: 0 calc((1 - var(--in, 1)) * 18%);
 }
 
 /* Scroll reveal: text rises in on the signature curve. Hidden only when JS runs
@@ -703,7 +715,6 @@ html.js[data-motion="full"] [data-reveal].is-in {
   isolation: isolate;
   padding: var(--sp-section) var(--gutter);
   background: var(--bg);
-  border-top: 1px solid var(--line);
   overflow: clip;
 }
 
@@ -1342,7 +1353,6 @@ html.js[data-motion="full"] [data-reveal].is-in {
 .notes,
 .contact {
   padding: var(--sp-9) var(--gutter) var(--sp-section);
-  border-top: 1px solid var(--line);
 }
 
 .contact {

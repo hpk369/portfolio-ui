@@ -6,7 +6,7 @@ import { loadProjects, reducedMotion, scroller } from './env.js';
 import { initGlow } from './glow.js';
 import { initIntro } from './intro.js';
 import { initReveal } from './reveal.js';
-import { initAbout } from './about.js';
+import { initTransitions } from './transitions.js';
 import { initRail } from './rail.js';
 import { initScrollReveal } from './scroll-reveal.js';
 import { initShowcase, wirePanelLinks } from './showcase.js';
@@ -62,7 +62,7 @@ async function start() {
   const glow = initGlow();
   initIntro();
   initReveal({ hasGsap, glow });
-  initAbout();
+  initTransitions();
   initRail();
   initScrollReveal();
   const menu = initMenu();

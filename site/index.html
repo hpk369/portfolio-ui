@@ -107,25 +107,21 @@
       </div>
     </section>
 
-    <!-- About (text from hpk-website, reused as-is at Harsh's request, Oct 12) -->
+    <!-- About (trimmed from the hpk-website text, Oct 12; still needs the Customer Engineer rewrite) -->
     <section id="about" class="about" aria-labelledby="about-title">
+      <div class="about__text">
+        <header class="about__head">
+          <span class="meta-label section-index" aria-hidden="true">(01)</span>
+          <h2 id="about-title" class="section-title">About <em class="em-muted">me</em></h2>
+        </header>
+        <p class="about__lead" data-words>Hello! I'm an application support professional focused on incident resolution, system monitoring, and keeping critical systems reliable.</p>
+        <p class="about__more" data-reveal>I handle everything from single-user issues to company-wide outages, using DataDog, Salesforce, SQL, and Python.</p>
+      </div>
       <!-- Photo placeholder. To add the photo, replace the inner span with
            <img src="media/about.webp" alt="" loading="lazy" decoding="async"> -->
-      <figure class="about__photo" aria-hidden="true">
+      <figure class="about__photo" aria-hidden="true" data-rise>
         <span class="about__photo-ph"><span class="meta-label">Photo · to come</span></span>
       </figure>
-      <header class="about__head">
-        <span class="meta-label section-index" aria-hidden="true">(01)</span>
-        <h2 id="about-title" class="section-title">About <em class="em-muted">me</em></h2>
-      </header>
-      <div class="about__body">
-        <p class="about__lead">Hello! I'm a passionate application support professional focused on incident resolution, system monitoring, and keeping critical systems reliable.</p>
-        <div class="about__cols">
-          <p data-reveal>I specialize in application support and incident management, handling everything from individual user issues to company-wide system outages using tools like DataDog, Salesforce, SQL, and Python.</p>
-          <p data-reveal>My approach combines proactive monitoring with rapid troubleshooting to ensure critical business applications stay reliable and performant when organizations need them most.</p>
-          <p data-reveal>I'm passionate about the impact reliable systems have on business success, whether it's ensuring seamless transactions, protecting data integrity, or maintaining uptime during critical operations, I'm driven by environments where technical precision directly influences outcomes that matter.</p>
-        </div>
-      </div>
     </section>
 
     <!-- Projects: a scrolling list of titles with a pinned preview; the red ribbon draws as you scroll -->
