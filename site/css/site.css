@@ -427,6 +427,68 @@ html.has-dialog {
   text-shadow: 0 2px 30px var(--bg);
 }
 
+/* ---------- About ---------- */
+
+.about {
+  position: relative;
+  z-index: var(--z-content);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+  gap: var(--sp-6) var(--sp-9);
+  padding: var(--sp-section) var(--gutter);
+  background: var(--bg);
+  border-top: 1px solid var(--line);
+}
+
+.about__head {
+  display: grid;
+  align-content: start;
+  gap: var(--sp-3);
+}
+
+.about__index {
+  color: var(--ember);
+}
+
+.about__body {
+  display: grid;
+  gap: var(--sp-8);
+}
+
+.about__lead {
+  font-size: var(--fs-reveal);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: var(--tracking-head);
+  color: var(--ink);
+}
+
+.about__cols {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--sp-6);
+  color: var(--ink-2);
+}
+
+@media (max-width: 899px) {
+  .about {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* Scroll reveal: text rises in on the signature curve. Hidden only when JS runs
+   with motion allowed, so the text is always readable otherwise. */
+html.js[data-motion="full"] [data-reveal] {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity var(--dur-med) var(--ease-inout), transform var(--dur-med) var(--ease-inout);
+}
+
+html.js[data-motion="full"] [data-reveal].is-in {
+  opacity: 1;
+  transform: none;
+}
+
 /* ---------- Projects section (#demos) ---------- */
 
 .projects {

@@ -7,6 +7,7 @@ import { initGlow } from './glow.js';
 import { initIntro } from './intro.js';
 import { initReveal } from './reveal.js';
 import { initRail } from './rail.js';
+import { initScrollReveal } from './scroll-reveal.js';
 import { initList } from './projects-list.js';
 import { createSpiral } from './projects-spiral.js';
 import { initPanel } from './panel.js';
@@ -106,6 +107,7 @@ async function start() {
   initIntro();
   initReveal({ hasGsap });
   initRail();
+  initScrollReveal();
   const menu = initMenu();
   initAnchors(menu);
 
