@@ -411,7 +411,8 @@ html.has-dialog {
 }
 
 /* Registration marks in the corners. */
-.reveal__corners i {
+.reveal__corners i,
+.corners i {
   position: absolute;
   width: 11px;
   height: 11px;
@@ -421,10 +422,14 @@ html.has-dialog {
   color: rgba(255, 255, 255, 0.7);
 }
 
-.reveal__corners i:nth-child(1) { left: var(--sp-4); top: var(--sp-4); }
-.reveal__corners i:nth-child(2) { right: var(--sp-4); top: var(--sp-4); }
-.reveal__corners i:nth-child(3) { left: var(--sp-4); bottom: var(--sp-4); }
-.reveal__corners i:nth-child(4) { right: var(--sp-4); bottom: var(--sp-4); }
+.reveal__corners i:nth-child(1),
+.corners i:nth-child(1) { left: var(--sp-4); top: var(--sp-4); }
+.reveal__corners i:nth-child(2),
+.corners i:nth-child(2) { right: var(--sp-4); top: var(--sp-4); }
+.reveal__corners i:nth-child(3),
+.corners i:nth-child(3) { left: var(--sp-4); bottom: var(--sp-4); }
+.reveal__corners i:nth-child(4),
+.corners i:nth-child(4) { right: var(--sp-4); bottom: var(--sp-4); }
 
 .reveal__caption {
   position: absolute;

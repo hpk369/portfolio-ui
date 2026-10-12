@@ -1,0 +1,325 @@
+/* Info and Contact (site/info/, site/contact/). Layout follows the reference's
+   Info and Contact pages: a page title top-left and "Back" top-right; a narrow
+   left column (photo or card, then label/value rows); a wide right column with a
+   small caps label, a big title, a lead, body copy and caps-labelled columns;
+   the email bottom-left. The background is the intro's WebGL field, fixed. */
+
+.sub-page {
+  --sub-line: rgba(255, 255, 255, 0.14);
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+}
+
+@media (prefers-color-scheme: light) {
+  .sub-page {
+    --sub-line: rgba(10, 10, 10, 0.14);
+  }
+}
+
+/* The field covers the viewport and stays put while the page scrolls. */
+.glow--page {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+}
+
+.sub-head,
+.sub,
+.sub-foot {
+  position: relative;
+  z-index: var(--z-content);
+}
+
+/* ---------- Header ---------- */
+
+.sub-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: var(--sp-7) var(--gutter) 0;
+}
+
+.sub-head__title {
+  font-size: clamp(44px, 5.6vw, 88px);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.sub-head__back {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--target-min);
+  font-size: clamp(16px, 1.4vw, 22px);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--ink-2);
+  transition: color var(--dur-fast) var(--ease-hover);
+}
+
+.sub-head__back:hover,
+.sub-head__back:focus-visible {
+  color: var(--ink);
+}
+
+/* ---------- Two columns ---------- */
+
+.sub {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 0.36fr) minmax(0, 0.64fr);
+  gap: var(--sp-8) var(--sp-9);
+  align-items: start;
+  padding: var(--sp-4) var(--gutter) var(--sp-7);
+}
+
+.sub__side {
+  display: grid;
+  gap: var(--sp-6);
+  padding-left: var(--sp-6);
+}
+
+.sub__main {
+  display: grid;
+  gap: var(--sp-4);
+  padding-top: var(--sp-7);
+}
+
+/* Photo (Info) */
+.sub-photo {
+  position: relative;
+  margin: 0;
+  aspect-ratio: 4 / 5;
+  max-height: 52svh;
+  width: min(100%, calc(52svh * 0.8));
+  overflow: hidden;
+  background: var(--glow-3);
+}
+
+.sub-photo img,
+.sub-photo__ph {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.sub-photo img {
+  object-fit: cover;
+}
+
+/* Until the photo exists: a soft red-lit silhouette, clearly labelled. */
+.sub-photo__ph {
+  display: grid;
+  place-items: end center;
+  padding-bottom: var(--sp-8);
+  background:
+    radial-gradient(ellipse 26% 20% at 52% 38%, rgba(0, 0, 0, 0.7), transparent 72%),
+    radial-gradient(ellipse 56% 34% at 52% 96%, rgba(0, 0, 0, 0.75), transparent 72%),
+    linear-gradient(150deg, var(--glow-1), var(--glow-2) 60%, var(--glow-3));
+}
+
+.sub-photo__ph .meta-label {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* Card (Contact) */
+.sub-card {
+  display: grid;
+  gap: var(--sp-4);
+  padding: var(--sp-6);
+  border: 1px solid var(--sub-line);
+  background: color-mix(in srgb, var(--bg) 55%, transparent);
+  color: var(--ink-2);
+  font-size: clamp(16px, 1.25vw, 19px);
+  line-height: 1.6;
+}
+
+.sub-card__title {
+  font-size: clamp(26px, 2.4vw, 36px);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  color: var(--ink);
+}
+
+/* Label / value rows */
+.sub-facts {
+  margin: 0;
+}
+
+.sub-facts > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--sp-5);
+  padding: var(--sp-4) 0;
+  border-top: 1px solid var(--sub-line);
+}
+
+.sub-facts dt,
+.sub-kicker,
+.sub-cols__label {
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.sub-facts dd {
+  margin: 0;
+  text-align: right;
+  font-size: clamp(16px, 1.4vw, 21px);
+  color: var(--ink);
+}
+
+/* Right column */
+.sub-title {
+  font-size: clamp(44px, 5.6vw, 96px);
+  font-weight: 500;
+  letter-spacing: -0.035em;
+  line-height: 0.98;
+  color: var(--ink);
+}
+
+.sub-lead {
+  max-width: 46ch;
+  font-size: clamp(18px, 1.6vw, 24px);
+  line-height: 1.4;
+  color: var(--ink);
+}
+
+.sub-body {
+  max-width: 60ch;
+  font-size: clamp(16px, 1.25vw, 19px);
+  line-height: 1.6;
+  color: var(--ink-2);
+}
+
+.sub-cols {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--sp-6);
+  margin-top: var(--sp-4);
+  padding-top: var(--sp-6);
+  border-top: 1px solid var(--sub-line);
+}
+
+.sub-cols--two {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.sub-cols ul {
+  display: grid;
+  gap: var(--sp-2);
+  margin: var(--sp-4) 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: clamp(15px, 1.15vw, 18px);
+  color: var(--ink);
+}
+
+.sub-cols a {
+  text-decoration: none;
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-position: 100% 92%;
+  background-size: 0 1px;
+  transition: background-size var(--dur-med) var(--ease-inout);
+}
+
+.sub-cols a:hover,
+.sub-cols a:focus-visible {
+  background-position: 0 92%;
+  background-size: 100% 1px;
+}
+
+/* ---------- Footer ---------- */
+
+.sub-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--sp-4);
+  padding: 0 var(--gutter) var(--sp-6);
+}
+
+.sub-foot__mail {
+  font-size: clamp(18px, 1.7vw, 26px);
+  font-weight: 500;
+  text-decoration: none;
+  color: var(--ink);
+}
+
+.sub-foot__link {
+  text-decoration: none;
+  color: var(--muted);
+}
+
+.sub-foot__mail:hover,
+.sub-foot__link:hover {
+  color: var(--ember);
+}
+
+/* ---------- Narrow screens ---------- */
+
+@media (max-width: 1099px) {
+  .sub-cols {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 899px) {
+  .sub {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .sub__side {
+    padding-left: 0;
+  }
+
+  .sub__main {
+    padding-top: 0;
+  }
+
+  /* Phones: the title and text first, then the photo or card. */
+  .sub__main {
+    order: -1;
+  }
+
+  .sub-photo {
+    width: 100%;
+    max-height: 70svh;
+  }
+}
+
+@media (max-width: 479px) {
+  .sub-cols,
+  .sub-cols--two {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ---------- Entrance (full motion only) ---------- */
+
+.sub-enter [data-enter] {
+  opacity: 0;
+  transform: translateY(24px);
+  filter: blur(8px);
+  transition:
+    opacity var(--dur-med) var(--ease-inout) var(--enter-delay, 0ms),
+    transform var(--dur-med) var(--ease-inout) var(--enter-delay, 0ms),
+    filter var(--dur-med) var(--ease-inout) var(--enter-delay, 0ms);
+}
+
+.sub-enter.is-entered [data-enter] {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}

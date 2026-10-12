@@ -2,7 +2,7 @@
 // surface, mapped onto the glow tokens so it covers the whole first screen evenly.
 // The cursor bends the field around it and moves the light, with eased follow so
 // it drifts rather than snaps. It renders at a fraction of screen resolution
-// (the picture is soft anyway) and pauses when the intro is off-screen, the tab is
+// (the picture is soft anyway) and pauses when its host is off-screen, the tab is
 // hidden, or the reveal covers it. Reduced motion draws one still frame; without
 // WebGL the CSS blobs in the markup stay as the fallback.
 
@@ -97,9 +97,11 @@ function compile(gl, type, src) {
 }
 
 export function initGlow() {
+  // On the home page the field sits in the intro; on Info and Contact it is a
+  // fixed layer behind the whole page. Either way it runs while its host is visible.
   const glow = document.querySelector('.glow');
-  const intro = document.getElementById('intro');
-  if (!glow || !intro) return { hold() {} };
+  const host = glow?.closest('section') || glow;
+  if (!glow) return { hold() {} };
 
   const canvas = document.createElement('canvas');
   canvas.className = 'glow__canvas';
@@ -203,7 +205,7 @@ export function initGlow() {
     if (run && !raf) raf = requestAnimationFrame(loop);
     if (!run && raf) { cancelAnimationFrame(raf); raf = 0; }
   };
-  new IntersectionObserver(([entry]) => { onScreen = entry.isIntersecting; sync(); }).observe(intro);
+  new IntersectionObserver(([entry]) => { onScreen = entry.isIntersecting; sync(); }).observe(host);
   document.addEventListener('visibilitychange', sync);
   sync();
 

@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Info · Harsh Keshruwala</title>
+  <meta name="description" content="Harsh Keshruwala, customer engineer: who I am, where I'm based, and the tools I use.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Info · Harsh Keshruwala">
+  <meta name="color-scheme" content="dark light">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230A0A0A'/%3E%3Ctext x='5' y='22' font-family='Arial,sans-serif' font-weight='700' font-size='17' letter-spacing='-1' fill='%23F0F0F0'%3Ehk%3Ctspan fill='%23FF1E00'%3E.%3C/tspan%3E%3C/text%3E%3C/svg%3E">
+  <script>
+    // Before first paint: the entrance only runs with full motion.
+    (function () {
+      var root = document.documentElement;
+      root.classList.add('js');
+      try { sessionStorage.removeItem('hk-page-in'); } catch (e) { /* storage blocked */ }
+      if (!matchMedia('(prefers-reduced-motion: reduce)').matches) root.classList.add('sub-enter');
+    })();
+  </script>
+  <link rel="preload" href="../../kit/fonts/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="../../kit/css/tokens.css">
+  <link rel="stylesheet" href="../../kit/css/base.css">
+  <link rel="stylesheet" href="../../kit/css/components.css">
+  <link rel="stylesheet" href="../css/site.css">
+  <link rel="stylesheet" href="../css/pages.css">
+  <script type="module" src="../js/page.js"></script>
+</head>
+<body class="sub-page">
+  <div class="glow glow--page" aria-hidden="true">
+    <span class="glow__blob glow__blob--a"></span>
+    <span class="glow__blob glow__blob--b"></span>
+    <span class="glow__blob glow__blob--c"></span>
+  </div>
+  <header class="sub-head">
+    <h1 class="sub-head__title" data-enter>Info</h1>
+    <a class="sub-head__back" href="../" data-transition>Back<span class="sr-only"> to the home page</span></a>
+  </header>
+
+  <main class="sub">
+    <aside class="sub__side">
+      <!-- Photo placeholder. To add the photo, replace the inner span with
+           <img src="../media/about.webp" alt="Harsh Keshruwala" decoding="async"> -->
+      <figure class="sub-photo" data-enter>
+        <span class="sub-photo__ph"><span class="meta-label">Photo · to come</span></span>
+        <span class="corners" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+      </figure>
+      <dl class="sub-facts" data-enter>
+        <div><dt>Based in</dt><dd>Canada</dd></div>
+        <div><dt>Status</dt><dd>Open to customer engineer roles</dd></div>
+      </dl>
+    </aside>
+
+    <div class="sub__main">
+      <p class="sub-kicker" data-enter>About</p>
+      <h2 class="sub-title" data-enter>Harsh Keshruwala<span class="accent-dot">.</span></h2>
+      <p class="sub-lead" data-enter>Customer engineer, fixing what breaks, for teams running AI and data platforms.</p>
+      <p class="sub-body" data-enter>I handle everything from single-user issues to company-wide outages, and I focus on incident resolution, system monitoring, and keeping critical systems reliable.</p>
+
+      <!-- Only skills Harsh can back up in an interview (CLAUDE.md). Linux and Bash are left out until he decides. -->
+      <div class="sub-cols" data-enter>
+        <section aria-labelledby="sk-support">
+          <h3 class="sub-cols__label" id="sk-support">Support &amp; monitoring</h3>
+          <ul>
+            <li>Incident management</li>
+            <li>Root cause analysis</li>
+            <li>SLA monitoring</li>
+            <li>DataDog · Salesforce</li>
+          </ul>
+        </section>
+        <section aria-labelledby="sk-data">
+          <h3 class="sub-cols__label" id="sk-data">Data &amp; streaming</h3>
+          <ul>
+            <li>SQL · PostgreSQL</li>
+            <li>MySQL · MongoDB</li>
+            <li>Apache Kafka</li>
+            <li>Apache Spark</li>
+          </ul>
+        </section>
+        <section aria-labelledby="sk-build">
+          <h3 class="sub-cols__label" id="sk-build">Languages &amp; APIs</h3>
+          <ul>
+            <li>Python</li>
+            <li>REST APIs</li>
+            <li>Claude tool use</li>
+            <li>HTML · CSS · React</li>
+          </ul>
+        </section>
+        <section aria-labelledby="sk-tools">
+          <h3 class="sub-cols__label" id="sk-tools">Tools</h3>
+          <ul>
+            <li>Git · Docker</li>
+            <li>JIRA · ServiceNow</li>
+            <li>n8n</li>
+            <li>pytest · Robot Framework</li>
+          </ul>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer class="sub-foot">
+    <a class="sub-foot__mail" href="mailto:keshruwalaharsh@gmail.com">keshruwalaharsh@gmail.com</a>
+    <a class="sub-foot__link meta-label" href="../contact/" data-transition>Contact →</a>
+  </footer>
+</body>
+</html>

@@ -136,6 +136,16 @@ To re-render the reel: `cd scripts/intro-reel && npm i playwright-core@1.56.0 &&
 - **No text over the photo.** About is two columns: text on the left, the photo placeholder in its own column on the right (4:5, up to 78% of the screen height). On phones the photo stacks under the text.
 - **Every section hands over like intro → About** (`site/js/transitions.js`, replacing `about.js`): the outgoing section darkens from the bottom up into the page colour as the next one arrives (a shade over its last screen, fully dark once its bottom is 45% up the screen); every section title, and any `[data-words]` text, sharpens word by word from faint and blurred to crisp; `[data-rise]` media lifts and fades in. The hairline borders between sections are gone so the hand-overs are seamless. All scroll-driven; reduced motion and no-JS see the sections unchanged. The Gallery line keeps its own word reveal. The separate Work page is not part of this.
 
+## Info and Contact pages (Oct 12, 2026)
+
+Harsh shared screenshots of the reference's Info and Contact pages and asked for both, on the intro's background. Only the layout was taken: no code, images or copy.
+
+- **Two new pages, `site/info/` and `site/contact/`**, reached from "Info" and "Contact" in the intro bar (replacing the About/Notes/Contact anchors there), "Info" in the menu, and each other's footer. They use the Work page's fade-to-black transition, and "Back" returns home. The home page's Contact section stays.
+- **Layout (both):** page title top-left, "Back" top-right; a narrow left column with a photo (Info) or a bordered card (Contact) above label/value rows; a wide right column with a small caps label, a big title, a lead, body copy, and caps-labelled columns; the email bottom-left. Fits one 1440×900 screen; phones stack it with the text first. Elements fade, rise and un-blur in sequence on load (full motion only).
+- **Background:** the same WebGL field as the intro (`glow.js`, now able to run as a fixed layer behind a whole page), cursor-reactive, with the CSS blobs as the fallback.
+- **Content uses only what the site, hpk-website and CLAUDE.md already say.** Name, tagline, email, links, "Canada", "Open to customer engineer roles", the trimmed About text, and skills taken from hpk-website's skills list and the project tags. Left out on purpose: a city (not given), a response time (can't be backed), and Linux/Bash (CLAUDE.md: ask before keeping Linux prominent). **Needs Harsh's check:** the skill picks (especially "REST APIs", "Claude tool use", "n8n", "pytest · Robot Framework", which come from CLAUDE.md and the AI QA agent project rather than the old skills list), and the Contact copy ("Hiring for a customer engineer?", "Let's work together.").
+- **Photo placeholder** on Info, with registration marks like the reel. To add the photo, swap the placeholder span for the `<img>` in the HTML comment (`site/media/about.webp`, the same file About uses).
+
 ## Out of scope for v1 (don't build)
 
 - WebGL / Three.js spiral (exceptions at Harsh's request: the Work page drum, and the intro background since Oct 12; the spiral stays CSS 3D)
