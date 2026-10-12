@@ -2,6 +2,8 @@
 
 Harsh Keshruwala's portfolio site ("Mono" direction, formerly "Ember") and the shared UI kit that the site and every project demo use.
 
+**Live site:** https://hpk369.github.io/portfolio-ui/ (GitHub Pages, served from `main`; the root page forwards to `site/`)
+
 - **`kit/`**: shared, versioned CSS, JS, fonts, and vendored libraries. Project demos load a pinned tag (`kit-vX.Y.Z`), never "latest".
 - **`site/`**: the portfolio itself: plain HTML, CSS, and ES modules, with no build step. It runs on GitHub Pages.
 - **`CLAUDE.md`**: rules for working on the portfolio and its demos.
