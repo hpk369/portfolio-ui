@@ -845,17 +845,15 @@ html.js[data-motion="full"] [data-reveal].is-in {
   pointer-events: none;
 }
 
+/* --on (0 to 1) is set from the scroll position, so each word fades gradually. */
 .gallery.is-flying .gallery__line .word {
-  color: var(--dim);
-  transition: color var(--dur-med) var(--ease-inout);
+  --on: 0;
+  color: color-mix(in srgb, var(--ink) calc(var(--on) * 100%), var(--dim));
+  transition: color var(--dur-fast) var(--ease-hover);
 }
 
-.gallery.is-flying .gallery__line .word.is-on {
-  color: var(--ink);
-}
-
-.gallery.is-flying .gallery__line em .word.is-on {
-  color: var(--ember);
+.gallery.is-flying .gallery__line em .word {
+  color: color-mix(in srgb, var(--ember) calc(var(--on) * 100%), var(--dim));
 }
 
 .gallery.is-flying .gallery__cards {

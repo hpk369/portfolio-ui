@@ -10,6 +10,9 @@ import { absolutizeMedia, upgradeTiles, wirePanelLinks } from './showcase.js';
 const MIN_CARDS = 20;      // the 10 projects repeat so the spiral looks full
 const STEP_DEG = 52;       // angle between neighbouring cards
 const TURNS = 1.25;        // extra turns over the whole scroll
+const REVEAL_FROM = 0.06;  // share of the gallery scroll where the line starts lighting up
+const REVEAL_TO = 0.82;    // ...and where the last word is fully lit
+const WORD_OVERLAP = 2;    // how many words are mid-fade at once
 const PITCH = 0.085;       // vertical gap between cards, as a share of the viewport
 
 function splitWords(line) {
@@ -101,8 +104,14 @@ export function initGallery({ projects, openPanel }) {
       card.classList.toggle('is-near', depth > 0.6 && edge > 0.8);
     });
 
-    const shown = Math.round(Math.min(1, Math.max(0, (p - 0.1) / 0.45)) * words.length);
-    words.forEach((w, i) => w.classList.toggle('is-on', i < shown));
+    // Words light up gradually over most of the scroll, about two at a time:
+    // each word fades over two words' worth of scroll, overlapping its neighbour.
+    const reveal = Math.min(1, Math.max(0, (p - REVEAL_FROM) / (REVEAL_TO - REVEAL_FROM)));
+    const front = reveal * (words.length + WORD_OVERLAP);
+    words.forEach((w, i) => {
+      const on = Math.min(1, Math.max(0, (front - i) / WORD_OVERLAP));
+      w.style.setProperty('--on', on.toFixed(3));
+    });
   }
 
   function setFlying(on) {
@@ -113,7 +122,7 @@ export function initGallery({ projects, openPanel }) {
     } else {
       removeClones();
       cards.forEach((c) => { c.style.cssText = ''; c.classList.remove('is-near'); });
-      words.forEach((w) => w.classList.add('is-on'));
+      words.forEach((w) => w.style.removeProperty('--on'));
     }
   }
 
