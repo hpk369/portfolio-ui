@@ -1398,3 +1398,18 @@ html.js[data-motion="full"] [data-reveal].is-in {
   gap: var(--sp-2);
   color: var(--ink-2);
 }
+
+/* ---------- Page transitions (home ⇄ Work, js/page-transition.js) ---------- */
+
+html.is-leaving body > * {
+  opacity: 0;
+  transition: opacity var(--dur-med) var(--ease-inout);
+}
+
+@keyframes page-in {
+  from { opacity: 0; }
+}
+
+html.page-in body {
+  animation: page-in var(--dur-med) var(--ease-inout) both;
+}

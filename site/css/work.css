@@ -1,0 +1,382 @@
+/* Work page (site/work/). Measured from the Work reference (docs/decisions.md):
+   white text at 50 / 35 / 25%, 12% hairlines, 50px pills, the signature curve at
+   0.6s and plain ease at 0.3s.
+   Default layout is a stacked list (phones, reduced motion, no JS); html.work-drum
+   turns it into the drum inside one rounded window. */
+
+.work-page {
+  --work-line: rgba(255, 255, 255, 0.12);
+  --work-radius: clamp(28px, 9vw, 140px);
+  --work-head: calc(var(--sp-6) * 2 + 40px);
+  background: var(--bg);
+}
+
+@media (prefers-color-scheme: light) {
+  .work-page {
+    --work-line: rgba(10, 10, 10, 0.12);
+  }
+}
+
+/* ---------- Header: "Work" on the left, "Back" on the right ---------- */
+
+.work-head {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: var(--z-header);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: var(--sp-6) var(--gutter) 0;
+  pointer-events: none;
+}
+
+.work-head > * {
+  pointer-events: auto;
+}
+
+.work-head__title {
+  font-size: clamp(28px, 2.6vw, 40px);
+  font-weight: 700;
+  letter-spacing: var(--tracking-head);
+  line-height: 1;
+}
+
+.work-head__back {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--target-min);
+  margin-top: calc((var(--target-min) - 1em) / -2);
+  color: var(--muted);
+  text-decoration: none;
+  transition: color var(--dur-fast) var(--ease-hover);
+}
+
+.work-head__back:hover,
+.work-head__back:focus-visible {
+  color: var(--ink);
+}
+
+/* ---------- Stacked list (default) ---------- */
+
+.work__stage {
+  padding: var(--work-head) var(--gutter) var(--sp-10);
+}
+
+.work__drum {
+  display: grid;
+  gap: var(--sp-6);
+}
+
+.work-slide {
+  display: grid;
+  overflow: hidden;
+  border: 1px solid var(--work-line);
+  border-radius: 28px;
+  background: var(--surface);
+  scroll-margin-top: var(--work-head);
+}
+
+.work-slide__media {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: var(--surface-2);
+}
+
+/* A scrim keeps the white title readable on light images. */
+.work-slide__media::after {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 45%;
+  background: linear-gradient(rgba(0, 0, 0, 0.55), transparent);
+  pointer-events: none;
+}
+
+.work-slide__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Preview cards are designed small; scale them up to fill the image side. */
+.work-slide__media .media-tile .pcard {
+  width: calc(100% / 1.5);
+  height: calc(100% / 1.5);
+  padding-top: calc((var(--sp-9) + var(--sp-5)) / 1.5);
+  zoom: 1.5;
+}
+
+.work-slide__title {
+  position: absolute;
+  top: var(--sp-5);
+  right: var(--sp-5);
+  left: var(--sp-5);
+  z-index: 1;
+  color: #F0F0F0;
+  font-size: clamp(24px, 2.6vw, 32px);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  text-align: right;
+}
+
+.work-slide__info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--sp-3);
+  padding: var(--sp-6) var(--sp-5);
+  background: linear-gradient(160deg, var(--surface-2), color-mix(in srgb, var(--glow-3) 55%, var(--surface)));
+}
+
+.work-slide__pitch {
+  max-width: 34ch;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.work-slide__tags {
+  margin-top: var(--sp-2);
+  color: var(--muted);
+}
+
+.work-slide__links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2) var(--sp-5);
+  margin-top: var(--sp-4);
+}
+
+.work-slide__demo {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--target-min);
+  padding: 0 var(--sp-4);
+  border: 1px solid var(--ember);
+  border-radius: 50px;
+  background: var(--ember);
+  color: var(--on-ember);
+  font-size: var(--fs-ui);
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color var(--dur-fast) var(--ease-hover), color var(--dur-fast) var(--ease-hover), border-color var(--dur-fast) var(--ease-hover);
+}
+
+.work-slide__demo.is-soon {
+  border-color: var(--work-line);
+  background: transparent;
+  color: var(--ink-2);
+}
+
+.work-slide__demo:hover,
+.work-slide__demo:focus-visible {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--bg);
+}
+
+.work-slide__more {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--target-min);
+  color: var(--muted);
+  font-size: var(--fs-ui);
+  text-underline-offset: 4px;
+  transition: color var(--dur-fast) var(--ease-hover);
+}
+
+.work-slide__more:hover,
+.work-slide__more:focus-visible {
+  color: var(--ink);
+}
+
+.work__count,
+.work__next,
+.work__steps {
+  display: none;
+}
+
+/* Wider than a phone: image left, text right, even when stacked. */
+@media (min-width: 769px) {
+  .work-slide {
+    grid-template-columns: 1.6fr 1fr;
+    border-radius: var(--work-radius);
+  }
+
+  .work-slide__media {
+    aspect-ratio: auto;
+    min-height: 420px;
+  }
+
+  .work-slide__info {
+    padding: var(--sp-8) calc(var(--work-radius) * 0.45 + var(--sp-5)) var(--sp-8) var(--sp-7);
+  }
+}
+
+/* ---------- Drum (wide screens, full motion, JS) ---------- */
+
+html.work-drum {
+  scroll-snap-type: y mandatory;
+}
+
+.work-drum .work-head {
+  position: fixed;
+}
+
+.work-drum .work__steps {
+  display: block;
+}
+
+.work-drum .work__steps > div {
+  height: 100vh;
+  scroll-snap-align: start;
+}
+
+.work-drum .work__stage {
+  position: fixed;
+  inset: 0;
+  padding: 0;
+}
+
+.work-drum .work__window {
+  position: absolute;
+  inset: var(--work-head) var(--gutter) var(--sp-9);
+  overflow: hidden;
+  border-radius: var(--work-radius);
+  background: var(--bg-deep);
+  perspective: 1800px;
+}
+
+.work-drum .work__drum {
+  position: absolute;
+  inset: 0;
+  display: block;
+  transform-style: preserve-3d;
+}
+
+.work-drum .work-slide {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  border-radius: 0;
+  backface-visibility: hidden;
+  will-change: transform, opacity;
+}
+
+.work-drum .work-slide__media {
+  min-height: 0;
+}
+
+.work-drum .work__count {
+  display: block;
+  position: fixed;
+  left: var(--gutter);
+  bottom: var(--sp-5);
+  color: var(--muted);
+}
+
+.work-drum .work__next {
+  display: grid;
+  place-items: center;
+  position: fixed;
+  left: 50%;
+  bottom: var(--sp-2);
+  width: var(--target-min);
+  height: var(--target-min);
+  translate: -50% 0;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+  transition: color var(--dur-fast) var(--ease-hover);
+}
+
+.work-drum .work__next[hidden] {
+  display: none;
+}
+
+.work__next svg {
+  width: 20px;
+  height: 20px;
+}
+
+.work__next:hover,
+.work__next:focus-visible {
+  color: var(--ink);
+}
+
+/* ---------- WebGL drum (js/work-gl.js) ----------
+   The canvas paints every face. The HTML slides stay on top for screen readers
+   and keyboard users, invisible except for the front project's links, which
+   sit where the painted panel leaves room and hide while the drum turns. */
+
+.work__gl {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.work-gl .work-slide {
+  background: none;
+  pointer-events: none;
+}
+
+.work-gl .work-slide__media,
+.work-gl .work-slide__pitch,
+.work-gl .work-slide__tags {
+  opacity: 0;
+}
+
+.work-gl .work-slide__info {
+  background: none;
+}
+
+.work-gl .work-slide__links {
+  position: absolute;
+  margin: 0;
+  opacity: 0;
+  transition: opacity var(--dur-fast) var(--ease-hover);
+}
+
+.work-gl .work-slide.is-active .work-slide__links,
+.work-gl .work-slide__links:focus-within {
+  opacity: 1;
+}
+
+.work-gl .work__window.is-turning .work-slide__links {
+  opacity: 0;
+}
+
+.work-gl .work-slide.is-active .work-slide__links a {
+  pointer-events: auto;
+}
+
+/* ---------- Entrance: the title, then the window ---------- */
+
+@keyframes work-rise {
+  from { opacity: 0; transform: translateY(16px); }
+}
+
+@keyframes work-open {
+  from { opacity: 0; transform: scale(0.96); }
+}
+
+.work-enter .work-head__title {
+  animation: work-rise var(--dur-med) var(--ease-inout) 100ms both;
+}
+
+.work-enter .work-head__back,
+.work-enter .work__count,
+.work-enter .work__next {
+  animation: work-rise var(--dur-med) var(--ease-inout) 700ms both;
+}
+
+.work-enter .work__window {
+  animation: work-open 900ms var(--ease-inout) 350ms both;
+}

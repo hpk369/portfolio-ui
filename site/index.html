@@ -18,6 +18,13 @@
       root.classList.add('js');
       if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
       try {
+        // Arriving from the Work page: fade in from black.
+        if (sessionStorage.getItem('hk-page-in')) {
+          sessionStorage.removeItem('hk-page-in');
+          root.classList.add('page-in');
+        }
+      } catch (e) { /* storage blocked: no fade */ }
+      try {
         if (sessionStorage.getItem('hk-intro-seen')) return;
         sessionStorage.setItem('hk-intro-seen', '1');
       } catch (e) { /* storage blocked: still play it */ }
@@ -78,6 +85,7 @@
           </span>
           <span class="intro__links">
             <a class="intro__demos" href="#demos">Demos ↓</a>
+            <a href="work/" data-transition>Work</a>
             <a href="#about">About</a>
             <a href="#notes">Notes</a>
             <a href="#contact">Contact</a>
@@ -330,6 +338,7 @@
         <li><a href="#intro">Intro</a></li>
         <li><a href="#about">About</a></li>
         <li><a href="#demos">Projects</a></li>
+        <li><a href="work/" data-transition>Work</a></li>
         <li><a href="#gallery">Gallery</a></li>
         <li><a href="#notes">Notes</a></li>
         <li><a href="#contact">Contact</a></li>

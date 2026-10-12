@@ -12,6 +12,7 @@ import { initScrollReveal } from './scroll-reveal.js';
 import { initShowcase, wirePanelLinks } from './showcase.js';
 import { initGallery } from './gallery.js';
 import { initPanel } from './panel.js';
+import { initPageTransitions } from './page-transition.js';
 
 const hasGsap = 'gsap' in window && 'ScrollTrigger' in window;
 document.documentElement.dataset.motion = reducedMotion ? 'reduced' : 'full';
@@ -66,6 +67,7 @@ async function start() {
   initScrollReveal();
   const menu = initMenu();
   initAnchors(menu);
+  initPageTransitions();
 
   let projects;
   try {

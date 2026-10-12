@@ -106,6 +106,17 @@ Harsh asked for an About section after the intro, and for the Projects and Galle
 - **Images** come from the GIFs already on hpk-website, converted to a WebP poster plus a muted 10s MP4 loop (`site/media/`, about 1.7 MB total versus 28 MB of GIFs). Clips load only when their preview is shown, and never under reduced motion. Not reused: the e-commerce GIF (shows the "Nike" brand, which CLAUDE.md forbids) and the PyRedis GIF (a "Redis" wordmark); those two, and the four projects without images, use the HTML preview cards. **Open question:** where those GIFs came from. If they are third-party animations, they need a licence check or replacing with real screenshots before launch.
 - The fixed logo and menu header moved out of the projects section and now shows from the first scroll on every section.
 
+## Work page (Oct 12, 2026)
+
+Harsh asked for a Work section after the reference's Work page (screen recording plus a measured `DESIGN_Work.md`). Only the interaction pattern and measured tokens were taken: no code, images or copy.
+
+- **A separate page, `site/work/`**, as in the recording: "Work" in the intro bar and the menu fades the home page to black, then the Work page opens with its title first and the window after. "Back" fades out and returns home, which fades in. Reduced motion skips both fades.
+- **The drum.** One rounded window (radius up to 140px) holds a four-sided drum; each project is a face, image on the left and a text panel on the right. One wheel gesture, arrow key, Page Down or the chevron turns it a quarter turn: the current project tips away at the top while the next rolls up from below. Scroll snapping keeps it on one project; a wheel handler stops a trackpad's inertia from skipping several. Tabbing into another slide turns the drum to it, and `work/#<slug>` opens on that project.
+- **WebGL (Oct 12, Harsh: "go ahead and use the WebGL").** `site/js/work-gl.js` draws the drum in raw WebGL (no library): each face is a subdivided mesh with a slight barrel lens, the image or its looping clip on the left and the text panel, painted with the 2D canvas API from the HTML slide, on the right. The real HTML links sit over the painted panel (shifted by the same lens) and hide while the drum turns; the rest of the HTML stays in the page, invisible, for screen readers and keyboard use. Projects without an image show a plain "Preview to come" tile in WebGL. Without WebGL, or if the GPU context is lost, the CSS 3D drum takes over. This replaces the "WebGL / Three.js spiral" exclusion below for the Work page only.
+- **Phones, reduced motion and no-JS** get a stacked list of the same slides.
+- **Measured tokens used:** 12% white hairlines, 50px pill radius, the signature curve at 0.6s and `ease` at 0.3s.
+- **Slide content (Harsh, Oct 12):** no category label and no year line. Stack shows "Stack · to come" on every project for now; the `kind` and `stack` fields were removed from `projects.json`.
+
 ## 3D intro background and full-screen reel (Oct 12, 2026)
 
 Harsh asked for the intro to follow a second screen recording of the reference site: a uniform, 3D-looking background that reacts to the cursor, and a reel that grows to fill the screen on scroll and then fades into the next section. Only the interaction pattern was taken: no code, video or images.
@@ -120,7 +131,7 @@ To re-render the reel: `cd scripts/intro-reel && npm i playwright-core@1.56.0 &&
 
 ## Out of scope for v1 (don't build)
 
-- WebGL / Three.js spiral (the intro background is WebGL since Oct 12; the spiral stays CSS 3D)
+- WebGL / Three.js spiral (exceptions at Harsh's request: the Work page drum, and the intro background since Oct 12; the spiral stays CSS 3D)
 - Sound
 - Cursor effects (except the intro background, Oct 12)
 - The reticle motion cues from canvas row 6
