@@ -8,8 +8,8 @@ import { ReplayPlayer } from '../../kit/js/replay-player.js';
 import { dataUrl, reducedMotion } from './env.js';
 
 const REPLAY = 'replays/etl-schema-drift.json';
-const SLIT = 'inset(41.5% 41.4% round 6px)';
-const OPEN = 'inset(0% 0% round 6px)';
+const SLIT = 'inset(41.5% 41.4%)';
+const OPEN = 'inset(0% 0%)';
 
 export function initReveal({ hasGsap }) {
   const mount = document.getElementById('reveal-player');

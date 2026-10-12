@@ -66,6 +66,34 @@ Known gaps on the current site, to fix before launch:
 
 Dark mode passes everywhere it's used: `--muted` on `--surface` 6.8:1, `--ink-2` on `--surface` 11.3:1, `--ember` on `--surface` 7.3:1, `--on-ember` on `--ember` 7.3:1, `--dim` on `--bg` 3.5:1 (large list titles only). **Light mode:** the spec's `--ember #B4501F` on `--bg #F4EFEA` is 4.47:1, just under 4.5:1 for body text. Fine for large text; revisit in the light-mode pass.
 
+## Mono direction (Oct 12, 2026)
+
+Harsh supplied a `DESIGN.md` reference (measured tokens from lukebaffait.fr, the same site that inspired frames F and G) and asked to recreate the portfolio with it. Only the measured tokens were taken: no code, assets, fonts, images or copy from that site. Layout, behaviour, content and accessibility rules are unchanged.
+
+| Area | Ember (before) | Mono (now) |
+| --- | --- | --- |
+| Ground | warm `#0B0A09` | `#0A0A0A`, surfaces `#111` / `#161616` |
+| Text | warm off-whites | `#F0F0F0` headings; white at 80% (body), 50% (meta), 35% (inactive list titles only) |
+| Accent | ember `#FF7A45` | red `#FF1E00` (light mode `#D41900`). Token names `--ember`, `--glow-*` kept so kit consumers don't break |
+| Type | Instrument Sans + Instrument Serif Italic + JetBrains Mono | **Inter** (variable, 400–700) for everything; JetBrains Mono only for replay steps and card code. Headings 700 with tight tracking |
+| Name | serif italic (Oct 11 decision) | **Inter 700**, with a red full stop. Replaces the Oct 11 serif-italic name |
+| Emphasis | italic serif words | same face in muted white (`.em-muted`) |
+| Meta labels | JetBrains Mono caps | Inter 500 caps (`.meta-label`, renamed from `.mono-meta`) |
+| Corners | pills, 6–22px radii | square everywhere (no radii observed) |
+| Shadows | glow shadows on cards and windows | none (none observed); the active spiral card gets a solid red border |
+| Motion | 180 / 420 / 700ms, ease-out | 600ms `cubic-bezier(0.87, 0, 0.13, 1)` for state changes; 300ms `ease` for hovers; links get an underline wipe |
+| Spacing | 40px gutter | 64px gutter (32px under 1200px, 16px on phones); section ends `clamp(96px, 17vw, 214px)` |
+| Project cards | one tint per project | neutral greys; red is the only colour |
+
+Deviations from the measured values, on purpose:
+- **Breton** (the reference body face) is a commercial font, so Inter is used for body text as well.
+- **Meta text is 50% white, not 45%.** 45% on `#0A0A0A` is 4.48:1, just under 4.5:1; 50% gives 5.3:1 on the ground and 5.0:1 on `--surface`.
+- **Inactive list titles are 35% white, not 20%.** 20% is about 1.9:1; 35% clears 3:1 for large text.
+- **Text on red is near-black**, not white: white on `#FF1E00` is 3.9:1, `#0A0A0A` on it is 5.1:1.
+- The reference is dark only; light mode is kept (CLAUDE.md asks for dark mode, and the site already honoured `prefers-color-scheme`).
+
+Fonts: Inter 4.x latin variable woff2 from `@fontsource-variable/inter` 5.2.8 (OFL, licence in `kit/fonts/`). The Instrument Sans / Serif files were removed.
+
 ## Out of scope for v1 (don't build)
 
 - WebGL / Three.js spiral

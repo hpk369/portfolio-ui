@@ -52,8 +52,8 @@
       "existingDemo": "https://hpk369.github.io/ai-qa-agent/"
     },
     "card": {
-      "bg": "#16120F",
-      "label": "#FF7A45",
+      "bg": "#111111",
+      "label": "#D9D9D9",
       "preview": "steps"
     }
   },
@@ -77,8 +77,8 @@
       "existingDemo": "https://hpk369.github.io/bank-platform/"
     },
     "card": {
-      "bg": "#13202B",
-      "label": "#9FC6E0",
+      "bg": "#161616",
+      "label": "#D9D9D9",
       "preview": "bars"
     }
   },
@@ -102,8 +102,8 @@
       "existingDemo": null
     },
     "card": {
-      "bg": "#2A1712",
-      "label": "#F2B79C",
+      "bg": "#111111",
+      "label": "#D9D9D9",
       "preview": "code"
     }
   },
@@ -127,8 +127,8 @@
       "existingDemo": null
     },
     "card": {
-      "bg": "#10241D",
-      "label": "#9FE0C4",
+      "bg": "#161616",
+      "label": "#D9D9D9",
       "preview": "chat"
     }
   },
@@ -152,8 +152,8 @@
       "existingDemo": null
     },
     "card": {
-      "bg": "#1E1A2C",
-      "label": "#B9AEE0",
+      "bg": "#111111",
+      "label": "#D9D9D9",
       "preview": "tools"
     }
   },
@@ -177,8 +177,8 @@
       "existingDemo": null
     },
     "card": {
-      "bg": "#221C10",
-      "label": "#E8D29A",
+      "bg": "#161616",
+      "label": "#D9D9D9",
       "preview": "line"
     }
   },
@@ -203,8 +203,8 @@
       "existingDemo": "https://hpk369.github.io/CineMatch/"
     },
     "card": {
-      "bg": "#1B2230",
-      "label": "#9FB3D9",
+      "bg": "#111111",
+      "label": "#D9D9D9",
       "preview": "posters"
     }
   },
@@ -228,8 +228,8 @@
       "existingDemo": null
     },
     "card": {
-      "bg": "#1F1622",
-      "label": "#D7B9E0",
+      "bg": "#161616",
+      "label": "#D9D9D9",
       "preview": "chain"
     }
   },
@@ -253,8 +253,8 @@
       "existingDemo": null
     },
     "card": {
-      "bg": "#1A1A1A",
-      "label": "#BDBDBD",
+      "bg": "#111111",
+      "label": "#D9D9D9",
       "preview": "terminal"
     }
   },
@@ -278,8 +278,8 @@
       "existingDemo": null
     },
     "card": {
-      "bg": "#1A1712",
-      "label": "#E0CFA9",
+      "bg": "#161616",
+      "label": "#D9D9D9",
       "preview": "store"
     }
   }

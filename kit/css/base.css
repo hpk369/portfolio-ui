@@ -2,31 +2,10 @@
    Load after tokens.css. Font URLs are relative to this file. */
 
 @font-face {
-  font-family: "Instrument Sans";
-  src: url("../fonts/instrument-sans-latin-400-normal.woff2") format("woff2");
-  font-weight: 400;
+  font-family: "Inter";
+  src: url("../fonts/inter-latin-wght-normal.woff2") format("woff2");
+  font-weight: 100 900;
   font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Instrument Sans";
-  src: url("../fonts/instrument-sans-latin-500-normal.woff2") format("woff2");
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Instrument Sans";
-  src: url("../fonts/instrument-sans-latin-600-normal.woff2") format("woff2");
-  font-weight: 600;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Instrument Serif";
-  src: url("../fonts/instrument-serif-latin-400-italic.woff2") format("woff2");
-  font-weight: 400;
-  font-style: italic;
   font-display: swap;
 }
 @font-face {
@@ -45,22 +24,13 @@
 }
 
 /* Metric-matched fallbacks, measured against the woff2 files
-   (Arial / Times New Roman Italic / Courier New metrics). */
+   (Arial / Courier New metrics). */
 @font-face {
-  font-family: "Instrument Sans Fallback";
+  font-family: "Inter Fallback";
   src: local("Arial"), local("Liberation Sans"), local("Helvetica");
-  size-adjust: 104.3%;
-  ascent-override: 93%;
-  descent-override: 24%;
-  line-gap-override: 0%;
-}
-@font-face {
-  font-family: "Instrument Serif Fallback";
-  src: local("Times New Roman Italic"), local("Times New Roman"), local("Liberation Serif Italic"), local("Liberation Serif");
-  font-style: italic;
-  size-adjust: 88%;
-  ascent-override: 112.5%;
-  descent-override: 35.2%;
+  size-adjust: 107.1%;
+  ascent-override: 90.4%;
+  descent-override: 22.5%;
   line-gap-override: 0%;
 }
 @font-face {
@@ -92,6 +62,7 @@ body {
   font-family: var(--font-sans);
   font-size: var(--fs-body);
   line-height: 1.5;
+  letter-spacing: var(--tracking-body);
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
 }
@@ -119,7 +90,7 @@ a {
   color: inherit;
 }
 
-/* Focus ring: 2px ember outline, 3px offset */
+/* Focus ring: 2px accent outline, 3px offset */
 :focus-visible {
   outline: 2px solid var(--ember);
   outline-offset: 3px;
@@ -138,17 +109,23 @@ a {
   border: 0;
 }
 
-.mono-meta {
-  font-family: var(--font-mono);
+.meta-label {
+  font-family: var(--font-sans);
+  font-weight: 500;
   font-size: var(--fs-meta);
   letter-spacing: var(--tracking-meta);
   text-transform: uppercase;
 }
 
-.serif-italic {
-  font-family: var(--font-serif);
-  font-style: italic;
-  font-weight: 400;
+/* Emphasis: the same face, set back in muted white instead of a contrasting italic. */
+.em-muted {
+  font-style: normal;
+  color: var(--muted);
+}
+
+/* The red full stop after the name and monogram. */
+.accent-dot {
+  color: var(--ember);
 }
 
 /* Reduced motion: transitions become instant; scripts check the same query. */

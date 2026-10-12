@@ -9,7 +9,7 @@
   <meta property="og:type" content="article">
   <meta property="og:title" content="ETL Triage Agent · Harsh Keshruwala">
   <meta property="og:description" content="When a data pipeline breaks, this agent works out what broke and how serious it is, then alerts the right person with a suggested fix.">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230B0A09'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-style='italic' font-size='17' text-anchor='middle' fill='%23FF7A45'%3Ehk.%3C/text%3E%3C/svg%3E">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230A0A0A'/%3E%3Ctext x='5' y='22' font-family='Arial,sans-serif' font-weight='700' font-size='17' letter-spacing='-1' fill='%23F0F0F0'%3Ehk%3Ctspan fill='%23FF1E00'%3E.%3C/tspan%3E%3C/text%3E%3C/svg%3E">
   <!-- With JavaScript, show this project as a panel over the home page. -->
   <script>location.replace('../../?project=etl-triage-agent' + location.hash);</script>
   <link rel="stylesheet" href="../../../kit/css/tokens.css">
@@ -19,16 +19,16 @@
 </head>
 <body class="project-page">
   <header class="project-page__head">
-    <a class="projects__mono serif-italic" href="../../">hk.</a>
+    <a class="projects__mono" href="../../">hk<span class="accent-dot">.</span></a>
     <a class="pill" href="../../#demos">← All projects</a>
   </header>
   <main class="project-page__main">
-    <p class="mono-meta project-page__meta">01 / 10 · /projects/etl-triage-agent</p>
-    <h1 class="project-page__title">ETL Triage <em class="serif-italic">Agent</em></h1>
+    <p class="meta-label project-page__meta">01 / 10 · /projects/etl-triage-agent</p>
+    <h1 class="project-page__title">ETL Triage <em class="em-muted">Agent</em></h1>
     <p class="project-page__pitch">When a data pipeline breaks, this agent works out what broke and how serious it is, then alerts the right person with a suggested fix.</p>
     <dl class="facts">
-      <div><dt class="mono-meta">Proves</dt><dd>Debugging and escalation</dd></div>
-      <div><dt class="mono-meta">Demo</dt><dd>Sample replay · synthetic data</dd></div>
+      <div><dt class="meta-label">Proves</dt><dd>Debugging and escalation</dd></div>
+      <div><dt class="meta-label">Demo</dt><dd>Sample replay · synthetic data</dd></div>
     </dl>
 
     <section class="project-page__section" aria-labelledby="try-it">
@@ -36,26 +36,26 @@
       <section class="static-scenario" aria-labelledby="scenario-clean-run">
         <h3 id="scenario-clean-run">Clean run</h3>
         <div class="replay replay--static">
-          <div class="replay__head"><p class="replay__title mono-meta">Clean run of the orders pipeline</p><p class="recorded-label mono-meta">Sample replay · synthetic data · not a real run</p></div>
+          <div class="replay__head"><p class="replay__title meta-label">Clean run of the orders pipeline</p><p class="recorded-label meta-label">Sample replay · synthetic data · not a real run</p></div>
           <ol class="replay__steps"><li class="replay__step" data-type="event"><span class="replay__time">0.0s</span><span class="replay__type">event</span><span class="replay__label">Pipeline event received</span><span class="replay__detail">pipeline: orders_daily · status: finished</span></li><li class="replay__step" data-type="tool_call"><span class="replay__time">0.9s</span><span class="replay__type">tool_call</span><span class="replay__label">schema_comparator</span><span class="replay__detail">table: orders · compare_to: yesterday</span></li><li class="replay__step" data-type="tool_result"><span class="replay__time">1.7s</span><span class="replay__type">tool_result</span><span class="replay__label">schema_comparator</span><span class="replay__detail">No schema changes.</span></li><li class="replay__step" data-type="tool_call"><span class="replay__time">2.6s</span><span class="replay__type">tool_call</span><span class="replay__label">row_count_check</span><span class="replay__detail">table: orders</span></li><li class="replay__step" data-type="tool_result"><span class="replay__time">3.4s</span><span class="replay__type">tool_result</span><span class="replay__label">row_count_check</span><span class="replay__detail">Row count is within the usual range for a weekday.</span></li><li class="replay__step" data-type="message"><span class="replay__time">4.6s</span><span class="replay__type">message</span><span class="replay__label">All checks passed</span><span class="replay__detail">Nothing broke. The run goes on to the end-to-end tests; no one is paged.</span></li></ol>
         </div>
-        <p class="what-happened"><span class="mono-meta">What just happened · </span>The pipeline finished and the agent checked it. The table looked the same as yesterday and the row count was normal. Nothing was wrong, so no one was paged.</p>
+        <p class="what-happened"><span class="meta-label">What just happened · </span>The pipeline finished and the agent checked it. The table looked the same as yesterday and the row count was normal. Nothing was wrong, so no one was paged.</p>
       </section>
       <section class="static-scenario" aria-labelledby="scenario-schema-drift">
         <h3 id="scenario-schema-drift">Schema drift</h3>
         <div class="replay replay--static">
-          <div class="replay__head"><p class="replay__title mono-meta">Schema drift in the orders pipeline</p><p class="recorded-label mono-meta">Sample replay · synthetic data · not a real run</p></div>
+          <div class="replay__head"><p class="replay__title meta-label">Schema drift in the orders pipeline</p><p class="recorded-label meta-label">Sample replay · synthetic data · not a real run</p></div>
           <ol class="replay__steps"><li class="replay__step" data-type="event"><span class="replay__time">0.0s</span><span class="replay__type">event</span><span class="replay__label">Pipeline event received</span><span class="replay__detail">pipeline: orders_daily · status: finished</span></li><li class="replay__step" data-type="tool_call"><span class="replay__time">0.9s</span><span class="replay__type">tool_call</span><span class="replay__label">schema_comparator</span><span class="replay__detail">table: orders · compare_to: yesterday</span></li><li class="replay__step" data-type="tool_result"><span class="replay__time">1.7s</span><span class="replay__type">tool_result</span><span class="replay__label">schema_comparator</span><span class="replay__detail">2 columns changed: amount renamed to order_total, created_at changed from timestamp to string.</span></li><li class="replay__step" data-type="message"><span class="replay__time">3.2s</span><span class="replay__type">message</span><span class="replay__label">Explaining what broke</span><span class="replay__detail">The upstream team changed the orders table. The revenue job still reads <code>amount</code>, so tonight&#x27;s revenue report would be empty.</span></li><li class="replay__step" data-type="alert"><span class="replay__time">4.8s</span><span class="replay__type">alert</span><span class="replay__label">P1 incident opened</span><span class="replay__detail">Severity P1: revenue reporting is affected. Paging the data-platform on-call engineer.</span></li><li class="replay__step" data-type="message"><span class="replay__time">6.2s</span><span class="replay__type">message</span><span class="replay__label">Suggested fix</span><span class="replay__detail">Map <code>order_total</code> back to <code>amount</code> in the ingest step, cast <code>created_at</code> to a timestamp, then re-run the revenue job.</span></li></ol>
         </div>
-        <p class="what-happened"><span class="mono-meta">What just happened · </span>An upstream table changed shape. The agent compared it with yesterday&#x27;s and saw two columns had changed. It opened a P1 for the on-call engineer with a suggested fix.</p>
+        <p class="what-happened"><span class="meta-label">What just happened · </span>An upstream table changed shape. The agent compared it with yesterday&#x27;s and saw two columns had changed. It opened a P1 for the on-call engineer with a suggested fix.</p>
       </section>
       <section class="static-scenario" aria-labelledby="scenario-kafka-lag">
         <h3 id="scenario-kafka-lag">Kafka lag</h3>
         <div class="replay replay--static">
-          <div class="replay__head"><p class="replay__title mono-meta">Kafka consumer lag on the orders stream</p><p class="recorded-label mono-meta">Sample replay · synthetic data · not a real run</p></div>
+          <div class="replay__head"><p class="replay__title meta-label">Kafka consumer lag on the orders stream</p><p class="recorded-label meta-label">Sample replay · synthetic data · not a real run</p></div>
           <ol class="replay__steps"><li class="replay__step" data-type="event"><span class="replay__time">0.0s</span><span class="replay__type">event</span><span class="replay__label">Lag alert received</span><span class="replay__detail">topic: orders · consumer_group: orders-ingest</span></li><li class="replay__step" data-type="tool_call"><span class="replay__time">0.9s</span><span class="replay__type">tool_call</span><span class="replay__label">consumer_lag</span><span class="replay__detail">consumer_group: orders-ingest</span></li><li class="replay__step" data-type="tool_result"><span class="replay__time">1.8s</span><span class="replay__type">tool_result</span><span class="replay__label">consumer_lag</span><span class="replay__detail">Lag has grown steadily for 20 minutes on one partition; the other partitions are caught up.</span></li><li class="replay__step" data-type="tool_call"><span class="replay__time">3.0s</span><span class="replay__type">tool_call</span><span class="replay__label">consumer_health</span><span class="replay__detail">consumer_group: orders-ingest</span></li><li class="replay__step" data-type="tool_result"><span class="replay__time">3.9s</span><span class="replay__type">tool_result</span><span class="replay__label">consumer_health</span><span class="replay__detail">One consumer instance is restarting in a loop.</span></li><li class="replay__step" data-type="message"><span class="replay__time">5.2s</span><span class="replay__type">message</span><span class="replay__label">Explaining what broke</span><span class="replay__detail">Orders are still arriving, but one stuck consumer means part of today&#x27;s data is late. Nothing is lost yet.</span></li><li class="replay__step" data-type="alert"><span class="replay__time">6.6s</span><span class="replay__type">alert</span><span class="replay__label">P2 ticket opened</span><span class="replay__detail">Severity P2: data is delayed, not lost. Ticket assigned to the streaming team with the restart logs attached.</span></li></ol>
         </div>
-        <p class="what-happened"><span class="mono-meta">What just happened · </span>Part of the orders stream started falling behind. The agent traced it to one consumer that kept restarting. Data was late but not lost, so it opened a P2 ticket instead of paging anyone.</p>
+        <p class="what-happened"><span class="meta-label">What just happened · </span>Part of the orders stream started falling behind. The agent traced it to one consumer that kept restarting. Data was late but not lost, so it opened a P2 ticket instead of paging anyone.</p>
       </section>
     </section>
 

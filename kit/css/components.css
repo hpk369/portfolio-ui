@@ -21,9 +21,9 @@
   text-decoration: none;
   cursor: pointer;
   transition:
-    background-color var(--dur-fast) var(--ease-out),
-    border-color var(--dur-fast) var(--ease-out),
-    color var(--dur-fast) var(--ease-out);
+    background-color var(--dur-fast) var(--ease-hover),
+    border-color var(--dur-fast) var(--ease-hover),
+    color var(--dur-fast) var(--ease-hover);
 }
 
 .btn {
@@ -38,7 +38,7 @@
 .btn:hover,
 .pill:hover,
 .icon-btn:hover {
-  border-color: var(--ink-2);
+  border-color: var(--ink);
 }
 
 .pill[aria-pressed="true"] {
@@ -63,9 +63,9 @@
 /* Visually small, but the hit area stays 44px tall via min-height. */
 .pill--small {
   padding: 0 var(--sp-3);
-  font-family: var(--font-mono);
   font-size: var(--fs-meta);
   letter-spacing: var(--tracking-meta);
+  text-transform: uppercase;
 }
 
 .icon-btn {
@@ -98,7 +98,7 @@
   width: 6px;
   height: 6px;
   margin-right: var(--sp-2);
-  border-radius: 50%;
+  border-radius: 0;
   background: var(--muted);
   vertical-align: 1px;
 }
@@ -139,7 +139,7 @@
 .replay__dots span {
   width: 9px;
   height: 9px;
-  border-radius: 50%;
+  border-radius: 0;
   background: var(--line-strong);
 }
 
@@ -171,7 +171,7 @@
   column-gap: var(--sp-3);
   padding: 6px 0 6px var(--sp-3);
   border-left: 2px solid var(--line);
-  animation: replay-step-in var(--dur-med) var(--ease-out) both;
+  animation: replay-step-in var(--dur-med) var(--ease-inout) both;
 }
 
 .replay__step[hidden] {
@@ -201,7 +201,7 @@
   color: var(--ink);
   background: var(--surface-2);
   border: 1px solid var(--line);
-  border-radius: 4px;
+  border-radius: 0;
   padding: 0 4px;
 }
 
@@ -342,7 +342,7 @@
 
 .pcard__chip--ember {
   border: 0;
-  border-radius: 6px;
+  border-radius: 0;
   padding: 6px 10px;
   background: var(--ember);
   color: var(--on-ember);
@@ -382,7 +382,7 @@
 
 .pcard__bubble {
   padding: 10px 12px;
-  border-radius: 10px;
+  border-radius: 0;
   background: var(--card-tint);
   font-size: 13px;
   color: var(--ink);
@@ -414,7 +414,7 @@
 
 .pcard__posters span,
 .pcard__store span {
-  border-radius: 4px;
+  border-radius: 0;
   background: var(--card-tint);
 }
 
@@ -432,7 +432,7 @@
   flex: none;
   padding: 10px 8px;
   border: 1px solid var(--card-soft);
-  border-radius: 6px;
+  border-radius: 0;
   font-family: var(--font-mono);
   font-size: 11px;
 }

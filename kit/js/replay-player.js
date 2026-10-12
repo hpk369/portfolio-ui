@@ -229,7 +229,7 @@ export class ReplayPlayer extends EventTarget {
     const head = el('div', 'replay__head');
     const dots = el('span', 'replay__dots', { 'aria-hidden': 'true' });
     dots.append(el('span'), el('span'), el('span'));
-    const title = el('p', 'replay__title mono-meta');
+    const title = el('p', 'replay__title meta-label');
     title.textContent = this.heading ?? replay.title;
     head.append(dots, title, createRecordedLabel(replay));
 
@@ -262,7 +262,7 @@ export class ReplayPlayer extends EventTarget {
     const bar = el('span', 'replay__bar');
     progress.append(bar);
 
-    const count = el('span', 'replay__count mono-meta');
+    const count = el('span', 'replay__count meta-label');
 
     const speed = el('div', 'replay__speed', { role: 'group', 'aria-label': 'Playback speed' });
     this.speedBtns = SPEEDS.map((s) => {

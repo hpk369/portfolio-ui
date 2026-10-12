@@ -42,7 +42,7 @@ def title_html(project: dict) -> str:
     title, italic = project["title"], project.get("titleItalicWord")
     if italic and title.endswith(italic):
         head = title[: -len(italic)]
-        return f'{escape(head)}<em class="serif-italic">{escape(italic)}</em>'
+        return f'{escape(head)}<em class="em-muted">{escape(italic)}</em>'
     return escape(title)
 
 
@@ -94,7 +94,7 @@ def replay_html(project: dict) -> str:
             )
         happened = project.get("whatHappened", {}).get(scenario["id"])
         happened_html = (
-            f'<p class="what-happened"><span class="mono-meta">What just happened · </span>{escape(" ".join(happened))}</p>'
+            f'<p class="what-happened"><span class="meta-label">What just happened · </span>{escape(" ".join(happened))}</p>'
             if happened
             else ""
         )
@@ -103,7 +103,7 @@ def replay_html(project: dict) -> str:
       <section class="static-scenario" aria-labelledby="scenario-{escape(scenario['id'])}">
         <h3 id="scenario-{escape(scenario['id'])}">{escape(scenario['label'])}</h3>
         <div class="replay replay--static">
-          <div class="replay__head"><p class="replay__title mono-meta">{escape(replay['title'])}</p><p class="recorded-label mono-meta">{escape(recorded_label(replay))}</p></div>
+          <div class="replay__head"><p class="replay__title meta-label">{escape(replay['title'])}</p><p class="recorded-label meta-label">{escape(recorded_label(replay))}</p></div>
           <ol class="replay__steps">{''.join(steps)}</ol>
         </div>
         {happened_html}
@@ -130,7 +130,7 @@ def demo_html(project: dict) -> str:
     return f"""
       <div class="demo-placeholder">
         <p class="demo-placeholder__title">Demo coming soon</p>
-        <p class="mono-meta">This project is being rebuilt so you can try it in under a minute.</p>
+        <p class="meta-label">This project is being rebuilt so you can try it in under a minute.</p>
       </div>{existing_html}"""
 
 
@@ -165,7 +165,7 @@ def page_html(project: dict, index: int, total: int) -> str:
   <meta property="og:type" content="article">
   <meta property="og:title" content="{escape(project['title'])} · Harsh Keshruwala">
   <meta property="og:description" content="{escape(pitch)}">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230B0A09'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-style='italic' font-size='17' text-anchor='middle' fill='%23FF7A45'%3Ehk.%3C/text%3E%3C/svg%3E">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230A0A0A'/%3E%3Ctext x='5' y='22' font-family='Arial,sans-serif' font-weight='700' font-size='17' letter-spacing='-1' fill='%23F0F0F0'%3Ehk%3Ctspan fill='%23FF1E00'%3E.%3C/tspan%3E%3C/text%3E%3C/svg%3E">
   <!-- With JavaScript, show this project as a panel over the home page. -->
   <script>location.replace('../../?project={escape(slug)}' + location.hash);</script>
   <link rel="stylesheet" href="../../../kit/css/tokens.css">
@@ -175,16 +175,16 @@ def page_html(project: dict, index: int, total: int) -> str:
 </head>
 <body class="project-page">
   <header class="project-page__head">
-    <a class="projects__mono serif-italic" href="../../">hk.</a>
+    <a class="projects__mono" href="../../">hk<span class="accent-dot">.</span></a>
     <a class="pill" href="../../#demos">← All projects</a>
   </header>
   <main class="project-page__main">
-    <p class="mono-meta project-page__meta">{index:02d} / {total:02d} · /projects/{escape(slug)}</p>
+    <p class="meta-label project-page__meta">{index:02d} / {total:02d} · /projects/{escape(slug)}</p>
     <h1 class="project-page__title">{title_html(project)}</h1>
     <p class="project-page__pitch">{text_or_placeholder(project.get('pitch'), 'pitch')}</p>
     <dl class="facts">
-      <div><dt class="mono-meta">Proves</dt><dd>{text_or_placeholder(project.get('proves'), 'proves')}</dd></div>
-      <div><dt class="mono-meta">Demo</dt><dd>{escape(demo_label)}</dd></div>
+      <div><dt class="meta-label">Proves</dt><dd>{text_or_placeholder(project.get('proves'), 'proves')}</dd></div>
+      <div><dt class="meta-label">Demo</dt><dd>{escape(demo_label)}</dd></div>
     </dl>
 
     <section class="project-page__section" aria-labelledby="try-it">
@@ -213,7 +213,7 @@ def page_html(project: dict, index: int, total: int) -> str:
 def list_html(projects: list[dict]) -> str:
     items = []
     for p in projects:
-        proves = f'<sup class="plist__proves mono-meta">{escape(p["proves"])}</sup>' if p.get("proves") else ""
+        proves = f'<sup class="plist__proves meta-label">{escape(p["proves"])}</sup>' if p.get("proves") else ""
         items.append(
             f'          <li class="plist__item"><a class="plist__link" href="projects/{escape(p["slug"])}/" '
             f'data-slug="{escape(p["slug"])}"><span class="plist__title">{escape(p["title"])}</span>{proves}</a></li>'

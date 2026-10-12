@@ -20,7 +20,7 @@ export function recordedLabelText(replay) {
 
 export function createRecordedLabel(replay) {
   const el = document.createElement('p');
-  el.className = 'recorded-label mono-meta';
+  el.className = 'recorded-label meta-label';
   el.dataset.source = replay.source;
   el.textContent = recordedLabelText(replay);
   return el;

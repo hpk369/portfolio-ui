@@ -33,7 +33,7 @@ function titleNode(project) {
   h2.tabIndex = -1;
   const { title, titleItalicWord: italic } = project;
   if (italic && title.endsWith(italic)) {
-    h2.append(title.slice(0, -italic.length), el('em', 'serif-italic', italic));
+    h2.append(title.slice(0, -italic.length), el('em', 'em-muted', italic));
   } else {
     h2.textContent = title;
   }
@@ -80,7 +80,7 @@ export function initPanel({ projects }) {
         stage.replaceChildren(el('p', 'is-placeholder', 'The replay could not load. Try the static page instead.'));
       });
       const lines = project.whatHappened?.[scenarioId];
-      if (lines) happened.append(el('span', 'mono-meta', 'What just happened · '), lines.join(' '));
+      if (lines) happened.append(el('span', 'meta-label', 'What just happened · '), lines.join(' '));
       return;
     }
 
@@ -101,7 +101,7 @@ export function initPanel({ projects }) {
     const box = el('div', 'demo-placeholder');
     box.append(
       el('p', 'demo-placeholder__title', 'Demo coming soon'),
-      el('p', 'mono-meta', 'This project is being rebuilt so you can try it in under a minute.'),
+      el('p', 'meta-label', 'This project is being rebuilt so you can try it in under a minute.'),
     );
     stage.append(box);
     if (project.links?.existingDemo) {
@@ -125,7 +125,7 @@ export function initPanel({ projects }) {
       ['Demo', el('dd', '', project.demoLabel ?? 'Coming soon')],
     ]) {
       const row = el('div');
-      row.append(el('dt', 'mono-meta', label), node);
+      row.append(el('dt', 'meta-label', label), node);
       facts.append(row);
     }
     const links = el('div', 'panel__links');
@@ -135,7 +135,7 @@ export function initPanel({ projects }) {
       linkPill('90s video', project.links?.video),
     );
     info.append(
-      el('p', 'mono-meta panel__meta', `${pad(index + 1)} / ${pad(projects.length)} · /projects/${project.slug}`),
+      el('p', 'meta-label panel__meta', `${pad(index + 1)} / ${pad(projects.length)} · /projects/${project.slug}`),
       title,
       textOrPlaceholder('p', 'panel__pitch', project.pitch, 'pitch'),
       facts,

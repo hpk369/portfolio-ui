@@ -1,4 +1,4 @@
-/* Ember portfolio: page layout and sections (spec §5).
+/* Portfolio page layout and sections (spec §5, "Mono" direction).
    Everything uses tokens from kit/css/tokens.css. */
 
 html.has-dialog {
@@ -71,7 +71,7 @@ html.has-dialog {
     min-height: var(--target-min);
     color: var(--muted);
     text-decoration: none;
-    transition: color var(--dur-fast) var(--ease-out);
+    transition: color var(--dur-fast) var(--ease-hover);
   }
 
   .rail a::after {
@@ -79,7 +79,7 @@ html.has-dialog {
     width: 2px;
     height: 40px;
     background: var(--line);
-    transition: background-color var(--dur-fast) var(--ease-out);
+    transition: background-color var(--dur-fast) var(--ease-hover);
   }
 
   .rail a:hover,
@@ -107,7 +107,7 @@ html.has-dialog {
   .js .scroll-count {
     opacity: 0;
     visibility: hidden;
-    transition: opacity var(--dur-med) var(--ease-out), visibility var(--dur-med);
+    transition: opacity var(--dur-med) var(--ease-inout), visibility var(--dur-med);
   }
 
   .js .rail.is-visible,
@@ -141,9 +141,6 @@ html.has-dialog {
   line-height: 1.45;
 }
 
-.intro__tagline em {
-  font-size: 16px;
-}
 
 .intro__name {
   display: flex;
@@ -153,14 +150,14 @@ html.has-dialog {
   gap: 0 var(--sp-4);
   margin-bottom: var(--sp-8);
   font-size: var(--fs-name);
-  font-weight: 400;
-  line-height: 0.9;
+  font-weight: 700;
+  line-height: 0.86;
 }
 
 .intro__first,
 .intro__last {
   color: var(--ink-cool);
-  letter-spacing: var(--tracking-name-serif);
+  letter-spacing: var(--tracking-name);
 }
 
 .intro__last {
@@ -205,8 +202,28 @@ html.has-dialog {
   text-decoration: none;
 }
 
+.intro__bar a,
+.menu__ext a,
+.contact__email {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-position: 100% 78%;
+  background-size: 0 1px;
+  transition: background-size var(--dur-med) var(--ease-inout), color var(--dur-fast) var(--ease-hover);
+}
+
+.intro__bar a:hover,
+.intro__bar a:focus-visible,
+.menu__ext a:hover,
+.menu__ext a:focus-visible,
+.contact__email:hover,
+.contact__email:focus-visible {
+  background-position: 0 78%;
+  background-size: 100% 1px;
+}
+
 .intro__bar a:hover {
-  color: var(--ember);
+  color: var(--ink);
 }
 
 .intro__demos {
@@ -347,8 +364,7 @@ html.has-dialog {
   height: 470px;
   margin: 0;
   border-radius: var(--r-window-reveal);
-  box-shadow: 0 40px 140px -30px #000;
-}
+  }
 
 .reveal__player {
   height: 100%;
@@ -370,7 +386,9 @@ html.has-dialog {
 
 .reveal__line {
   font-size: var(--fs-reveal);
-  line-height: 1.15;
+  font-weight: 700;
+  letter-spacing: var(--tracking-head);
+  line-height: 1.1;
   text-align: center;
 }
 
@@ -397,7 +415,7 @@ html.has-dialog {
   width: min(700px, 72vw);
   height: min(470px, 62svh);
   pointer-events: auto;
-  clip-path: inset(41.5% 41.4% round 6px);
+  clip-path: inset(41.5% 41.4%);
   opacity: 0;
 }
 
@@ -436,7 +454,9 @@ html.has-dialog {
   display: inline-flex;
   align-items: center;
   min-height: var(--target-min);
-  font-size: 26px;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.05em;
   text-decoration: none;
 }
 
@@ -472,7 +492,7 @@ html.has-dialog {
 .view-toggle__dot {
   width: 6px;
   height: 6px;
-  border-radius: 50%;
+  border-radius: 0;
   background: var(--ink);
 }
 
@@ -488,7 +508,7 @@ html.has-dialog {
   align-items: center;
   gap: 2px;
   font-size: var(--fs-list);
-  font-weight: 500;
+  font-weight: 700;
   letter-spacing: var(--tracking-list);
   line-height: 1.22;
   text-align: center;
@@ -500,7 +520,7 @@ html.has-dialog {
   padding: 0 var(--sp-2);
   color: var(--dim);
   text-decoration: none;
-  transition: color var(--dur-fast) var(--ease-out);
+  transition: color var(--dur-med) var(--ease-inout);
 }
 
 .plist__link:hover,
@@ -517,7 +537,7 @@ html.has-dialog {
   white-space: nowrap;
   color: var(--ember);
   opacity: 0;
-  transition: opacity var(--dur-fast) var(--ease-out);
+  transition: opacity var(--dur-fast) var(--ease-hover);
 }
 
 .plist__link:hover .plist__proves,
@@ -538,7 +558,7 @@ html.has-dialog {
   pointer-events: none;
   opacity: 0;
   scale: 0.94;
-  transition: opacity var(--dur-med) var(--ease-out), scale var(--dur-med) var(--ease-out);
+  transition: opacity var(--dur-med) var(--ease-inout), scale var(--dur-med) var(--ease-inout);
 }
 
 .list-preview.is-visible {
@@ -547,8 +567,7 @@ html.has-dialog {
 }
 
 .list-preview .pcard {
-  box-shadow: 0 30px 80px -20px #000;
-}
+  }
 
 @media (hover: none), (pointer: coarse) {
   .list-preview {
@@ -618,15 +637,14 @@ html.has-dialog {
 }
 
 .spiral-card .pcard {
-  transition: border-color var(--dur-med) var(--ease-out), box-shadow var(--dur-med) var(--ease-out);
+  transition: border-color var(--dur-med) var(--ease-inout);
 }
 
 .spiral-card.is-active .pcard {
-  border-color: color-mix(in srgb, var(--ember) 40%, transparent);
+  border-color: var(--ember);
   border-radius: var(--r-card-active);
   background: var(--card-bg);
-  box-shadow: 0 30px 120px -20px color-mix(in srgb, var(--glow-1) 40%, transparent);
-}
+  }
 
 .spiral-pill {
   position: absolute;
@@ -653,7 +671,7 @@ html.has-dialog {
   place-items: center;
   width: 36px;
   height: 36px;
-  border-radius: 8px;
+  border-radius: 0;
   background: var(--surface-2);
   color: var(--ember);
 }
@@ -701,7 +719,7 @@ html.has-dialog {
 }
 
 .panel[open] {
-  animation: panel-in var(--dur-slow) var(--ease-out);
+  animation: panel-in var(--dur-slow) var(--ease-inout);
 }
 
 .panel.no-anim[open] {
@@ -748,19 +766,15 @@ html.has-dialog {
 .panel__title,
 .project-page__title {
   font-size: var(--fs-h2);
-  font-weight: 500;
+  font-weight: 700;
   line-height: 0.98;
-  letter-spacing: -0.035em;
+  letter-spacing: var(--tracking-head);
 }
 
 .panel__title:focus {
   outline: none;
 }
 
-.panel__title em,
-.project-page__title em {
-  letter-spacing: -0.01em;
-}
 
 .panel__pitch,
 .project-page__pitch {
@@ -808,7 +822,7 @@ html.has-dialog {
   overflow-y: auto;
   padding: var(--sp-7);
   padding-top: calc(var(--sp-7) + var(--sp-5));
-  background: radial-gradient(circle at 70% 20%, color-mix(in srgb, var(--glow-3) 55%, var(--surface)) 0%, var(--surface) 60%);
+  background: radial-gradient(circle at 70% 20%, color-mix(in srgb, var(--ember) 10%, var(--surface)) 0%, var(--surface) 60%);
 }
 
 .scenario-pills {
@@ -835,7 +849,7 @@ html.has-dialog {
   color: var(--ink-2);
 }
 
-.what-happened .mono-meta {
+.what-happened .meta-label {
   color: var(--ember);
 }
 
@@ -876,12 +890,12 @@ html.has-dialog {
 }
 
 .demo-placeholder__title {
-  font-family: var(--font-serif);
-  font-style: italic;
   font-size: 32px;
+  font-weight: 700;
+  letter-spacing: var(--tracking-head);
 }
 
-.demo-placeholder .mono-meta {
+.demo-placeholder .meta-label {
   color: var(--muted);
 }
 
@@ -934,7 +948,7 @@ html.has-dialog {
 .menu[open] {
   display: grid;
   place-items: center;
-  animation: fade-in var(--dur-med) var(--ease-out);
+  animation: fade-in var(--dur-med) var(--ease-inout);
 }
 
 .menu__close {
@@ -948,8 +962,8 @@ html.has-dialog {
   justify-items: center;
   gap: var(--sp-2);
   font-size: var(--fs-h2);
-  font-weight: 500;
-  letter-spacing: -0.03em;
+  font-weight: 700;
+  letter-spacing: var(--tracking-head);
 }
 
 .menu__list a,
@@ -980,15 +994,19 @@ html.has-dialog {
 
 .section-title {
   font-size: var(--fs-h2);
-  font-weight: 500;
+  font-weight: 700;
   line-height: 1;
-  letter-spacing: -0.035em;
+  letter-spacing: var(--tracking-head);
 }
 
 .notes,
 .contact {
-  padding: var(--sp-10) var(--gutter);
+  padding: var(--sp-9) var(--gutter) var(--sp-section);
   border-top: 1px solid var(--line);
+}
+
+.contact {
+  padding-bottom: var(--sp-9);
 }
 
 .notes__list {
@@ -1013,9 +1031,9 @@ html.has-dialog {
 
 .note__title {
   font-size: 22px;
-  font-weight: 500;
+  font-weight: 700;
   line-height: 1.2;
-  letter-spacing: -0.015em;
+  letter-spacing: -0.025em;
 }
 
 .contact__lead {
@@ -1026,12 +1044,11 @@ html.has-dialog {
 .contact__email {
   display: inline-block;
   margin-top: var(--sp-5);
-  font-family: var(--font-serif);
-  font-style: italic;
   font-size: clamp(26px, 4.5vw, 56px);
-  color: var(--ember);
-  text-underline-offset: 0.15em;
-  text-decoration-thickness: 1px;
+  font-weight: 700;
+  letter-spacing: var(--tracking-head);
+  color: var(--ink);
+  text-decoration: none;
   overflow-wrap: anywhere;
 }
 
@@ -1043,7 +1060,7 @@ html.has-dialog {
 }
 
 .contact__foot {
-  margin-top: var(--sp-9);
+  margin-top: var(--sp-section);
   color: var(--muted);
 }
 
@@ -1076,9 +1093,9 @@ html.has-dialog {
 }
 
 .project-page__h2 {
-  font-size: 28px;
-  font-weight: 500;
-  letter-spacing: -0.02em;
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: var(--tracking-head);
 }
 
 .static-scenario {

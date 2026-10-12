@@ -1,6 +1,6 @@
 # portfolio-ui
 
-Harsh Keshruwala's portfolio site ("Ember") and the shared UI kit that the site and every project demo use.
+Harsh Keshruwala's portfolio site ("Mono" direction, formerly "Ember") and the shared UI kit that the site and every project demo use.
 
 - **`kit/`**: shared, versioned CSS, JS, fonts, and vendored libraries. Project demos load a pinned tag (`kit-vX.Y.Z`), never "latest".
 - **`site/`**: the portfolio itself: plain HTML, CSS, and ES modules, with no build step. It runs on GitHub Pages.
@@ -35,7 +35,7 @@ A field set to `null` shows as a placeholder on the site. Set `"ready": false` t
 
 ```
 kit/
-  css/     tokens.css (design tokens), base.css (fonts, reset, focus ring, utilities)
+  css/     tokens.css (design tokens), base.css (fonts, reset, focus ring, utilities), components.css
   js/      replay-player.js, recorded-label.js, project-card.js, dialog.js
   examples/  replay-player.html (standalone player check)
   fonts/   self-hosted woff2 + OFL licences
@@ -55,4 +55,4 @@ docs/      ui-spec.md, decisions.md
 
 ## Credits
 
-Fonts: Instrument Sans and Instrument Serif (The Instrument Sans Project Authors), JetBrains Mono (The JetBrains Mono Project Authors), all under the SIL Open Font License 1.1. Motion: GSAP (GreenSock) and Lenis (darkroom.engineering).
+Fonts: Inter (The Inter Project Authors) and JetBrains Mono (The JetBrains Mono Project Authors), both under the SIL Open Font License 1.1. Motion: GSAP (GreenSock) and Lenis (darkroom.engineering).

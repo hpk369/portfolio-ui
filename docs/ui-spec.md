@@ -57,6 +57,8 @@ A single-page portfolio with three movements, plus a project panel:
 
 ## 2. Design tokens
 
+> **Superseded on Oct 12, 2026 by the "Mono" direction** (Harsh supplied a measured design reference). The values below are the original Ember tokens, kept for history. Current values live in `kit/css/tokens.css`; what changed and why is in `docs/decisions.md` → "Mono direction". Layout, behaviour and accessibility rules in the rest of this spec still apply.
+
 Put these in `kit/css/tokens.css` as CSS custom properties. Every component uses tokens, never raw hex values.
 
 ### Colour (dark-first)

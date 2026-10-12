@@ -1,65 +1,73 @@
-/* Ember design tokens (spec §2). Components use these, never raw hex values. */
+/* Design tokens. Components use these, never raw hex values.
+   "Mono" direction (Oct 12, 2026): near-black ground, white text at fixed opacities,
+   one red accent, Inter, square corners, no shadows, one signature easing.
+   Token names (--ember, --glow-*) are kept from the Ember direction so kit consumers
+   don't break; their values changed. See docs/decisions.md. */
 
 :root {
   color-scheme: dark;
 
   /* Colour (dark-first) */
-  --bg: #0B0A09;
-  --bg-deep: #050404;
-  --surface: #14110F;
-  --surface-2: #16120F;
-  --line: #2E2621;
-  --line-strong: #3A2E27;
-  --ink: #EDE8E3;
-  --ink-cool: #E6EEEA;
-  --ink-2: #CFC7C0;
-  --muted: #A39A92;
-  --dim: #6E655E;          /* only on the 46px list titles */
-  --ember: #FF7A45;
-  --on-ember: #1A0F08;
-  --glow-1: #FF6A2B;
-  --glow-2: #D8321A;
-  --glow-3: #5A120C;
-  --glow-opacity: 1;
-  --grid-line: #FFFFFF08;
+  --bg: #0A0A0A;
+  --bg-deep: #000000;
+  --surface: #111111;
+  --surface-2: #161616;
+  --line: rgba(255, 255, 255, 0.1);
+  --line-strong: rgba(255, 255, 255, 0.2);
+  --ink: #F0F0F0;                       /* headings, primary text */
+  --ink-cool: #F0F0F0;                  /* the name */
+  --ink-2: rgba(255, 255, 255, 0.8);    /* body text */
+  --muted: rgba(255, 255, 255, 0.5);    /* labels, meta (0.45 measured; 0.5 clears 4.5:1 on --surface) */
+  --dim: rgba(255, 255, 255, 0.35);     /* large text only: inactive list titles */
+  --ember: #FF1E00;                     /* the one accent */
+  --on-ember: #0A0A0A;
+  --glow-1: #FF1E00;
+  --glow-2: #8C1000;
+  --glow-3: #2A0500;
+  --glow-opacity: 0.55;
+  --grid-line: rgba(255, 255, 255, 0.03);
 
   /* Type families (metric-matched fallbacks are declared in base.css) */
-  --font-sans: "Instrument Sans", "Instrument Sans Fallback", system-ui, sans-serif;
-  --font-serif: "Instrument Serif", "Instrument Serif Fallback", Georgia, serif;
+  --font-sans: "Inter", "Inter Fallback", "Helvetica Neue", Arial, sans-serif;
+  --font-serif: var(--font-sans);       /* no serif in this direction */
   --font-mono: "JetBrains Mono", "JetBrains Mono Fallback", ui-monospace, monospace;
 
   /* Type scale */
-  --fs-name: clamp(72px, 13vw, 176px);
+  --fs-name: clamp(64px, 13vw, 184px);
   --fs-reveal: clamp(28px, 3.4vw, 44px);
-  --fs-list: clamp(30px, 3.6vw, 46px);
-  --fs-h2: clamp(36px, 4vw, 52px);
-  --fs-body: 17px;
+  --fs-list: clamp(30px, 3.6vw, 48px);
+  --fs-h2: clamp(32px, 4vw, 56px);
+  --fs-body: 18px;
   --fs-ui: 14px;
-  --fs-meta: 11px;
-  --tracking-meta: 0.04em;
-  --tracking-name-serif: -0.02em;
-  --tracking-list: -0.025em;
+  --fs-meta: 12px;
+  --tracking-meta: 0.02em;
+  --tracking-name: -0.055em;
+  --tracking-head: -0.04em;
+  --tracking-list: -0.035em;
+  --tracking-body: -0.005em;
 
-  /* Space */
+  /* Space (32 and 64 are the measured rhythm; 214 and 320 are section ends) */
   --sp-1: 4px;
   --sp-2: 8px;
   --sp-3: 12px;
   --sp-4: 16px;
   --sp-5: 24px;
-  --sp-6: 28px;
+  --sp-6: 32px;
   --sp-7: 40px;
   --sp-8: 48px;
   --sp-9: 64px;
   --sp-10: 96px;
-  --gutter: 40px;
+  --sp-section: clamp(96px, 17vw, 214px);
+  --sp-section-lg: clamp(128px, 26vw, 320px);
+  --gutter: 64px;
 
-  /* Radius */
-  --r-pill: 999px;
-  --r-card: 12px;
-  --r-card-active: 14px;
-  --r-panel: 22px;
-  --r-window-reveal: 6px;
-  --r-window-panel: 14px;
+  /* Radius: none observed in the reference, so everything is square */
+  --r-pill: 0;
+  --r-card: 0;
+  --r-card-active: 0;
+  --r-panel: 0;
+  --r-window-reveal: 0;
+  --r-window-panel: 0;
 
   /* Layers */
   --z-glow: 0;
@@ -69,15 +77,22 @@
   --z-panel: 100;
   --z-panel-close: 110;
 
-  /* Motion */
-  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
-  --ease-inout: cubic-bezier(0.65, 0, 0.35, 1);
-  --dur-fast: 180ms;
-  --dur-med: 420ms;
-  --dur-slow: 700ms;
+  /* Motion: one signature curve at 0.6s; hovers use plain ease at 0.3s */
+  --ease-inout: cubic-bezier(0.87, 0, 0.13, 1);
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);   /* continuous motion only (pointer lerp, step-in) */
+  --ease-hover: ease;
+  --dur-fast: 300ms;
+  --dur-med: 600ms;
+  --dur-slow: 600ms;
 
   /* Targets */
   --target-min: 44px;
+}
+
+@media (max-width: 1200px) {
+  :root {
+    --gutter: 32px;
+  }
 }
 
 @media (max-width: 767px) {
@@ -87,32 +102,33 @@
   }
 }
 
-/* Below 360px the spec's 72px minimum overflows ("Keshruwala." is ~4.26em wide).
-   20vw keeps the surname inside a 320px screen. See docs/decisions.md. */
+/* Below 360px "Keshruwala." must still fit a 320px screen. */
 @media (max-width: 359px) {
   :root {
-    --fs-name: 20vw;
+    --fs-name: 18vw;
   }
 }
 
-/* Light mode: honoured but unpolished until Harsh asks for a pass (spec §2). */
+/* Light mode: the same system inverted. Red darkens to keep 4.5:1 on the light ground. */
 @media (prefers-color-scheme: light) {
   :root {
     color-scheme: light;
-    --bg: #F4EFEA;
-    --bg-deep: #E6DED6;
-    --surface: #FBF8F5;
-    --surface-2: #FFFFFF;
-    --line: #DDD2C8;
-    --line-strong: #C9BBAE;
-    --ink: #1B1411;
-    --ink-cool: #1A1716;
-    --ink-2: #3A2F29;
-    --muted: #6B5E55;
-    --dim: #8A7C72;
-    --ember: #B4501F;
-    --on-ember: #FFF6F0;
-    --glow-opacity: 0.35;
-    --grid-line: #00000008;
+    --bg: #F0F0F0;
+    --bg-deep: #DADADA;
+    --surface: #FFFFFF;
+    --surface-2: #F7F7F7;
+    --line: rgba(10, 10, 10, 0.1);
+    --line-strong: rgba(10, 10, 10, 0.22);
+    --ink: #0A0A0A;
+    --ink-cool: #0A0A0A;
+    --ink-2: rgba(10, 10, 10, 0.8);
+    --muted: rgba(10, 10, 10, 0.6);
+    --dim: rgba(10, 10, 10, 0.45);
+    --ember: #D41900;
+    --on-ember: #FFFFFF;
+    --glow-2: #FF6A55;
+    --glow-3: #FFD9D1;
+    --glow-opacity: 0.22;
+    --grid-line: rgba(10, 10, 10, 0.04);
   }
 }
