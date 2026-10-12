@@ -94,6 +94,18 @@ Deviations from the measured values, on purpose:
 
 Fonts: Inter 4.x latin variable woff2 from `@fontsource-variable/inter` 5.2.8 (OFL, licence in `kit/fonts/`). The Instrument Sans / Serif files were removed.
 
+## About, Projects and Gallery flow (Oct 12, 2026)
+
+Harsh asked for an About section after the intro, and for the Projects and Gallery sections to follow the flow of the reference site (from his screen recording; the site itself is blocked from the build environment). Only the interaction pattern was taken: no code, images or copy.
+
+- **About** follows the intro and reuses the hpk-website About text word for word (Harsh's choice). It still says "application support professional"; CLAUDE.md wants Customer Engineer positioning, so this needs a rewrite before launch.
+- **Projects replace the spiral and list views.** Titles scroll on the left; the one in the middle of the screen turns white and its preview shows in a sticky frame on the right, wiping in on the signature curve. A thick red ribbon behind the list draws itself as you scroll. Phones, reduced motion and no-JS get a stacked list with every image inline. `projects-spiral.js` and `projects-list.js` are removed, as are the view toggle and the `hk-projects-view` storage key.
+- **Every project image carries a demo link** in its top-left corner: "Try the demo" opens the panel when the demo runs there (replay, embed); "Open the demo ↗" goes to an existing external demo; otherwise "Demo · coming soon" opens the project page.
+- **Gallery** (new, after Projects): pinned for ~4 screens on wide screens with motion; all project images fly toward the viewer in 3D while one line reveals word by word. Each image keeps a small demo link. Phones and reduced motion get a grid.
+- **Gallery line is new copy and needs Harsh's approval:** "Every project starts as a problem a customer could hit. I build it, break it, and write down the fix."
+- **Images** come from the GIFs already on hpk-website, converted to a WebP poster plus a muted 10s MP4 loop (`site/media/`, about 1.7 MB total versus 28 MB of GIFs). Clips load only when their preview is shown, and never under reduced motion. Not reused: the e-commerce GIF (shows the "Nike" brand, which CLAUDE.md forbids) and the PyRedis GIF (a "Redis" wordmark); those two, and the four projects without images, use the HTML preview cards. **Open question:** where those GIFs came from. If they are third-party animations, they need a licence check or replacing with real screenshots before launch.
+- The fixed logo and menu header moved out of the projects section and now shows from the first scroll on every section.
+
 ## Out of scope for v1 (don't build)
 
 - WebGL / Three.js spiral

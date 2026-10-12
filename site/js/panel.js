@@ -1,5 +1,5 @@
 // J · Project panel (spec §5 J): a modal <dialog> with its own URL.
-// Opens from the spiral pill, a list item, or a direct visit to
+// Opens from a project title, an in-site demo link, or a direct visit to
 // /projects/<slug>/ (that static page forwards here with ?project=<slug>).
 
 import { Dialog } from '../../kit/js/dialog.js';

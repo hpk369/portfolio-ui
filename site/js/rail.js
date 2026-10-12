@@ -6,6 +6,7 @@ import { pad } from './env.js';
 export function initRail() {
   const rail = document.querySelector('.rail');
   const count = document.querySelector('.scroll-count');
+  const head = document.querySelector('.site-head');
   if (!rail) return;
   const links = [...rail.querySelectorAll('a')];
 
@@ -31,6 +32,7 @@ export function initRail() {
     const show = window.scrollY > window.innerHeight * 0.08;
     rail.classList.toggle('is-visible', show);
     count.classList.toggle('is-visible', show);
+    head?.classList.toggle('is-visible', show);
   };
   window.addEventListener('scroll', () => {
     if (!queued) {

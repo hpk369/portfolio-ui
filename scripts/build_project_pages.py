@@ -5,8 +5,8 @@ Reads site/data/projects.json (and the replay JSON it points to) and writes:
   - site/projects/<slug>/index.html for every project with "ready": true. Each page
     is complete on its own: readable without JavaScript and shareable on LinkedIn.
     With JavaScript, it forwards to the home page, which opens the project as a panel.
-  - the <ol class="plist"> items in site/index.html, between the
-    "projects:list:start" and "projects:list:end" markers, so the list works without JS.
+  - the project showcase and gallery items in site/index.html, between the
+    "projects:list:*" and "projects:gallery:*" markers, so both work without JS.
 
 Run from the repo root:  python3 scripts/build_project_pages.py
 Standard library only. Safe to re-run; it rewrites only the files above.
@@ -210,15 +210,82 @@ def page_html(project: dict, index: int, total: int) -> str:
 """
 
 
-def list_html(projects: list[dict]) -> str:
+TIER_LABEL = {"featured": "Featured", "supporting": "Supporting", "more": "More"}
+LIVE_MODES = {"replay", "embed", "live", "simulation", "static"}
+
+
+def demo_link(project: dict) -> tuple[str, str, bool]:
+    """(href, label, external) for the demo link that sits on every project image.
+
+    A demo that runs in the panel opens the panel; otherwise the existing demo
+    opens in a new tab; otherwise the project page, which says the demo is coming.
+    """
+    slug = escape(project["slug"])
+    if project["demoMode"] in LIVE_MODES:
+        return f"projects/{slug}/", "Try the demo", False
+    existing = project["links"].get("existingDemo")
+    if existing:
+        return escape(existing), "Open the demo ↗", True
+    return f"projects/{slug}/", "Demo · coming soon", False
+
+
+SHORT_LABEL = {"Try the demo": "Try demo", "Open the demo ↗": "Demo ↗", "Demo · coming soon": "Demo soon"}
+
+
+def demo_anchor(project: dict, cls: str, short: bool = False) -> str:
+    href, label, external = demo_link(project)
+    soon = " is-soon" if label.startswith("Demo ·") else ""
+    if short:
+        label = SHORT_LABEL[label]
+    attrs = ' target="_blank" rel="noopener"' if external else f' data-slug="{escape(project["slug"])}"'
+    return f'<a class="{cls}{soon}" href="{href}"{attrs}>{label}<span class="sr-only">: {escape(project["title"])}</span></a>'
+
+
+def media_html(project: dict, cls: str, decorative: bool = False) -> str:
+    media = project.get("media")
+    if media:
+        alt = "" if decorative else escape(media["alt"])
+        return (
+            f'<img class="{cls}" src="{escape(media["poster"])}" alt="{alt}" '
+            f'loading="lazy" decoding="async" data-video="{escape(media["video"])}">'
+        )
+    # No image yet: a typographic tile. With JS it becomes the HTML preview card.
+    return f'<span class="{cls} media-tile" data-card="{escape(project["slug"])}" aria-hidden="true"><span>{escape(project["title"])}</span></span>'
+
+
+def showcase_html(projects: list[dict]) -> str:
+    total = len(projects)
+    items = []
+    for i, p in enumerate(projects, start=1):
+        slug = escape(p["slug"])
+        items.append(f"""          <li class="showcase__item" data-slug="{slug}">
+            <a class="showcase__title" href="projects/{slug}/" data-slug="{slug}">{escape(p["title"])}</a>
+            <figure class="showcase__figure">
+              <figcaption class="showcase__meta meta-label"><span>{i:02d} / {total:02d} · {TIER_LABEL.get(p["tier"], "")}</span><span>Preview</span></figcaption>
+              <div class="showcase__frame">
+                {media_html(p, "showcase__media")}
+                {demo_anchor(p, "demo-link")}
+              </div>
+            </figure>
+          </li>""")
+    return "\n".join(items)
+
+
+def gallery_html(projects: list[dict]) -> str:
     items = []
     for p in projects:
-        proves = f'<sup class="plist__proves meta-label">{escape(p["proves"])}</sup>' if p.get("proves") else ""
-        items.append(
-            f'          <li class="plist__item"><a class="plist__link" href="projects/{escape(p["slug"])}/" '
-            f'data-slug="{escape(p["slug"])}"><span class="plist__title">{escape(p["title"])}</span>{proves}</a></li>'
-        )
+        items.append(f"""          <li class="gallery__card">
+            {media_html(p, "gallery__media", decorative=True)}
+            {demo_anchor(p, "demo-link demo-link--small", short=True)}
+          </li>""")
     return "\n".join(items)
+
+
+def replace_block(html: str, name: str, body: str) -> str:
+    pattern = re.compile(rf"(<!-- projects:{name}:start[^>]*-->\n).*?(<!-- projects:{name}:end -->)", re.S)
+    if not pattern.search(html):
+        raise SystemExit(f"site/index.html is missing the projects:{name} markers")
+    return pattern.sub(lambda m: m.group(1) + body + "\n" + m.group(2), html)
 
 
 def main() -> None:
@@ -236,13 +303,11 @@ def main() -> None:
 
     index_path = SITE / "index.html"
     index = index_path.read_text(encoding="utf-8")
-    pattern = re.compile(r"(<!-- projects:list:start[^>]*-->\n).*?(<!-- projects:list:end -->)", re.S)
-    if not pattern.search(index):
-        raise SystemExit("site/index.html is missing the projects:list markers")
-    index = pattern.sub(lambda m: m.group(1) + list_html(projects) + "\n" + m.group(2), index)
+    index = replace_block(index, "list", showcase_html(projects))
+    index = replace_block(index, "gallery", gallery_html(projects))
     index_path.write_text(index, encoding="utf-8")
 
-    print(f"Wrote {len(projects)} project pages and the home page list.")
+    print(f"Wrote {len(projects)} project pages and the home page projects and gallery.")
 
 
 if __name__ == "__main__":

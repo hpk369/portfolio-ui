@@ -489,30 +489,37 @@ html.js[data-motion="full"] [data-reveal].is-in {
   transform: none;
 }
 
-/* ---------- Projects section (#demos) ---------- */
+/* ---------- Site header (logo + menu), from the first scroll ---------- */
 
-.projects {
-  position: relative;
-  min-height: 100svh;
-  background-color: var(--bg);
-  background-image:
-    linear-gradient(var(--grid-line) 1px, transparent 1px),
-    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
-  background-size: 48px 48px;
+.site-head {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: var(--z-header);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--sp-4) var(--gutter);
+  pointer-events: none;
 }
 
-.projects__header {
-  position: sticky;
-  top: 0;
-  z-index: var(--z-header);
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
-  padding: var(--sp-5) var(--sp-6);
+.site-head > * {
+  pointer-events: auto;
+}
+
+.js .site-head {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-12px);
+  transition: opacity var(--dur-med) var(--ease-inout), transform var(--dur-med) var(--ease-inout), visibility var(--dur-med);
+}
+
+.js .site-head.is-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
 }
 
 .projects__mono {
-  justify-self: start;
   display: inline-flex;
   align-items: center;
   min-height: var(--target-min);
@@ -522,244 +529,355 @@ html.js[data-motion="full"] [data-reveal].is-in {
   text-decoration: none;
 }
 
-#menu-open {
-  justify-self: end;
+.section-index {
+  color: var(--ember);
 }
 
-.view-toggle {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-3);
-}
+/* ---------- Projects (#demos) ---------- */
 
-.view-toggle button {
-  min-height: var(--target-min);
-  padding: 0 6px;
-  border: 0;
-  background: transparent;
-  color: var(--muted);
-  font-size: var(--fs-ui);
-  cursor: pointer;
-}
-
-.view-toggle button[aria-pressed="true"] {
-  color: var(--ink);
-}
-
-.view-toggle button:disabled {
-  cursor: not-allowed;
-  opacity: 0.5;
-}
-
-.view-toggle__dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 0;
-  background: var(--ink);
-}
-
-/* I · List */
-
-.projects__list-view {
-  padding: var(--sp-7) var(--gutter) var(--sp-10);
-}
-
-.plist {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-  font-size: var(--fs-list);
-  font-weight: 700;
-  letter-spacing: var(--tracking-list);
-  line-height: 1.22;
-  text-align: center;
-}
-
-.plist__link {
+.showcase {
   position: relative;
-  display: inline-block;
-  padding: 0 var(--sp-2);
+  z-index: var(--z-content);
+  isolation: isolate;
+  padding: var(--sp-section) var(--gutter);
+  background: var(--bg);
+  border-top: 1px solid var(--line);
+  overflow: clip;
+}
+
+.ribbon {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.ribbon__path {
+  fill: none;
+  stroke: var(--ember);
+  stroke-width: clamp(28px, 4.4vw, 68px);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.showcase__head {
+  display: grid;
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-9);
+}
+
+.showcase__hint {
+  color: var(--muted);
+}
+
+.showcase__body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.showcase__list {
+  display: grid;
+}
+
+.showcase__item {
+  display: grid;
+  gap: var(--sp-4);
+  padding: var(--sp-5) 0;
+  border-top: 1px solid var(--line);
+}
+
+.showcase__item:last-child {
+  border-bottom: 1px solid var(--line);
+}
+
+.showcase__title {
+  justify-self: start;
+  font-size: var(--fs-list);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: var(--tracking-list);
   color: var(--dim);
   text-decoration: none;
-  transition: color var(--dur-med) var(--ease-inout);
+  transition: color var(--dur-med) var(--ease-inout), transform var(--dur-med) var(--ease-inout);
 }
 
-.plist__link:hover,
-.plist__link:focus-visible {
+.showcase__item.is-active .showcase__title,
+.showcase__title:hover,
+.showcase__title:focus-visible {
   color: var(--ink);
 }
 
-.plist__proves {
-  position: absolute;
-  left: 100%;
-  top: 0.35em;
-  font-size: 12px;
-  letter-spacing: 0;
-  white-space: nowrap;
-  color: var(--ember);
-  opacity: 0;
-  transition: opacity var(--dur-fast) var(--ease-hover);
+.showcase__item.is-active .showcase__title {
+  transform: translateX(var(--sp-3));
 }
 
-.plist__link:hover .plist__proves,
-.plist__link:focus-visible .plist__proves {
-  opacity: 1;
+.showcase__figure {
+  display: grid;
+  gap: var(--sp-2);
 }
 
-.projects__hint {
-  margin-top: var(--sp-8);
+.showcase__meta {
+  display: flex;
+  justify-content: space-between;
   color: var(--muted);
 }
 
-.list-preview {
-  position: fixed;
-  left: 0;
-  top: 0;
+.showcase__frame {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: var(--surface);
+  border: 1px solid var(--line);
+}
+
+.showcase__media,
+.gallery__media {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Projects without an image: a type tile, upgraded to the HTML preview card by JS. */
+.media-tile {
+  display: grid;
+  place-items: end start;
+  padding: var(--sp-4);
+  background: var(--surface-2);
+  font-weight: 700;
+  letter-spacing: var(--tracking-head);
+  color: var(--ink-2);
+}
+
+.media-tile.has-card {
+  padding: 0;
+}
+
+.media-tile .pcard {
+  width: 100%;
+  height: 100%;
+  padding-top: calc(var(--target-min) + var(--sp-5));
+  border: 0;
+}
+
+/* Small tiles: render the card at its design size and zoom it down. */
+.gallery__card .media-tile .pcard {
+  width: 300px;
+  height: 225px;
+  padding-top: 56px;
+  zoom: 0.6;
+}
+
+.gallery.is-flying .gallery__card .media-tile .pcard {
+  zoom: 0.85;
+}
+
+/* Keep previews clear of the fixed section rail on wide screens. */
+@media (min-width: 1024px) {
+  .showcase,
+  .about {
+    padding-right: calc(var(--gutter) + 96px);
+  }
+}
+
+/* The demo link sits on top of every project image. */
+.demo-link {
+  position: absolute;
+  left: var(--sp-3);
+  top: var(--sp-3);
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--target-min);
+  padding: 0 var(--sp-4);
+  background: var(--ember);
+  color: var(--on-ember);
+  font-size: var(--fs-ui);
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color var(--dur-fast) var(--ease-hover), color var(--dur-fast) var(--ease-hover);
+}
+
+.demo-link:hover {
+  background: var(--ink);
+  color: var(--bg);
+}
+
+.demo-link.is-soon {
+  background: var(--bg);
+  color: var(--ink-2);
+  border: 1px solid var(--line-strong);
+}
+
+.demo-link.is-soon:hover {
+  background: var(--ink);
+  color: var(--bg);
+}
+
+.demo-link--small {
+  left: var(--sp-2);
+  top: var(--sp-2);
+  min-height: 36px;
+  padding: 0 var(--sp-3);
+  font-size: var(--fs-meta);
+}
+
+/* Wide screens with JS: titles scroll on the left, one sticky stage on the right. */
+@media (min-width: 900px) {
+  .showcase.is-staged .showcase__body {
+    grid-template-columns: minmax(0, 1fr) minmax(320px, 40%);
+    gap: var(--sp-9);
+  }
+
+  .showcase.is-staged .showcase__list {
+    padding: 28vh 0;
+  }
+
+  .showcase.is-staged .showcase__item {
+    padding: var(--sp-6) 0;
+    border-color: color-mix(in srgb, var(--ink) 8%, transparent);
+  }
+
+  .showcase.is-staged .showcase__stage {
+    position: sticky;
+    top: 50%;
+    align-self: start;
+    display: grid;
+    translate: 0 -50%;
+  }
+
+  .showcase.is-staged .showcase__figure {
+    grid-area: 1 / 1;
+    clip-path: inset(0 0 100% 0);
+    transition: clip-path var(--dur-med) var(--ease-inout);
+  }
+
+  .showcase.is-staged .showcase__figure.is-active {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@media (max-width: 899px) {
+  .showcase__item {
+    padding: var(--sp-6) 0;
+  }
+
+  .showcase__item .showcase__title,
+  .showcase__item.is-active .showcase__title {
+    color: var(--ink);
+    transform: none;
+  }
+}
+
+/* ---------- Gallery ---------- */
+
+.gallery {
+  position: relative;
   z-index: var(--z-content);
-  pointer-events: none;
-  opacity: 0;
-  scale: 0.94;
-  transition: opacity var(--dur-med) var(--ease-inout), scale var(--dur-med) var(--ease-inout);
+  padding: var(--sp-section) var(--gutter);
+  background: var(--bg);
 }
 
-.list-preview.is-visible {
-  opacity: 1;
-  scale: 1;
+.gallery__sticky {
+  display: grid;
+  gap: var(--sp-8);
 }
 
-.list-preview .pcard {
-  }
-
-@media (hover: none), (pointer: coarse) {
-  .list-preview {
-    display: none;
-  }
+.gallery__line {
+  max-width: 22ch;
+  font-size: var(--fs-reveal);
+  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: var(--tracking-head);
 }
 
-@media (max-width: 767px) {
-  .plist__proves {
-    display: none;
-  }
+.gallery__line em {
+  font-style: normal;
+  color: var(--ember);
 }
 
-/* H · Spiral */
+.gallery__cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: var(--sp-4);
+}
 
-.projects[data-view="spiral"] {
+.gallery__card {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: var(--surface);
+  border: 1px solid var(--line);
+}
+
+.gallery__card .media-tile {
+  font-size: 15px;
+}
+
+/* Wide screens with motion: pinned, cards fly in 3D, the line reveals word by word. */
+.gallery.is-flying {
+  height: 420svh;
+  padding: 0;
+}
+
+.gallery.is-flying .gallery__sticky {
+  position: sticky;
+  top: 0;
   height: 100svh;
-  min-height: 0;
+  place-items: center;
+  perspective: 1000px;
   overflow: hidden;
 }
 
-.projects[data-view="spiral"] .projects__header {
+.gallery.is-flying .gallery__index {
   position: absolute;
-  left: 0;
-  right: 0;
+  left: var(--gutter);
+  top: var(--sp-10);
 }
 
-.projects[data-view="spiral"] .projects__list-view {
-  display: none;
+.gallery.is-flying .gallery__line {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  pointer-events: none;
 }
 
-.projects__spiral-view {
-  position: absolute;
-  inset: 0;
+.gallery.is-flying .gallery__line .word {
+  color: var(--dim);
+  transition: color var(--dur-med) var(--ease-inout);
 }
 
-.spiral {
-  position: absolute;
-  inset: 0;
-  perspective: 1500px;
-  cursor: grab;
-  touch-action: pan-y;
-  user-select: none;
+.gallery.is-flying .gallery__line .word.is-on {
+  color: var(--ink);
 }
 
-.spiral:active {
-  cursor: grabbing;
-}
-
-.spiral:focus-visible {
-  outline-offset: -8px;
-}
-
-.spiral__stage {
-  position: absolute;
-  left: 50%;
-  top: 46%;
-  transform-style: preserve-3d;
-}
-
-.spiral-card {
-  position: absolute;
-  left: -150px;
-  top: -98px;
-  will-change: transform, opacity;
-  backface-visibility: hidden;
-}
-
-.spiral-card .pcard {
-  transition: border-color var(--dur-med) var(--ease-inout);
-}
-
-.spiral-card.is-active .pcard {
-  border-color: var(--ember);
-  border-radius: var(--r-card-active);
-  background: var(--card-bg);
-  }
-
-.spiral-pill {
-  position: absolute;
-  left: 50%;
-  bottom: 64px;
-  z-index: var(--z-content);
-  display: inline-flex;
-  align-items: center;
-  gap: var(--sp-3);
-  min-height: 48px;
-  padding: 6px 16px 6px 6px;
-  border-radius: var(--r-card);
-  background: var(--ink);
-  color: var(--bg);
-  font-size: var(--fs-ui);
-  font-weight: 500;
-  text-decoration: none;
-  white-space: nowrap;
-  transform: translateX(-50%);
-}
-
-.spiral-pill__index {
-  display: inline-grid;
-  place-items: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 0;
-  background: var(--surface-2);
+.gallery.is-flying .gallery__line em .word.is-on {
   color: var(--ember);
 }
 
-.spiral-pill__cta {
-  padding: 4px 10px;
-  border-radius: var(--r-pill);
-  background: var(--ember);
-  color: var(--on-ember);
-  font-size: 12px;
-}
-
-.spiral__hint,
-.spiral__count {
+.gallery.is-flying .gallery__cards {
   position: absolute;
-  bottom: 30px;
-  color: var(--muted);
+  z-index: 1;
+  inset: 0;
+  display: block;
+  transform-style: preserve-3d;
 }
 
-.spiral__hint {
-  left: var(--sp-6);
+.gallery.is-flying .gallery__card {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  --card-w: clamp(190px, 20vw, 320px);
+  width: var(--card-w);
+  margin: calc(var(--card-w) * -0.375) 0 0 calc(var(--card-w) * -0.5);
+  will-change: transform, opacity;
 }
 
-.spiral__count {
-  right: var(--sp-6);
-  font-variant-numeric: tabular-nums;
+.gallery.is-flying .gallery__card:not(.is-near) .demo-link {
+  pointer-events: none;
 }
 
 /* ---------- J · Project panel ---------- */
