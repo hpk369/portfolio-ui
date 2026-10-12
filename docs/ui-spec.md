@@ -213,6 +213,8 @@ All sections use the same header (except the intro, which uses the footer bar) a
 
 ### G · Reveal (pinned, ~120vh of scroll)
 
+> **Superseded Oct 12, 2026:** the reveal now grows a full-screen video reel and fades into About, and the intro background is a cursor-reactive WebGL shader. See `docs/decisions.md`, "3D intro background and full-screen reel".
+
 A GSAP ScrollTrigger timeline, scrubbed, with the intro pinned.
 
 | Progress | What happens |

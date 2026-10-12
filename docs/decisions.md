@@ -106,10 +106,22 @@ Harsh asked for an About section after the intro, and for the Projects and Galle
 - **Images** come from the GIFs already on hpk-website, converted to a WebP poster plus a muted 10s MP4 loop (`site/media/`, about 1.7 MB total versus 28 MB of GIFs). Clips load only when their preview is shown, and never under reduced motion. Not reused: the e-commerce GIF (shows the "Nike" brand, which CLAUDE.md forbids) and the PyRedis GIF (a "Redis" wordmark); those two, and the four projects without images, use the HTML preview cards. **Open question:** where those GIFs came from. If they are third-party animations, they need a licence check or replacing with real screenshots before launch.
 - The fixed logo and menu header moved out of the projects section and now shows from the first scroll on every section.
 
+## 3D intro background and full-screen reel (Oct 12, 2026)
+
+Harsh asked for the intro to follow a second screen recording of the reference site: a uniform, 3D-looking background that reacts to the cursor, and a reel that grows to fill the screen on scroll and then fades into the next section. Only the interaction pattern was taken: no code, video or images.
+
+- **Background (`site/js/glow.js`) is now WebGL.** A fragment shader draws slow, domain-warped noise across the whole first screen, shades it like a soft surface (normals from the height field, light from the cursor), and maps it onto the `--bg` / `--glow-*` tokens, so light and dark mode both work. The cursor swirls the field around it with eased follow; with no pointer (touch, idle) the light wanders on its own. It renders at half resolution and pauses off-screen, in hidden tabs, and while the reel covers it. Reduced motion draws one still frame. If WebGL or the shader fails, the CSS blobs stay. This overrides the spec's "no canvas or shader in v1" and "cursor effects: out of scope" at Harsh's request.
+- **The reveal shows a video, not the replay player.** `site/media/intro-reel.mp4` (1.3 MB, 8 s seamless loop, 1280×720, no audio) and its poster are rendered from a shader in this repo (`scripts/intro-reel/`), so there are no third-party assets. It is decorative, `aria-hidden`, and captioned "Rendered loop · not a project demo". The ETL demo stays one click away: a "Try the ETL Triage Agent demo →" button sits over the reel and opens the project panel.
+- **Reveal timeline (desktop with motion, pinned for 240% of the screen):** the name lifts to the middle; the reel opens as a thumbnail between the halves (or behind the name when it wraps onto two lines); the halves slide off-screen as the reel grows to full screen; the line and the demo button show over it; then the reel darkens from the bottom up into the page colour, which hands over to About. Phones and reduced motion keep the unpinned stack (reel, line, button); the reel plays only while on screen and never under reduced motion.
+- **About** loses its top border so the hand-over is seamless, gains a blurred red shape behind the text that rises as it scrolls in, and its lead sharpens word by word (blurred and faint → crisp), driven by scroll. Reduced motion and no-JS see plain text.
+- `splitWords` moved from `gallery.js` to `site/js/words.js` so Gallery and About share it.
+
+To re-render the reel: `cd scripts/intro-reel && npm i playwright-core@1.56.0 && node render.mjs "$PWD/reel.html" frames 240`, then `ffmpeg -framerate 30 -i frames/f%04d.png -c:v libx264 -preset slow -crf 27 -pix_fmt yuv420p -movflags +faststart -an ../../site/media/intro-reel.mp4`.
+
 ## Out of scope for v1 (don't build)
 
-- WebGL / Three.js spiral
+- WebGL / Three.js spiral (the intro background is WebGL since Oct 12; the spiral stays CSS 3D)
 - Sound
-- Cursor effects
+- Cursor effects (except the intro background, Oct 12)
 - The reticle motion cues from canvas row 6
 - Animos video previews

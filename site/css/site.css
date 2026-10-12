@@ -321,6 +321,24 @@ html.has-dialog {
   animation-delay: -12s;
 }
 
+/* WebGL field (js/glow.js). When it runs, it replaces the blobs and paints the
+   whole first screen itself, so the layer's own opacity is lifted. */
+.glow__canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.glow--gl {
+  opacity: 1;
+}
+
+.glow--gl .glow__blob {
+  display: none;
+}
+
 .glow.is-paused .glow__blob {
   animation-play-state: paused;
 }
@@ -347,7 +365,7 @@ html.has-dialog {
 }
 
 /* ---------- G · Reveal ---------- */
-/* Baseline (no JS, phones, reduced motion): the demo sits under the intro. */
+/* Baseline (no JS, phones, reduced motion): the reel sits under the intro. */
 
 .reveal {
   position: relative;
@@ -359,29 +377,60 @@ html.has-dialog {
 }
 
 .reveal__window {
+  position: relative;
   width: 100%;
-  max-width: 700px;
-  height: 470px;
+  max-width: 960px;
+  aspect-ratio: 16 / 9;
   margin: 0;
-  border-radius: var(--r-window-reveal);
-  }
-
-.reveal__player {
-  height: 100%;
+  overflow: hidden;
+  background: #000;
 }
 
-.reveal__player .replay {
-  border-radius: var(--r-window-reveal);
+.reveal__video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
-.reveal__fallback {
-  display: grid;
-  place-items: center;
-  height: 100%;
-  border: 1px solid var(--line);
-  border-radius: var(--r-window-reveal);
-  background: var(--surface);
-  color: var(--ember);
+/* Darkens the reel from the bottom up at the end of the reveal (desktop only). */
+.reveal__shade {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 200%;
+  background: linear-gradient(to bottom, transparent 0%, var(--bg) 50%, var(--bg) 100%);
+  pointer-events: none;
+  display: none;
+}
+
+.reveal-on .reveal__shade {
+  display: block;
+}
+
+/* Registration marks in the corners. */
+.reveal__corners i {
+  position: absolute;
+  width: 11px;
+  height: 11px;
+  background:
+    linear-gradient(currentColor, currentColor) center / 100% 1px no-repeat,
+    linear-gradient(currentColor, currentColor) center / 1px 100% no-repeat;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.reveal__corners i:nth-child(1) { left: var(--sp-4); top: var(--sp-4); }
+.reveal__corners i:nth-child(2) { right: var(--sp-4); top: var(--sp-4); }
+.reveal__corners i:nth-child(3) { left: var(--sp-4); bottom: var(--sp-4); }
+.reveal__corners i:nth-child(4) { right: var(--sp-4); bottom: var(--sp-4); }
+
+.reveal__caption {
+  position: absolute;
+  left: var(--sp-7);
+  bottom: var(--sp-3);
+  color: rgba(255, 255, 255, 0.55);
 }
 
 .reveal__line {
@@ -392,39 +441,59 @@ html.has-dialog {
   text-align: center;
 }
 
-@media (max-width: 767px) {
-  .reveal__window {
-    height: 440px;
-  }
+.reveal__try.demo-link {
+  position: static;
 }
 
-/* Desktop with motion: GSAP pins the intro and grows the window between the name halves. */
+/* Desktop with motion: GSAP pins the intro; the reel grows from a thumbnail between
+   the name halves to the full screen, then fades into About. */
 .reveal-on .intro {
   height: 100svh;
 }
 
+/* No z-index here, so the reel can sit under the name while the line and the
+   demo link sit over everything. */
 .reveal-on .reveal {
   position: absolute;
   inset: 0;
-  place-items: center;
+  z-index: auto;
+  display: block;
   padding: 0;
   pointer-events: none;
 }
 
 .reveal-on .reveal__window {
-  width: min(700px, 72vw);
-  height: min(470px, 62svh);
-  pointer-events: auto;
-  clip-path: inset(41.5% 41.4%);
-  opacity: 0;
+  position: absolute;
+  inset: 0;
+  max-width: none;
+  aspect-ratio: auto;
+  width: 100%;
+  height: 100%;
+  z-index: calc(var(--z-content) - 1);
+  clip-path: inset(50% 50%);
+  visibility: hidden;
 }
 
 .reveal-on .reveal__line {
   position: absolute;
-  inset: 58% 0 auto;
+  inset: 50% var(--gutter) auto;
   translate: 0 -50%;
+  z-index: calc(var(--z-content) + 1);
   opacity: 0;
-  text-shadow: 0 2px 30px var(--bg);
+  color: #F0F0F0;
+  text-shadow: 0 2px 30px rgba(0, 0, 0, 0.6);
+}
+
+.reveal-on .reveal__try.demo-link {
+  position: absolute;
+  left: 50%;
+  top: auto;
+  bottom: var(--sp-9);
+  z-index: calc(var(--z-content) + 1);
+  translate: -50% 0;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: auto;
 }
 
 /* ---------- About ---------- */
@@ -437,7 +506,26 @@ html.has-dialog {
   gap: var(--sp-6) var(--sp-9);
   padding: var(--sp-section) var(--gutter);
   background: var(--bg);
-  border-top: 1px solid var(--line);
+  overflow: clip;
+}
+
+/* A soft red shape behind the About text, in the spirit of the reference's
+   blurred portrait. It rises and brightens as the section scrolls in. */
+.about__glow {
+  position: absolute;
+  right: -6vw;
+  top: 12%;
+  width: min(56vw, 760px);
+  height: 82%;
+  background: radial-gradient(ellipse at 45% 45%, var(--glow-1) 0%, var(--glow-2) 40%, var(--glow-3) 68%, transparent 80%);
+  filter: blur(60px);
+  opacity: calc(var(--glow-opacity) * 0.9);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.about > :not(.about__glow) {
+  position: relative;
 }
 
 .about__head {
@@ -474,6 +562,13 @@ html.has-dialog {
   .about {
     grid-template-columns: minmax(0, 1fr);
   }
+}
+
+/* Word reveal on the lead (js/about.js sets --on from 0 to 1 per word). */
+.about__lead.is-split .word {
+  opacity: calc(0.12 + 0.88 * var(--on, 0));
+  filter: blur(calc((1 - var(--on, 0)) * 10px));
+  transition: none;
 }
 
 /* Scroll reveal: text rises in on the signature curve. Hidden only when JS runs
