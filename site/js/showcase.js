@@ -61,31 +61,38 @@ function initRibbon(section) {
   if (!path) return () => {};
   let length = 0;
 
-  // A meander that swings between the edges, one swing per ~700px of section.
+  // A meander that swings between the edges, one swing per ~700px of section,
+  // then sweeps across the bottom and leaves the page past the right edge.
   const build = () => {
     const w = section.clientWidth;
     const h = section.clientHeight;
+    const stroke = parseFloat(getComputedStyle(path).strokeWidth) || 64;
     svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
     const xs = [0.18, 0.88, 0.06, 0.62, 0.95, 0.1, 0.78];
     const swings = Math.max(3, Math.round(h / 700));
+    const lastY = h * 0.8;
     let x0 = -0.05 * w;
     let y0 = 0.04 * h;
     let d = `M ${x0} ${y0}`;
     for (let k = 1; k <= swings; k++) {
-      const x1 = xs[k % xs.length] * w;
-      const y1 = (k / swings) * h * 0.98;
+      // The last swing lands on the left so the exit sweeps across the page.
+      const x1 = (k === swings ? 0.12 : xs[k % xs.length]) * w;
+      const y1 = y0 + (lastY - 0.04 * h) / swings;
       const dy = (y1 - y0) * 0.6;
       d += ` C ${x0 + (x1 - x0) * 0.1} ${y0 + dy}, ${x1} ${y1 - dy}, ${x1} ${y1}`;
       x0 = x1;
       y0 = y1;
     }
+    // Exit: fully off the right edge, round cap included, before the section ends.
+    d += ` C ${x0} ${h * 0.93}, ${w * 0.6} ${h * 0.97}, ${w + stroke * 2} ${h * 0.9}`;
     path.setAttribute('d', d);
     length = path.getTotalLength();
     path.style.strokeDasharray = `${length}`;
     draw();
   };
 
-  // The tip of the ribbon stays near three-quarters of the way down the screen.
+  // The tip of the ribbon stays near three-quarters of the way down the screen,
+  // so the exit is drawn just as the end of the section scrolls into view.
   const draw = () => {
     if (!length) return;
     const r = section.getBoundingClientRect();
