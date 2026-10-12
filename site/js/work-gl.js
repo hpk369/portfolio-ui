@@ -2,7 +2,7 @@
 //
 // The projects are printed one after another round a cylinder that turns about
 // a horizontal axis, seen close up, so each slide narrows towards its top and
-// bottom. Each slide is cut to a lens shape: straight top and bottom, sides that
+// bottom. The cylinder loops: after the last project comes the first. Each slide is cut to a lens shape: straight top and bottom, sides that
 // curve in over the whole height. A gauge ring with tick marks runs round the
 // cylinder just inside the screen edges and turns with it.
 //
@@ -198,9 +198,9 @@ function layout(ctx, slide, index, g) {
   const mw = W * SPLIT;
   const panelX = panelRight ? mw : 0;
   const panelW = W - mw;
-  const padSeam = 44;
-  const padOuter = g.inset * 0.35 + 40;
-  const fs = Math.min(22, Math.max(17, window.innerWidth * 0.0165));
+  const padSeam = Math.min(44, W * 0.04);
+  const padOuter = g.inset * 0.35 + Math.min(40, W * 0.035);
+  const fs = Math.min(21, Math.max(15, W * 0.018));
   const lh = Math.round(fs * 1.8);
   ctx.font = `400 ${fs}px ${FONT}`;
   const maxW = Math.min(panelW - padSeam - padOuter, fs * 15);
@@ -226,7 +226,7 @@ function drawOverlay(slide, index, g, dpr, colours) {
   const L = layout(ctx, slide, index, g);
 
   // Title at the top of the image, on the panel side, with a soft scrim behind it.
-  const size = Math.min(40, Math.max(26, window.innerWidth * 0.031));
+  const size = Math.min(38, Math.max(24, W * 0.034));
   const titleY = arcH / 2 + g.toArc(-Hw / 2 + Hw * 0.075);
   const mediaX = L.panelRight ? 0 : W - L.mw;
   const scrim = ctx.createLinearGradient(0, titleY - 40, 0, titleY + size * 3);
@@ -434,19 +434,23 @@ export function createDrumGL({ stageEl, windowEl, slides, onLost }) {
     gl.uniform4f(slot ? u.uFit1 : u.uFit0, ...fitFor(m));
   }
 
+  // pos is unbounded; position k on the cylinder shows project k mod N.
+  const wrapIndex = (k) => ((k % slides.length) + slides.length) % slides.length;
+
   function draw(pos = lastPos) {
     lastPos = pos;
     if (lost || !g) return;
     gl.viewport(0, 0, canvas.width, canvas.height);
     const first = Math.floor(pos);
-    const second = Math.min(first + 1, slides.length - 1);
-    bindSlot(0, first);
-    bindSlot(1, second);
-    gl.uniform2f(u.uIdx, first, second === first ? -99 : second);
-    gl.uniform2f(u.uSide, first % 2, second % 2);
+    const a = wrapIndex(first);
+    const b = wrapIndex(first + 1);
+    bindSlot(0, a);
+    bindSlot(1, b);
+    gl.uniform2f(u.uIdx, first, first + 1);
+    gl.uniform2f(u.uSide, a % 2, b % 2);
     gl.uniform1f(u.uScroll, pos * g.pitch);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
-    watchClip(Math.round(pos));
+    watchClip(wrapIndex(Math.round(pos)));
   }
 
   // Redraw on each new frame of the front project's clip.

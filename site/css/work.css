@@ -195,8 +195,7 @@
 }
 
 .work__count,
-.work__next,
-.work__steps {
+.work__next {
   display: none;
 }
 
@@ -236,32 +235,28 @@
 
 /* ---------- Drum (wide screens, full motion, JS) ---------- */
 
-html.work-drum {
-  scroll-snap-type: y mandatory;
+/* The drum turns in place; the page itself does not scroll. */
+html.work-drum,
+html.work-drum body {
+  overflow: hidden;
+  overscroll-behavior: none;
 }
 
 .work-drum .work-head {
   position: fixed;
 }
 
-.work-drum .work__steps {
-  display: block;
-}
-
-.work-drum .work__steps > div {
-  height: 100vh;
-  scroll-snap-align: start;
-}
-
 .work-drum .work__stage {
   position: fixed;
   inset: 0;
   padding: 0;
+  touch-action: none;
 }
 
+/* Smaller than the screen, with the gauge left in the margins. */
 .work-drum .work__window {
   position: absolute;
-  inset: var(--work-head) var(--gutter) var(--sp-9);
+  inset: calc(var(--work-head) + 3vh) calc(var(--gutter) + 8vw) calc(var(--sp-9) + 4vh);
   overflow: hidden;
   border-radius: var(--work-radius);
   background: var(--bg-deep);
@@ -310,10 +305,6 @@ html.work-drum {
   color: var(--muted);
   cursor: pointer;
   transition: color var(--dur-fast) var(--ease-hover);
-}
-
-.work-drum .work__next[hidden] {
-  display: none;
 }
 
 .work__next svg {

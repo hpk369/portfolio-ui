@@ -1,9 +1,11 @@
 // Work page (site/work/). The slides are static HTML written by
 // scripts/build_project_pages.py and read as a stacked list without JavaScript.
-// On wide screens with full motion the slides sit on the faces of a drum inside
-// one rounded window: each scroll step turns the drum a quarter turn, so the
-// current project tips away at the top while the next one rolls up from below.
-// Scroll snapping gives one project per wheel flick, arrow key or Page Down.
+//
+// On wide screens with full motion the projects sit round one big cylinder.
+// The wheel, a touch drag or the keys turn it directly; when the input stops it
+// settles on the nearest project in the direction it was turning, on a heavy,
+// critically damped spring, so it feels like a weighted drum rather than a page
+// that snaps. The cylinder has no ends: after the last project comes the first.
 // The drum is drawn with WebGL (work-gl.js); without WebGL, CSS 3D draws it.
 
 import { loadProjects, reducedMotion } from './env.js';
@@ -17,16 +19,21 @@ const count = document.querySelector('.work__current');
 const nextBtn = document.querySelector('.work__next');
 const windowEl = document.querySelector('.work__window');
 const stageEl = document.querySelector('.work__stage');
-const last = slides.length - 1;
+const N = slides.length;
 const wide = window.matchMedia('(min-width: 769px)');
-const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
+const wrap = (k) => ((k % N) + N) % N;
 
-let steps = null;
-let pos = 0;      // drawn position, in slides
-let target = 0;   // position the scroll asks for
+const STIFFNESS = 6.5;    // spring frequency (rad/s): lower is heavier
+const NUDGE = 0.12;       // a turn smaller than this settles back
+
+let drum = false;
+let pos = 0;              // drawn position, in projects (unbounded: it loops)
+let vel = 0;
+let target = 0;           // where the drum is heading
 let raf = 0;
+let last = 0;
 let active = -1;
-let gl = null;    // the WebGL drum, when it is running
+let gl = null;            // the WebGL drum, when it is running
 
 function setActive(i) {
   if (i === active) return;
@@ -37,22 +44,14 @@ function setActive(i) {
     else slide.querySelector('video')?.pause();
   });
   if (count) count.textContent = String(i + 1).padStart(2, '0');
-  if (nextBtn) nextBtn.hidden = i === last;
 }
 
-// Each slide is a face of a four-sided drum whose radius is half the window
-// height, so the face in front exactly fills the window.
-function render() {
-  setActive(Math.round(pos));
-  if (gl) {
-    // The links only show while the drum is at rest.
-    windowEl.classList.toggle('is-turning', Math.abs(target - pos) > 0.01 || Math.abs(pos - Math.round(pos)) > 0.01);
-    gl.draw(pos);
-    return;
-  }
+// CSS fallback: each slide is a face of a four-sided drum whose radius is half
+// the window height; the shortest way round decides above or below.
+function renderCss() {
   const radius = slides[0].offsetHeight / 2;
   slides.forEach((slide, i) => {
-    const d = i - pos;
+    const d = wrap(i - pos + N / 2) - N / 2;
     const near = Math.abs(d) < 1;
     slide.style.transform = near
       ? `translateZ(${-radius}px) rotateX(${-d * 90}deg) translateZ(${radius}px)`
@@ -60,6 +59,115 @@ function render() {
     slide.style.opacity = near ? String(1 - Math.abs(d) * 0.55) : '0';
     slide.style.pointerEvents = Math.abs(d) < 0.5 ? '' : 'none';
   });
+}
+
+function render() {
+  setActive(wrap(Math.round(pos)));
+  // The links only show while the drum is at rest.
+  windowEl.classList.toggle('is-turning', Math.abs(target - pos) > 0.01 || Math.abs(vel) > 0.02);
+  if (gl) gl.draw(pos);
+  else renderCss();
+}
+
+// Critically damped spring towards the target: no overshoot, no hard stop.
+function tick(now) {
+  const dt = Math.min(0.05, (now - last) / 1000 || 1 / 60);
+  last = now;
+  const accel = STIFFNESS * STIFFNESS * (target - pos) - 2 * STIFFNESS * vel;
+  vel += accel * dt;
+  pos += vel * dt;
+  if (Math.abs(target - pos) < 0.0005 && Math.abs(vel) < 0.002) {
+    pos = target;
+    vel = 0;
+    raf = 0;
+  } else raf = requestAnimationFrame(tick);
+  render();
+}
+
+function kick() {
+  if (raf || !drum) return;
+  last = performance.now();
+  raf = requestAnimationFrame(tick);
+}
+
+const step = (n) => { target = Math.round(target) + n; kick(); };
+
+// Turn to project i the shortest way round.
+function goToIndex(i, instant = false) {
+  const here = Math.round(target);
+  let delta = i - wrap(here);
+  if (delta > N / 2) delta -= N;
+  if (delta < -N / 2) delta += N;
+  target = here + delta;
+  if (instant) { pos = target; vel = 0; render(); } else kick();
+}
+
+function fromHash(instant) {
+  const i = slides.findIndex((s) => `#${s.id}` === location.hash);
+  if (i >= 0) goToIndex(i, instant);
+}
+
+// A gesture (wheel burst or touch drag) turns the drum directly; when it ends,
+// settle on the next project in the direction it moved, or back if it barely moved.
+let gestureBase = null;
+let idle = 0;
+function turnBy(slidesDelta) {
+  if (gestureBase === null) gestureBase = Math.round(target);
+  target += slidesDelta;
+  kick();
+}
+function settle() {
+  if (gestureBase === null) return;
+  const moved = target - gestureBase;
+  const n = Math.abs(moved) < NUDGE ? 0 : Math.sign(moved) * Math.max(1, Math.round(Math.abs(moved)));
+  target = gestureBase + n;
+  gestureBase = null;
+  kick();
+}
+
+function onWheel(event) {
+  if (!drum || event.ctrlKey) return;
+  event.preventDefault();
+  let d = Math.abs(event.deltaY) >= Math.abs(event.deltaX) ? event.deltaY : event.deltaX;
+  if (event.deltaMode === 1) d *= 16;
+  else if (event.deltaMode === 2) d *= window.innerHeight;
+  turnBy(d / (window.innerHeight * 0.9));
+  clearTimeout(idle);
+  idle = setTimeout(settle, 140);
+}
+
+let touchY = null;
+function onTouchStart(event) {
+  if (!drum || event.touches.length !== 1) return;
+  touchY = event.touches[0].clientY;
+}
+function onTouchMove(event) {
+  if (touchY === null) return;
+  event.preventDefault();
+  const y = event.touches[0].clientY;
+  turnBy((touchY - y) / (window.innerHeight * 0.6));
+  touchY = y;
+}
+function onTouchEnd() {
+  if (touchY === null) return;
+  touchY = null;
+  settle();
+}
+
+function onKey(event) {
+  if (!drum || event.altKey || event.ctrlKey || event.metaKey) return;
+  const onControl = event.target.closest?.('a, button, input, textarea, select');
+  const keys = {
+    ArrowDown: 1, PageDown: 1, ArrowUp: -1, PageUp: -1, ' ': event.shiftKey ? -1 : 1,
+  };
+  if (event.key === ' ' && onControl) return;
+  if (event.key in keys) {
+    event.preventDefault();
+    step(keys[event.key]);
+  } else if (event.key === 'Home' || event.key === 'End') {
+    event.preventDefault();
+    goToIndex(event.key === 'Home' ? 0 : N - 1);
+  }
 }
 
 function clearCssDrum() {
@@ -86,49 +194,24 @@ function startGL() {
   }
 }
 
-// Ease the drum toward the scroll position so wheel steps feel continuous.
-function tick() {
-  raf = 0;
-  pos += (target - pos) * 0.16;
-  if (Math.abs(target - pos) < 0.001) pos = target;
-  else raf = requestAnimationFrame(tick);
-  render();
-}
-
-function read() {
-  target = clamp(window.scrollY / window.innerHeight, 0, last);
-  if (!raf) raf = requestAnimationFrame(tick);
-}
-
-const goTo = (i, behavior = 'smooth') => window.scrollTo({ top: clamp(i, 0, last) * window.innerHeight, behavior });
-
-function fromHash() {
-  const i = slides.findIndex((s) => `#${s.id}` === location.hash);
-  if (i >= 0 && steps) goTo(i, 'instant');
-}
-
 function enable() {
+  drum = true;
   root.classList.add('work-drum');
-  steps = document.createElement('div');
-  steps.className = 'work__steps';
-  steps.setAttribute('aria-hidden', 'true');
-  steps.append(...slides.map(() => document.createElement('div')));
-  document.body.append(steps);
-  fromHash();
-  pos = target = clamp(window.scrollY / window.innerHeight, 0, last);
+  window.scrollTo(0, 0);
+  fromHash(true);
   startGL();
   render();
 }
 
 function disable() {
+  drum = false;
   root.classList.remove('work-drum');
-  steps?.remove();
-  steps = null;
   cancelAnimationFrame(raf);
   raf = 0;
   gl?.destroy();
   gl = null;
   root.classList.remove('work-gl');
+  windowEl.classList.remove('is-turning');
   clearCssDrum();
 }
 
@@ -149,37 +232,25 @@ function init() {
   // Stacked list (phones): play the clip of the slide that is on screen.
   const seen = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
-      if (!steps && entry.isIntersecting) setActive(slides.indexOf(entry.target));
+      if (!drum && entry.isIntersecting) setActive(slides.indexOf(entry.target));
     });
   }, { threshold: 0.6 });
   slides.forEach((slide) => seen.observe(slide));
 
-  window.addEventListener('scroll', () => { if (steps) read(); }, { passive: true });
-  window.addEventListener('resize', () => { if (steps) { read(); render(); } });
-  window.addEventListener('hashchange', fromHash);
+  window.addEventListener('wheel', onWheel, { passive: false });
+  stageEl.addEventListener('touchstart', onTouchStart, { passive: true });
+  stageEl.addEventListener('touchmove', onTouchMove, { passive: false });
+  stageEl.addEventListener('touchend', onTouchEnd);
+  stageEl.addEventListener('touchcancel', onTouchEnd);
+  window.addEventListener('keydown', onKey);
+  window.addEventListener('resize', () => { if (drum) render(); });
+  window.addEventListener('hashchange', () => { if (drum) fromHash(false); });
 
   // Tabbing into a slide that is not in front turns the drum to it.
   slides.forEach((slide, i) => slide.addEventListener('focusin', () => {
-    if (steps && i !== Math.round(target)) goTo(i);
+    if (drum && i !== wrap(Math.round(target))) goToIndex(i);
   }));
-  nextBtn?.addEventListener('click', () => goTo(active + 1));
-
-  // One project per wheel gesture. A small wheel tick would otherwise snap back,
-  // and a trackpad's inertia would skip several projects at once.
-  let lastWheel = 0;
-  let lastStep = 0;
-  window.addEventListener('wheel', (event) => {
-    if (!steps || event.ctrlKey || Math.abs(event.deltaY) < Math.abs(event.deltaX)) return;
-    event.preventDefault();
-    const now = performance.now();
-    const fresh = now - lastWheel > 200;
-    lastWheel = now;
-    if (Math.abs(event.deltaY) < 4 || now - lastStep < 500) return;
-    if (fresh || now - lastStep > 1200) {
-      lastStep = now;
-      goTo(Math.round(target) + Math.sign(event.deltaY));
-    }
-  }, { passive: false });
+  nextBtn?.addEventListener('click', () => step(1));
 
   wide.addEventListener('change', setMode);
   setMode();
